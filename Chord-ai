@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chord AI</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#05070c;
+  --bg2:#090d16;
+  --card:#0d1320;
+  --card2:#101827;
+  --blue:#2f7dff;
+  --blue2:#65a9ff;
+  --text:#f5f8ff;
+  --muted:#7e8ca5;
+  --line:rgba(255,255,255,.07);
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(34,93,190,.28),transparent 35%),
+    linear-gradient(180deg,#070a11,#030509);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button{
+  font-family:inherit;
+}
+
+.app{
+  width:100%;
+  max-width:520px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:100px;
+}
+
+/* HEADER */
+
+.header{
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.logo{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:15px;
+  background:linear-gradient(145deg,#183c78,#2f7dff);
+  box-shadow:0 8px 30px rgba(47,125,255,.25);
+}
+
+.brand-text strong{
+  display:block;
+  font-size:14px;
+  letter-spacing:-.3px;
+}
+
+.brand-text span{
+  font-size:9px;
+  color:var(--muted);
+}
+
+.header-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  color:white;
+}
+
+/* HERO */
+
+.hero{
+  padding:50px 20px 25px;
+  text-align:center;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border:1px solid rgba(79,143,255,.18);
+  border-radius:999px;
+  background:rgba(47,125,255,.06);
+  color:#82b8ff;
+  font-weight:700;
+  font-size:9px;
+  letter-spacing:1.3px;
+}
+
+.badge-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#4d92ff;
+  box-shadow:0 0 12px #4d92ff;
+}
+
+.hero h1{
+  font-size:42px;
+  line-height:.98;
+  letter-spacing:-2.2px;
+  margin:20px 0 17px;
+}
+
+.hero h1 span{
+  background:linear-gradient(100deg,#fff,#7cb8ff,#2f7dff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+  max-width:390px;
+  margin:auto;
+}
+
+/* UPLOAD */
+
+.upload-section{
+  padding:10px 16px;
+}
+
+.upload-card{
+  border-radius:25px;
+  padding:30px 20px;
+  border:1px dashed rgba(101,169,255,.25);
+  background:
+    radial-gradient(circle at top,rgba(47,125,255,.11),transparent 50%),
+    linear-gradient(160deg,#0d1422,#080d16);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.upload-card::before{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  top:-80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#2f7dff;
+  filter:blur(90px);
+  opacity:.13;
+}
+
+.upload-icon{
+  margin:auto;
+  width:64px;
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:20px;
+  background:linear-gradient(145deg,#19305a,#101a2b);
+  border:1px solid rgba(104,171,255,.2);
+  font-size:27px;
+  box-shadow:0 14px 35px rgba(0,0,0,.25);
+}
+
+.upload-card h2{
+  font-size:18px;
+  margin-top:17px;
+}
+
+.upload-card p{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+.select-btn{
+  border:0;
+  margin-top:19px;
+  width:100%;
+  max-width:280px;
+  height:48px;
+  border-radius:14px;
+  font-weight:800;
+  background:white;
+  color:#09111f;
+}
+
+#fileInput{
+  display:none;
+}
+
+/* FILE */
+
+.file-card{
+  display:none;
+  margin-top:12px;
+  background:#0b111c;
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:14px;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+}
+
+.file-icon{
+  min-width:42px;
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:#13264a;
+  color:#72afff;
+}
+
+.file-data{
+  min-width:0;
+  flex:1;
+}
+
+.file-data strong{
+  display:block;
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.file-data span{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.remove{
+  border:none;
+  background:none;
+  color:#69758a;
+  font-size:17px;
+}
+
+/* OPTIONS */
+
+.options{
+  padding:16px;
+}
+
+.section-label{
+  font-size:9px;
+  font-weight:800;
+  color:#687790;
+  letter-spacing:1.4px;
+  margin:10px 5px;
+}
+
+.panel{
+  border:1px solid var(--line);
+  background:linear-gradient(160deg,#0d1420,#090e17);
+  border-radius:22px;
+  overflow:hidden;
+}
+
+.option-row{
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.option-row + .option-row{
+  border-top:1px solid var(--line);
+}
+
+.option-info strong{
+  display:block;
+  font-size:12px;
+}
+
+.option-info span{
+  display:block;
+  margin-top:4px;
+  font-size:9px;
+  color:var(--muted);
+  line-height:1.4;
+}
+
+.segment{
+  display:flex;
+  border-radius:11px;
+  padding:3px;
+  background:#05080d;
+}
+
+.segment button{
+  border:0;
+  color:#6f7c91;
+  background:transparent;
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:9px;
+  font-weight:800;
+}
+
+.segment button.active{
+  background:#182a4b;
+  color:#9ac6ff;
+}
+
+/* BUTTON */
+
+.analyze-wrap{
+  padding:0 16px;
+}
+
+.analyze-btn{
+  width:100%;
+  height:57px;
+  border:0;
+  border-radius:17px;
+  color:white;
+  font-size:13px;
+  font-weight:800;
+  background:linear-gradient(100deg,#1b58c5,#398dff);
+  box-shadow:0 14px 35px rgba(47,125,255,.22);
+  transition:.2s;
+}
+
+.analyze-btn:disabled{
+  opacity:.32;
+  box-shadow:none;
+}
+
+.analyze-btn:not(:disabled):active{
+  transform:scale(.98);
+}
+
+/* RESULT DEMO */
+
+.result{
+  display:none;
+  padding:25px 16px 0;
+}
+
+.result-title{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.result-title span{
+  font-size:9px;
+  color:#6d7b92;
+  font-weight:800;
+  letter-spacing:1.2px;
+}
+
+.result-title strong{
+  font-size:11px;
+  color:#79b4ff;
+}
+
+.music-info{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.info{
+  background:#0c121d;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:13px;
+}
+
+.info span{
+  display:block;
+  font-size:7px;
+  color:#65738a;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.info strong{
+  display:block;
+  margin-top:6px;
+  font-size:16px;
+}
+
+.now-card{
+  margin-top:10px;
+  min-height:145px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at center,rgba(47,125,255,.17),transparent 60%),
+    #090e17;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+.now-card span{
+  color:#66758c;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.4px;
+}
+
+.now-card strong{
+  font-size:48px;
+  letter-spacing:-2px;
+  margin:3px 0;
+}
+
+.now-card small{
+  color:#7e8ca5;
+  font-size:9px;
+}
+
+/* MOBILE NAV */
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  background:rgba(6,9,15,.91);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);
+  z-index:20;
+}
+
+.nav-item{
+  color:#5e6b80;
+  font-size:9px;
+  text-align:center;
+  min-width:60px;
+}
+
+.nav-icon{
+  font-size:18px;
+  margin-bottom:4px;
+}
+
+.nav-item.active{
+  color:#67a9ff;
+}
+
+@media(min-width:700px){
+  .app{
+    max-width:700px;
+  }
+
+  .hero h1{
+    font-size:58px;
+  }
+
+  .nav{
+    max-width:700px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+
+  <div class="brand">
+    <div class="logo">CA</div>
+
+    <div class="brand-text">
+      <strong>Chord AI</strong>
+      <span>Music Intelligence</span>
+    </div>
+  </div>
+
+  <button class="header-btn">•••</button>
+
+</header>
+
+
+<section class="hero">
+
+  <div class="badge">
+    <div class="badge-dot"></div>
+    AI MUSIC ANALYSIS
+  </div>
+
+  <h1>
+    Ouça a música.<br>
+    <span>Descubra como tocar.</span>
+  </h1>
+
+  <p>
+    Envie uma música e transforme o áudio em acordes,
+    notas e informações musicais para tocar diretamente
+    no teclado.
+  </p>
+
+</section>
+
+
+<section class="upload-section">
+
+  <div class="upload-card">
+
+    <div class="upload-icon">♫</div>
+
+    <h2>Adicione sua música</h2>
+
+    <p>
+      MP3, WAV, FLAC, M4A ou OGG
+    </p>
+
+    <button
+      class="select-btn"
+      onclick="fileInput.click()">
+      Escolher música
+    </button>
+
+    <input
+      id="fileInput"
+      type="file"
+      accept="audio/*"
+    >
+
+    <div class="file-card" id="fileCard">
+
+      <div class="file-icon">♪</div>
+
+      <div class="file-data">
+        <strong id="fileName"></strong>
+        <span id="fileSize"></span>
+      </div>
+
+      <button
+        class="remove"
+        onclick="removeFile()">
+        ×
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="options">
+
+  <div class="section-label">
+    CONFIGURAÇÃO DA ANÁLISE
+  </div>
+
+  <div class="panel">
+
+    <div class="option-row">
+
+      <div class="option-info">
+        <strong>Precisão</strong>
+        <span>
+          Escolha a profundidade da análise musical.
+        </span>
+      </div>
+
+      <div class="segment" id="mode">
+
+        <button
+          onclick="setMode(this)">
+          Rápida
+        </button>
+
+        <button
+          class="active"
+          onclick="setMode(this)">
+          Profunda
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="option-row">
+
+      <div class="option-info">
+        <strong>Acordes avançados</strong>
+
+        <span>
+          Detectar 7ª, 9ª, inversões e extensões.
+        </span>
+      </div>
+
+      <div class="segment">
+
+        <button
+          onclick="setToggle(this)">
+          Não
+        </button>
+
+        <button
+          class="active"
+          onclick="setToggle(this)">
+          Sim
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<div class="analyze-wrap">
+
+  <button
+    class="analyze-btn"
+    id="analyzeBtn"
+    disabled
+    onclick="fakeAnalyze()">
+
+    ✦ Analisar música
+
+  </button>
+
+</div>
+
+
+<section class="result" id="result">
+
+  <div class="result-title">
+
+    <span>RESULTADO</span>
+
+    <strong>
+      Análise concluída
+    </strong>
+
+  </div>
+
+
+  <div class="music-info">
+
+    <div class="info">
+      <span>TOM</span>
+      <strong>C</strong>
+    </div>
+
+    <div class="info">
+      <span>BPM</span>
+      <strong>124</strong>
+    </div>
+
+    <div class="info">
+      <span>COMPASSO</span>
+      <strong>4/4</strong>
+    </div>
+
+  </div>
+
+
+  <div class="now-card">
+
+    <span>ACORDE ATUAL</span>
+
+    <strong>Cmaj7</strong>
+
+    <small>
+      C · E · G · B
+    </small>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<nav class="nav">
+
+  <div class="nav-item active">
+    <div class="nav-icon">⌂</div>
+    Início
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">♫</div>
+    Músicas
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">⌨</div>
+    Teclado
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">⚙</div>
+    Ajustes
+  </div>
+
+</nav>
+
+
+<script>
+
+const fileInput =
+  document.getElementById("fileInput");
+
+const fileCard =
+  document.getElementById("fileCard");
+
+const analyzeBtn =
+  document.getElementById("analyzeBtn");
+
+const result =
+  document.getElementById("result");
+
+
+fileInput.addEventListener(
+  "change",
+  function(){
+
+    const file =
+      this.files[0];
+
+    if(!file) return;
+
+    document.getElementById(
+      "fileName"
+    ).textContent =
+      file.name;
+
+    document.getElementById(
+      "fileSize"
+    ).textContent =
+      (
+        file.size /
+        1024 /
+        1024
+      ).toFixed(2)
+      +
+      " MB";
+
+    fileCard.style.display =
+      "flex";
+
+    analyzeBtn.disabled =
+      false;
+
+  }
+);
+
+
+function removeFile(){
+
+  fileInput.value = "";
+
+  fileCard.style.display =
+    "none";
+
+  analyzeBtn.disabled =
+    true;
+
+  result.style.display =
+    "none";
+
+}
+
+
+function setMode(button){
+
+  const parent =
+    button.parentElement;
+
+  parent
+    .querySelectorAll("button")
+    .forEach(
+      b =>
+      b.classList.remove(
+        "active"
+      )
+    );
+
+  button.classList.add(
+    "active"
+  );
+
+}
+
+
+function setToggle(button){
+
+  setMode(button);
+
+}
+
+
+function fakeAnalyze(){
+
+  analyzeBtn.innerHTML =
+    "◌ Analisando música...";
+
+  analyzeBtn.disabled =
+    true;
+
+  setTimeout(
+    () => {
+
+      analyzeBtn.innerHTML =
+        "✓ Análise concluída";
+
+      result.style.display =
+        "block";
+
+      result.scrollIntoView({
+        behavior:"smooth"
+      });
+
+      setTimeout(
+        () => {
+
+          analyzeBtn.disabled =
+            false;
+
+          analyzeBtn.innerHTML =
+            "✦ Analisar novamente";
+
+        },
+        1200
+      );
+
+    },
+    1800
+  );
+
+}
+
+</script>
+
+</body>
+</html>
