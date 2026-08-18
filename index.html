@@ -2,7 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070d">
+
 <title>Chord AI</title>
 
 <style>
@@ -13,46 +15,59 @@
 }
 
 :root{
-  --bg:#05070c;
-  --bg2:#090d16;
-  --card:#0d1320;
-  --card2:#101827;
-  --blue:#2f7dff;
-  --blue2:#65a9ff;
+  --bg:#04060a;
+  --bg2:#080d16;
+  --card:#0c121e;
+  --card2:#101928;
+  --line:rgba(255,255,255,.075);
   --text:#f5f8ff;
-  --muted:#7e8ca5;
-  --line:rgba(255,255,255,.07);
+  --muted:#748198;
+  --blue:#2f7dff;
+  --blue2:#71b6ff;
+  --danger:#ff5f6d;
+  --green:#55e09b;
+}
+
+html{
+  background:var(--bg);
 }
 
 body{
   min-height:100vh;
   background:
-    radial-gradient(circle at 50% -10%,rgba(34,93,190,.28),transparent 35%),
-    linear-gradient(180deg,#070a11,#030509);
+    radial-gradient(circle at 50% -10%,rgba(34,93,190,.28),transparent 34%),
+    linear-gradient(180deg,#070a11 0%,#030509 100%);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
+button,input{
+  font:inherit;
+}
+
 button{
-  font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
 }
 
 .app{
   width:100%;
-  max-width:520px;
+  max-width:540px;
   margin:auto;
   min-height:100vh;
-  padding-bottom:100px;
+  padding-bottom:105px;
 }
 
 /* HEADER */
 
 .header{
-  height:70px;
+  height:72px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 18px;
+  padding:
+    env(safe-area-inset-top)
+    18px
+    0;
 }
 
 .brand{
@@ -62,42 +77,46 @@ button{
 }
 
 .logo{
-  width:40px;
-  height:40px;
-  border-radius:13px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
   font-weight:900;
-  font-size:15px;
-  background:linear-gradient(145deg,#183c78,#2f7dff);
-  box-shadow:0 8px 30px rgba(47,125,255,.25);
+  font-size:13px;
+  background:
+    linear-gradient(145deg,#163c7c,#2f7dff);
+  border:1px solid rgba(130,185,255,.2);
+  box-shadow:
+    0 10px 35px rgba(47,125,255,.3);
 }
 
-.brand-text strong{
+.brand strong{
   display:block;
   font-size:14px;
   letter-spacing:-.3px;
 }
 
-.brand-text span{
-  font-size:9px;
+.brand span{
+  display:block;
   color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
 }
 
-.header-btn{
-  width:40px;
-  height:40px;
-  border-radius:12px;
+.header-button{
+  width:41px;
+  height:41px;
   border:1px solid var(--line);
+  border-radius:13px;
+  color:#cad4e5;
   background:rgba(255,255,255,.03);
-  color:white;
 }
 
 /* HERO */
 
 .hero{
-  padding:50px 20px 25px;
+  padding:55px 19px 32px;
   text-align:center;
 }
 
@@ -105,350 +124,418 @@ button{
   display:inline-flex;
   align-items:center;
   gap:7px;
-  padding:7px 11px;
-  border:1px solid rgba(79,143,255,.18);
-  border-radius:999px;
+  border:1px solid rgba(90,158,255,.18);
   background:rgba(47,125,255,.06);
-  color:#82b8ff;
-  font-weight:700;
-  font-size:9px;
-  letter-spacing:1.3px;
+  border-radius:999px;
+  padding:7px 11px;
+  color:#80b8ff;
+  font-size:8px;
+  letter-spacing:1.4px;
+  font-weight:800;
 }
 
 .badge-dot{
   width:6px;
   height:6px;
-  border-radius:50%;
-  background:#4d92ff;
-  box-shadow:0 0 12px #4d92ff;
+  border-radius:999px;
+  background:#4a94ff;
+  box-shadow:0 0 12px #4a94ff;
 }
 
 .hero h1{
-  font-size:42px;
+  margin:20px auto 17px;
+  font-size:43px;
   line-height:.98;
-  letter-spacing:-2.2px;
-  margin:20px 0 17px;
+  letter-spacing:-2.4px;
+  max-width:470px;
 }
 
 .hero h1 span{
-  background:linear-gradient(100deg,#fff,#7cb8ff,#2f7dff);
+  background:linear-gradient(100deg,#fff,#87c1ff 56%,#347fff);
   -webkit-background-clip:text;
   color:transparent;
 }
 
 .hero p{
   color:var(--muted);
-  font-size:13px;
-  line-height:1.65;
-  max-width:390px;
-  margin:auto;
-}
-
-/* UPLOAD */
-
-.upload-section{
-  padding:10px 16px;
-}
-
-.upload-card{
-  border-radius:25px;
-  padding:30px 20px;
-  border:1px dashed rgba(101,169,255,.25);
-  background:
-    radial-gradient(circle at top,rgba(47,125,255,.11),transparent 50%),
-    linear-gradient(160deg,#0d1422,#080d16);
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-
-.upload-card::before{
-  content:"";
-  position:absolute;
-  width:150px;
-  height:150px;
-  top:-80px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#2f7dff;
-  filter:blur(90px);
-  opacity:.13;
-}
-
-.upload-icon{
-  margin:auto;
-  width:64px;
-  height:64px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:20px;
-  background:linear-gradient(145deg,#19305a,#101a2b);
-  border:1px solid rgba(104,171,255,.2);
-  font-size:27px;
-  box-shadow:0 14px 35px rgba(0,0,0,.25);
-}
-
-.upload-card h2{
-  font-size:18px;
-  margin-top:17px;
-}
-
-.upload-card p{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:6px;
-}
-
-.select-btn{
-  border:0;
-  margin-top:19px;
-  width:100%;
-  max-width:280px;
-  height:48px;
-  border-radius:14px;
-  font-weight:800;
-  background:white;
-  color:#09111f;
-}
-
-#fileInput{
-  display:none;
-}
-
-/* FILE */
-
-.file-card{
-  display:none;
-  margin-top:12px;
-  background:#0b111c;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:14px;
-  align-items:center;
-  gap:12px;
-  text-align:left;
-}
-
-.file-icon{
-  min-width:42px;
-  width:42px;
-  height:42px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:#13264a;
-  color:#72afff;
-}
-
-.file-data{
-  min-width:0;
-  flex:1;
-}
-
-.file-data strong{
-  display:block;
-  font-size:11px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.file-data span{
-  color:var(--muted);
-  font-size:9px;
-}
-
-.remove{
-  border:none;
-  background:none;
-  color:#69758a;
-  font-size:17px;
-}
-
-/* OPTIONS */
-
-.options{
-  padding:16px;
-}
-
-.section-label{
-  font-size:9px;
-  font-weight:800;
-  color:#687790;
-  letter-spacing:1.4px;
-  margin:10px 5px;
-}
-
-.panel{
-  border:1px solid var(--line);
-  background:linear-gradient(160deg,#0d1420,#090e17);
-  border-radius:22px;
-  overflow:hidden;
-}
-
-.option-row{
-  padding:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-}
-
-.option-row + .option-row{
-  border-top:1px solid var(--line);
-}
-
-.option-info strong{
-  display:block;
   font-size:12px;
+  line-height:1.7;
+  max-width:410px;
+  margin:auto;
 }
 
-.option-info span{
-  display:block;
-  margin-top:4px;
-  font-size:9px;
-  color:var(--muted);
-  line-height:1.4;
-}
+/* SEARCH */
 
-.segment{
-  display:flex;
-  border-radius:11px;
-  padding:3px;
-  background:#05080d;
-}
-
-.segment button{
-  border:0;
-  color:#6f7c91;
-  background:transparent;
-  padding:8px 10px;
-  border-radius:8px;
-  font-size:9px;
-  font-weight:800;
-}
-
-.segment button.active{
-  background:#182a4b;
-  color:#9ac6ff;
-}
-
-/* BUTTON */
-
-.analyze-wrap{
+.search-section{
   padding:0 16px;
 }
 
-.analyze-btn{
-  width:100%;
-  height:57px;
-  border:0;
-  border-radius:17px;
-  color:white;
-  font-size:13px;
-  font-weight:800;
-  background:linear-gradient(100deg,#1b58c5,#398dff);
-  box-shadow:0 14px 35px rgba(47,125,255,.22);
+.search-card{
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:25px;
+  padding:20px;
+  background:
+    radial-gradient(circle at 50% 0,rgba(47,125,255,.10),transparent 47%),
+    linear-gradient(150deg,#0d1421,#080c14);
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.23);
+  overflow:hidden;
+}
+
+.search-card::before{
+  content:"";
+  position:absolute;
+  top:-70px;
+  left:50%;
+  width:180px;
+  height:120px;
+  transform:translateX(-50%);
+  background:#347fff;
+  filter:blur(100px);
+  opacity:.12;
+}
+
+.search-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.search-label strong{
+  font-size:11px;
+}
+
+.search-label span{
+  font-size:8px;
+  color:#617089;
+  font-weight:700;
+  letter-spacing:.8px;
+}
+
+.input-wrap{
+  height:58px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  background:#060a11;
+  padding:0 14px;
   transition:.2s;
 }
 
-.analyze-btn:disabled{
+.input-wrap:focus-within{
+  border-color:rgba(72,143,255,.6);
+  box-shadow:0 0 0 4px rgba(47,125,255,.07);
+}
+
+.yt-icon{
+  min-width:34px;
+  width:34px;
+  height:25px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:#ff0033;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+}
+
+#youtubeInput{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  font-size:12px;
+}
+
+#youtubeInput::placeholder{
+  color:#536076;
+}
+
+.clear-btn{
+  display:none;
+  border:0;
+  background:transparent;
+  color:#67758c;
+  font-size:20px;
+}
+
+.analyze-button{
+  width:100%;
+  height:55px;
+  border:0;
+  border-radius:16px;
+  margin-top:12px;
+  font-size:12px;
+  font-weight:800;
+  color:white;
+  background:
+    linear-gradient(100deg,#1d5dcc,#398eff);
+  box-shadow:
+    0 14px 35px rgba(47,125,255,.23);
+}
+
+.analyze-button:disabled{
   opacity:.32;
   box-shadow:none;
 }
 
-.analyze-btn:not(:disabled):active{
-  transform:scale(.98);
-}
+/* ERROR */
 
-/* RESULT DEMO */
-
-.result{
+.message{
   display:none;
-  padding:25px 16px 0;
+  margin-top:11px;
+  padding:11px 13px;
+  border-radius:12px;
+  font-size:10px;
+  line-height:1.45;
 }
 
-.result-title{
+.message.error{
+  display:block;
+  background:rgba(255,70,90,.08);
+  border:1px solid rgba(255,90,100,.16);
+  color:#ff8b96;
+}
+
+.message.ok{
+  display:block;
+  background:rgba(72,220,149,.07);
+  border:1px solid rgba(72,220,149,.15);
+  color:#79e6b0;
+}
+
+/* PLAYER */
+
+.player-section{
+  display:none;
+  padding:18px 16px 0;
+}
+
+.section-head{
   display:flex;
-  align-items:end;
+  align-items:flex-end;
   justify-content:space-between;
-  margin-bottom:12px;
+  margin:0 4px 10px;
 }
 
-.result-title span{
-  font-size:9px;
-  color:#6d7b92;
-  font-weight:800;
-  letter-spacing:1.2px;
-}
-
-.result-title strong{
-  font-size:11px;
-  color:#79b4ff;
-}
-
-.music-info{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-
-.info{
-  background:#0c121d;
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:13px;
-}
-
-.info span{
-  display:block;
-  font-size:7px;
-  color:#65738a;
-  font-weight:800;
-  letter-spacing:1px;
-}
-
-.info strong{
-  display:block;
-  margin-top:6px;
-  font-size:16px;
-}
-
-.now-card{
-  margin-top:10px;
-  min-height:145px;
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:
-    radial-gradient(circle at center,rgba(47,125,255,.17),transparent 60%),
-    #090e17;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
-
-.now-card span{
-  color:#66758c;
+.section-head span{
+  color:#66758d;
   font-size:8px;
   font-weight:800;
   letter-spacing:1.4px;
 }
 
-.now-card strong{
-  font-size:48px;
-  letter-spacing:-2px;
-  margin:3px 0;
+.section-head small{
+  color:#5d6c84;
+  font-size:8px;
 }
 
-.now-card small{
-  color:#7e8ca5;
+.player-card{
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:23px;
+  background:#080d15;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.player-ratio{
+  position:relative;
+  aspect-ratio:16/9;
+  background:#020306;
+}
+
+#youtubePlayer,
+#youtubePlayer iframe{
+  width:100%;
+  height:100%;
+}
+
+.video-meta{
+  padding:15px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.video-icon{
+  min-width:42px;
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:#12264a;
+  color:#79b6ff;
+  font-size:18px;
+}
+
+.video-data{
+  min-width:0;
+  flex:1;
+}
+
+.video-data strong{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:11px;
+}
+
+.video-data span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
   font-size:9px;
 }
 
-/* MOBILE NAV */
+.time{
+  color:#8ebfff;
+  font-size:10px;
+  font-weight:800;
+}
+
+/* STATUS */
+
+.status-panel{
+  display:none;
+  padding:16px;
+}
+
+.status-card{
+  border:1px solid var(--line);
+  border-radius:21px;
+  padding:17px;
+  background:
+    linear-gradient(155deg,#0d1420,#080d15);
+}
+
+.status-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.status-top strong{
+  font-size:11px;
+}
+
+.status-badge{
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(47,125,255,.08);
+  border:1px solid rgba(77,151,255,.15);
+  color:#79b4ff;
+  font-size:8px;
+  font-weight:800;
+}
+
+.pipeline{
+  margin-top:15px;
+  display:grid;
+  gap:9px;
+}
+
+.pipeline-item{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-height:45px;
+  padding:9px 11px;
+  border-radius:13px;
+  background:#080c13;
+  border:1px solid rgba(255,255,255,.045);
+}
+
+.pipeline-dot{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#111b2c;
+  color:#587090;
+  font-size:10px;
+  font-weight:900;
+}
+
+.pipeline-item.done .pipeline-dot{
+  background:rgba(67,207,137,.10);
+  color:#60dfa3;
+}
+
+.pipeline-item strong{
+  display:block;
+  font-size:10px;
+}
+
+.pipeline-item span{
+  display:block;
+  margin-top:3px;
+  color:#657289;
+  font-size:8px;
+}
+
+/* FUTURE ANALYSIS */
+
+.analysis{
+  display:none;
+  padding:0 16px 20px;
+}
+
+.analysis-card{
+  border:1px solid var(--line);
+  border-radius:23px;
+  padding:18px;
+  background:
+    radial-gradient(circle at 50% 0,rgba(47,125,255,.12),transparent 50%),
+    #090e17;
+}
+
+.analysis-card h2{
+  font-size:16px;
+}
+
+.analysis-card p{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.55;
+  margin-top:5px;
+}
+
+.empty-analysis{
+  margin-top:15px;
+  min-height:130px;
+  border:1px dashed rgba(255,255,255,.08);
+  border-radius:17px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+}
+
+.empty-analysis b{
+  font-size:11px;
+}
+
+.empty-analysis span{
+  margin-top:6px;
+  max-width:270px;
+  color:#65738a;
+  font-size:9px;
+  line-height:1.5;
+}
+
+/* NAV */
 
 .nav{
   position:fixed;
@@ -456,44 +543,53 @@ button{
   left:50%;
   transform:translateX(-50%);
   width:100%;
-  max-width:520px;
-  height:72px;
+  max-width:540px;
+  min-height:76px;
+  padding-bottom:env(safe-area-inset-bottom);
   display:flex;
   align-items:center;
   justify-content:space-around;
-  background:rgba(6,9,15,.91);
-  backdrop-filter:blur(20px);
+  background:rgba(5,8,13,.92);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--line);
-  z-index:20;
+  z-index:50;
 }
 
 .nav-item{
-  color:#5e6b80;
-  font-size:9px;
+  min-width:65px;
   text-align:center;
-  min-width:60px;
+  color:#566379;
+  font-size:8px;
 }
 
-.nav-icon{
+.nav-item div{
   font-size:18px;
   margin-bottom:4px;
 }
 
 .nav-item.active{
-  color:#67a9ff;
+  color:#71adff;
 }
 
-@media(min-width:700px){
-  .app{
-    max-width:700px;
-  }
+/* DESKTOP */
 
-  .hero h1{
-    font-size:58px;
+@media(min-width:700px){
+
+  .app{
+    max-width:720px;
   }
 
   .nav{
-    max-width:700px;
+    max-width:720px;
+  }
+
+  .hero h1{
+    font-size:62px;
+  }
+
+  .hero p{
+    font-size:13px;
   }
 }
 </style>
@@ -506,15 +602,21 @@ button{
 <header class="header">
 
   <div class="brand">
-    <div class="logo">CA</div>
 
-    <div class="brand-text">
-      <strong>Chord AI</strong>
-      <span>Music Intelligence</span>
+    <div class="logo">
+      CA
     </div>
+
+    <div>
+      <strong>Chord AI</strong>
+      <span>YouTube Music Intelligence</span>
+    </div>
+
   </div>
 
-  <button class="header-btn">•••</button>
+  <button class="header-button">
+    •••
+  </button>
 
 </header>
 
@@ -523,129 +625,75 @@ button{
 
   <div class="badge">
     <div class="badge-dot"></div>
-    AI MUSIC ANALYSIS
+    YOUTUBE MUSIC ANALYSIS
   </div>
 
   <h1>
-    Ouça a música.<br>
+    Cole a música.<br>
     <span>Descubra como tocar.</span>
   </h1>
 
   <p>
-    Envie uma música e transforme o áudio em acordes,
-    notas e informações musicais para tocar diretamente
-    no teclado.
+    Cole o link de uma música do YouTube.
+    O Chord AI prepara o player e sincroniza
+    a experiência musical com a análise.
   </p>
 
 </section>
 
 
-<section class="upload-section">
+<section class="search-section">
 
-  <div class="upload-card">
+  <div class="search-card">
 
-    <div class="upload-icon">♫</div>
+    <div class="search-label">
 
-    <h2>Adicione sua música</h2>
+      <strong>
+        Link da música
+      </strong>
 
-    <p>
-      MP3, WAV, FLAC, M4A ou OGG
-    </p>
+      <span>
+        YOUTUBE
+      </span>
 
-    <button
-      class="select-btn"
-      onclick="fileInput.click()">
-      Escolher música
-    </button>
+    </div>
 
-    <input
-      id="fileInput"
-      type="file"
-      accept="audio/*"
-    >
 
-    <div class="file-card" id="fileCard">
+    <div class="input-wrap">
 
-      <div class="file-icon">♪</div>
-
-      <div class="file-data">
-        <strong id="fileName"></strong>
-        <span id="fileSize"></span>
+      <div class="yt-icon">
+        ▶
       </div>
 
+      <input
+        id="youtubeInput"
+        type="url"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="youtube.com/watch?v=..."
+      >
+
       <button
-        class="remove"
-        onclick="removeFile()">
+        class="clear-btn"
+        id="clearBtn">
         ×
       </button>
 
     </div>
 
-  </div>
 
-</section>
-
-
-<section class="options">
-
-  <div class="section-label">
-    CONFIGURAÇÃO DA ANÁLISE
-  </div>
-
-  <div class="panel">
-
-    <div class="option-row">
-
-      <div class="option-info">
-        <strong>Precisão</strong>
-        <span>
-          Escolha a profundidade da análise musical.
-        </span>
-      </div>
-
-      <div class="segment" id="mode">
-
-        <button
-          onclick="setMode(this)">
-          Rápida
-        </button>
-
-        <button
-          class="active"
-          onclick="setMode(this)">
-          Profunda
-        </button>
-
-      </div>
-
-    </div>
+    <button
+      class="analyze-button"
+      id="loadBtn"
+      disabled>
+      ✦ Carregar música
+    </button>
 
 
-    <div class="option-row">
-
-      <div class="option-info">
-        <strong>Acordes avançados</strong>
-
-        <span>
-          Detectar 7ª, 9ª, inversões e extensões.
-        </span>
-      </div>
-
-      <div class="segment">
-
-        <button
-          onclick="setToggle(this)">
-          Não
-        </button>
-
-        <button
-          class="active"
-          onclick="setToggle(this)">
-          Sim
-        </button>
-
-      </div>
-
+    <div
+      class="message"
+      id="message">
     </div>
 
   </div>
@@ -653,63 +701,182 @@ button{
 </section>
 
 
-<div class="analyze-wrap">
+<section
+  class="player-section"
+  id="playerSection">
 
-  <button
-    class="analyze-btn"
-    id="analyzeBtn"
-    disabled
-    onclick="fakeAnalyze()">
+  <div class="section-head">
 
-    ✦ Analisar música
+    <span>
+      MÚSICA
+    </span>
 
-  </button>
-
-</div>
-
-
-<section class="result" id="result">
-
-  <div class="result-title">
-
-    <span>RESULTADO</span>
-
-    <strong>
-      Análise concluída
-    </strong>
-
-  </div>
-
-
-  <div class="music-info">
-
-    <div class="info">
-      <span>TOM</span>
-      <strong>C</strong>
-    </div>
-
-    <div class="info">
-      <span>BPM</span>
-      <strong>124</strong>
-    </div>
-
-    <div class="info">
-      <span>COMPASSO</span>
-      <strong>4/4</strong>
-    </div>
-
-  </div>
-
-
-  <div class="now-card">
-
-    <span>ACORDE ATUAL</span>
-
-    <strong>Cmaj7</strong>
-
-    <small>
-      C · E · G · B
+    <small id="playerState">
+      Preparando
     </small>
+
+  </div>
+
+
+  <div class="player-card">
+
+    <div class="player-ratio">
+
+      <div id="youtubePlayer"></div>
+
+    </div>
+
+
+    <div class="video-meta">
+
+      <div class="video-icon">
+        ♫
+      </div>
+
+      <div class="video-data">
+
+        <strong id="videoName">
+          Vídeo do YouTube
+        </strong>
+
+        <span id="videoIdText">
+          —
+        </span>
+
+      </div>
+
+      <div class="time" id="timeText">
+        0:00
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section
+  class="status-panel"
+  id="statusPanel">
+
+  <div class="status-card">
+
+    <div class="status-top">
+
+      <strong>
+        Preparação da música
+      </strong>
+
+      <span class="status-badge">
+        ATIVO
+      </span>
+
+    </div>
+
+
+    <div class="pipeline">
+
+      <div
+        class="pipeline-item done">
+
+        <div class="pipeline-dot">
+          ✓
+        </div>
+
+        <div>
+
+          <strong>
+            Link reconhecido
+          </strong>
+
+          <span>
+            O ID do vídeo foi extraído.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="pipeline-item done">
+
+        <div class="pipeline-dot">
+          ✓
+        </div>
+
+        <div>
+
+          <strong>
+            Player conectado
+          </strong>
+
+          <span>
+            Reprodução oficial do YouTube.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="pipeline-item">
+
+        <div class="pipeline-dot">
+          3
+        </div>
+
+        <div>
+
+          <strong>
+            Análise musical
+          </strong>
+
+          <span>
+            Próximo módulo do projeto.
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section
+  class="analysis"
+  id="analysis">
+
+  <div class="analysis-card">
+
+    <h2>
+      Cifra da música
+    </h2>
+
+    <p>
+      Aqui aparecerão tonalidade,
+      acordes e sincronização.
+    </p>
+
+
+    <div class="empty-analysis">
+
+      <b>
+        Nenhum acorde inventado
+      </b>
+
+      <span>
+        A cifra só será exibida quando
+        o módulo real de análise estiver conectado.
+      </span>
+
+    </div>
 
   </div>
 
@@ -721,22 +888,22 @@ button{
 <nav class="nav">
 
   <div class="nav-item active">
-    <div class="nav-icon">⌂</div>
+    <div>⌂</div>
     Início
   </div>
 
   <div class="nav-item">
-    <div class="nav-icon">♫</div>
+    <div>♫</div>
     Músicas
   </div>
 
   <div class="nav-item">
-    <div class="nav-icon">⌨</div>
+    <div>⌨</div>
     Teclado
   </div>
 
   <div class="nav-item">
-    <div class="nav-icon">⚙</div>
+    <div>⚙</div>
     Ajustes
   </div>
 
@@ -745,135 +912,709 @@ button{
 
 <script>
 
-const fileInput =
-  document.getElementById("fileInput");
+/* ================================
+   ESTADO
+================================ */
 
-const fileCard =
-  document.getElementById("fileCard");
-
-const analyzeBtn =
-  document.getElementById("analyzeBtn");
-
-const result =
-  document.getElementById("result");
+let player = null;
+let playerReady = false;
+let pendingVideoId = null;
+let currentVideoId = null;
+let timer = null;
 
 
-fileInput.addEventListener(
-  "change",
-  function(){
+/* ================================
+   ELEMENTOS
+================================ */
 
-    const file =
-      this.files[0];
+const input =
+  document.getElementById("youtubeInput");
 
-    if(!file) return;
+const loadBtn =
+  document.getElementById("loadBtn");
 
-    document.getElementById(
-      "fileName"
-    ).textContent =
-      file.name;
+const clearBtn =
+  document.getElementById("clearBtn");
 
-    document.getElementById(
-      "fileSize"
-    ).textContent =
-      (
-        file.size /
-        1024 /
-        1024
-      ).toFixed(2)
-      +
-      " MB";
+const message =
+  document.getElementById("message");
 
-    fileCard.style.display =
-      "flex";
+const playerSection =
+  document.getElementById("playerSection");
 
-    analyzeBtn.disabled =
-      false;
+const statusPanel =
+  document.getElementById("statusPanel");
+
+const analysis =
+  document.getElementById("analysis");
+
+const timeText =
+  document.getElementById("timeText");
+
+const playerState =
+  document.getElementById("playerState");
+
+
+/* ================================
+   YOUTUBE API
+================================ */
+
+const apiScript =
+  document.createElement("script");
+
+apiScript.src =
+  "https://www.youtube.com/iframe_api";
+
+document.head.appendChild(
+  apiScript
+);
+
+
+/* ================================
+   EXTRAIR ID DO YOUTUBE
+================================ */
+
+function getYoutubeId(value){
+
+  if(!value)
+    return null;
+
+  value =
+    value.trim();
+
+
+  /*
+    Permite colar somente o ID
+  */
+
+  if(
+    /^[a-zA-Z0-9_-]{11}$/
+    .test(value)
+  ){
+
+    return value;
+
+  }
+
+
+  try{
+
+    const url =
+      new URL(value);
+
+    const host =
+      url.hostname
+        .replace("www.","")
+        .replace("m.","");
+
+
+    /*
+      youtu.be/VIDEO
+    */
+
+    if(
+      host === "youtu.be"
+    ){
+
+      const id =
+        url.pathname
+          .split("/")
+          .filter(Boolean)[0];
+
+      return validId(id);
+
+    }
+
+
+    /*
+      youtube.com
+    */
+
+    if(
+      host.endsWith(
+        "youtube.com"
+      )
+    ){
+
+      /*
+        /watch?v=
+      */
+
+      const queryId =
+        url.searchParams.get("v");
+
+      if(queryId)
+        return validId(queryId);
+
+
+      /*
+        /shorts/ID
+        /embed/ID
+        /live/ID
+      */
+
+      const parts =
+        url.pathname
+          .split("/")
+          .filter(Boolean);
+
+
+      const types = [
+        "shorts",
+        "embed",
+        "live"
+      ];
+
+
+      if(
+        types.includes(
+          parts[0]
+        )
+      ){
+
+        return validId(
+          parts[1]
+        );
+
+      }
+
+    }
+
+  }
+  catch(e){
+
+    return null;
+
+  }
+
+
+  return null;
+
+}
+
+
+function validId(id){
+
+  return (
+    /^[a-zA-Z0-9_-]{11}$/
+      .test(id || "")
+  )
+  ?
+  id
+  :
+  null;
+
+}
+
+
+/* ================================
+   INPUT
+================================ */
+
+input.addEventListener(
+  "input",
+  () => {
+
+    const value =
+      input.value.trim();
+
+    clearBtn.style.display =
+      value
+      ? "block"
+      : "none";
+
+
+    const id =
+      getYoutubeId(value);
+
+
+    loadBtn.disabled =
+      !id;
+
+
+    hideMessage();
 
   }
 );
 
 
-function removeFile(){
+input.addEventListener(
+  "keydown",
+  event => {
 
-  fileInput.value = "";
+    if(
+      event.key === "Enter"
+      &&
+      !loadBtn.disabled
+    ){
 
-  fileCard.style.display =
-    "none";
+      loadVideo();
 
-  analyzeBtn.disabled =
-    true;
+    }
 
-  result.style.display =
-    "none";
-
-}
+  }
+);
 
 
-function setMode(button){
+clearBtn.addEventListener(
+  "click",
+  () => {
 
-  const parent =
-    button.parentElement;
+    input.value = "";
 
-  parent
-    .querySelectorAll("button")
-    .forEach(
-      b =>
-      b.classList.remove(
-        "active"
-      )
+    clearBtn.style.display =
+      "none";
+
+    loadBtn.disabled =
+      true;
+
+    hideMessage();
+
+    input.focus();
+
+  }
+);
+
+
+loadBtn.addEventListener(
+  "click",
+  loadVideo
+);
+
+
+/* ================================
+   CARREGAR VÍDEO
+================================ */
+
+function loadVideo(){
+
+  const id =
+    getYoutubeId(
+      input.value
     );
 
-  button.classList.add(
-    "active"
+
+  if(!id){
+
+    showMessage(
+      "Não consegui reconhecer esse link do YouTube.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  currentVideoId =
+    id;
+
+
+  document.getElementById(
+    "videoIdText"
+  ).textContent =
+    "ID • " + id;
+
+
+  playerSection.style.display =
+    "block";
+
+  statusPanel.style.display =
+    "block";
+
+  analysis.style.display =
+    "block";
+
+
+  playerState.textContent =
+    "Carregando";
+
+
+  if(playerReady){
+
+    player.loadVideoById(
+      id
+    );
+
+  }
+  else{
+
+    pendingVideoId =
+      id;
+
+  }
+
+
+  showMessage(
+    "Música reconhecida. Preparando o player.",
+    "ok"
   );
 
-}
-
-
-function setToggle(button){
-
-  setMode(button);
-
-}
-
-
-function fakeAnalyze(){
-
-  analyzeBtn.innerHTML =
-    "◌ Analisando música...";
-
-  analyzeBtn.disabled =
-    true;
 
   setTimeout(
     () => {
 
-      analyzeBtn.innerHTML =
-        "✓ Análise concluída";
-
-      result.style.display =
-        "block";
-
-      result.scrollIntoView({
-        behavior:"smooth"
-      });
-
-      setTimeout(
-        () => {
-
-          analyzeBtn.disabled =
-            false;
-
-          analyzeBtn.innerHTML =
-            "✦ Analisar novamente";
-
-        },
-        1200
-      );
+      playerSection
+        .scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
 
     },
-    1800
+    150
   );
+
+}
+
+
+/* ================================
+   YOUTUBE CALLBACK
+================================ */
+
+window.onYouTubeIframeAPIReady =
+function(){
+
+  player =
+    new YT.Player(
+      "youtubePlayer",
+      {
+
+        width:"100%",
+
+        height:"100%",
+
+        playerVars:{
+
+          playsinline:1,
+
+          rel:0,
+
+          modestbranding:1
+
+        },
+
+        events:{
+
+          onReady:
+            onPlayerReady,
+
+          onStateChange:
+            onPlayerStateChange,
+
+          onError:
+            onPlayerError
+
+        }
+
+      }
+    );
+
+};
+
+
+/* ================================
+   PLAYER PRONTO
+================================ */
+
+function onPlayerReady(){
+
+  playerReady =
+    true;
+
+
+  if(pendingVideoId){
+
+    player.loadVideoById(
+      pendingVideoId
+    );
+
+    pendingVideoId =
+      null;
+
+  }
+
+}
+
+
+/* ================================
+   ESTADO DO PLAYER
+================================ */
+
+function onPlayerStateChange(event){
+
+  switch(
+    event.data
+  ){
+
+    case YT.PlayerState.PLAYING:
+
+      playerState.textContent =
+        "Reproduzindo";
+
+      startTimer();
+
+      updateVideoData();
+
+      break;
+
+
+    case YT.PlayerState.PAUSED:
+
+      playerState.textContent =
+        "Pausado";
+
+      stopTimer();
+
+      updateTime();
+
+      break;
+
+
+    case YT.PlayerState.ENDED:
+
+      playerState.textContent =
+        "Finalizado";
+
+      stopTimer();
+
+      updateTime();
+
+      break;
+
+
+    case YT.PlayerState.BUFFERING:
+
+      playerState.textContent =
+        "Carregando";
+
+      break;
+
+
+    case YT.PlayerState.CUED:
+
+      playerState.textContent =
+        "Pronto";
+
+      updateVideoData();
+
+      break;
+
+  }
+
+}
+
+
+/* ================================
+   ERRO
+================================ */
+
+function onPlayerError(){
+
+  playerState.textContent =
+    "Erro";
+
+
+  showMessage(
+    "Esse vídeo não pôde ser reproduzido aqui. Alguns vídeos bloqueiam reprodução incorporada.",
+    "error"
+  );
+
+}
+
+
+/* ================================
+   TEMPO
+================================ */
+
+function startTimer(){
+
+  stopTimer();
+
+
+  timer =
+    setInterval(
+      updateTime,
+      250
+    );
+
+}
+
+
+function stopTimer(){
+
+  if(timer){
+
+    clearInterval(
+      timer
+    );
+
+    timer =
+      null;
+
+  }
+
+}
+
+
+function updateTime(){
+
+  if(
+    !player
+    ||
+    typeof player.getCurrentTime
+      !== "function"
+  )
+    return;
+
+
+  try{
+
+    const current =
+      player.getCurrentTime() || 0;
+
+    const duration =
+      player.getDuration() || 0;
+
+
+    timeText.textContent =
+      formatTime(current)
+      +
+      (
+        duration
+        ?
+        " / " + formatTime(duration)
+        :
+        ""
+      );
+
+  }
+  catch(e){}
+
+}
+
+
+function formatTime(seconds){
+
+  seconds =
+    Math.max(
+      0,
+      Math.floor(seconds || 0)
+    );
+
+
+  const hours =
+    Math.floor(
+      seconds / 3600
+    );
+
+
+  const minutes =
+    Math.floor(
+      (
+        seconds % 3600
+      ) / 60
+    );
+
+
+  const secs =
+    seconds % 60;
+
+
+  if(hours){
+
+    return (
+      hours
+      +
+      ":"
+      +
+      String(minutes)
+        .padStart(2,"0")
+      +
+      ":"
+      +
+      String(secs)
+        .padStart(2,"0")
+    );
+
+  }
+
+
+  return (
+    minutes
+    +
+    ":"
+    +
+    String(secs)
+      .padStart(2,"0")
+  );
+
+}
+
+
+/* ================================
+   DADOS DO VÍDEO
+================================ */
+
+function updateVideoData(){
+
+  if(
+    !player
+    ||
+    typeof player.getVideoData
+      !== "function"
+  )
+    return;
+
+
+  try{
+
+    const data =
+      player.getVideoData();
+
+
+    if(
+      data
+      &&
+      data.title
+    ){
+
+      document.getElementById(
+        "videoName"
+      ).textContent =
+        data.title;
+
+    }
+
+  }
+  catch(e){}
+
+}
+
+
+/* ================================
+   MENSAGENS
+================================ */
+
+function showMessage(
+  text,
+  type
+){
+
+  message.textContent =
+    text;
+
+  message.className =
+    "message " + type;
+
+}
+
+
+function hideMessage(){
+
+  message.textContent = "";
+
+  message.className =
+    "message";
 
 }
 
