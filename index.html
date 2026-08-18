@@ -811,9 +811,6 @@ button{
   </div>
 
 
-  <div class="demo-badge">
-    ⚠️ Os acordes abaixo são apenas dados de demonstração para testar a sincronização. O próximo módulo substituirá isso por dados reais.
-  </div>
 
 
   <div class="current-card">
@@ -952,13 +949,7 @@ button{
    DADOS DE DEMONSTRAÇÃO
 ================================ */
 
-const chordAnalysis = {
-
-  key:"C",
-
-  bpm:120,
-
-  chords:[
+let chordAnalysis = null;
 
     {
       start:0,
@@ -1227,13 +1218,12 @@ loadBtn.addEventListener(
    CARREGAR MÚSICA
 ================================ */
 
-function loadMusic(){
+async function loadMusic(){
 
   const id =
     extractYoutubeId(
       input.value
     );
-
 
   if(!id)
     return;
@@ -1255,19 +1245,189 @@ function loadMusic(){
   document.getElementById(
     "keyText"
   ).textContent =
-    chordAnalysis.key;
+    "—";
 
 
   document.getElementById(
     "bpmText"
   ).textContent =
-    chordAnalysis.bpm;
+    "—";
 
 
   document.getElementById(
     "chordCount"
   ).textContent =
-    chordAnalysis.chords.length;
+    "—";
+
+
+  document.getElementById(
+    "currentChord"
+  ).textContent =
+    "…";
+
+
+  document.getElementById(
+    "currentNotes"
+  ).textContent =
+    "Buscando análise musical";
+
+
+  document.getElementById(
+    "nextChord"
+  ).textContent =
+    "—";
+
+
+  if(playerReady){
+
+    player.cueVideoById(id);
+
+  }
+  else{
+
+    pendingVideoId =
+      id;
+
+  }
+
+
+  setTimeout(
+    () => {
+
+      playerSection.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+
+    },
+    100
+  );
+
+
+  await requestAnalysis(id);
+
+}
+  async function requestAnalysis(videoId){
+
+  try{
+
+    const response =
+      await fetch(
+        "https://SUA-API-AQUI.com/analyze",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+            videoId:videoId
+          })
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Falha na análise"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !data
+      ||
+      !Array.isArray(
+        data.chords
+      )
+    ){
+
+      throw new Error(
+        "Resposta inválida da API"
+      );
+
+    }
+
+
+    chordAnalysis =
+      data;
+
+
+    document.getElementById(
+      "keyText"
+    ).textContent =
+      chordAnalysis.key || "—";
+
+
+    document.getElementById(
+      "bpmText"
+    ).textContent =
+      chordAnalysis.bpm || "—";
+
+
+    document.getElementById(
+      "chordCount"
+    ).textContent =
+      chordAnalysis.chords.length;
+
+
+    activeChordIndex =
+      -1;
+
+
+    buildTimeline();
+
+    buildKeyboard();
+
+
+    document.getElementById(
+      "currentChord"
+    ).textContent =
+      "Pronto";
+
+
+    document.getElementById(
+      "currentNotes"
+    ).textContent =
+      "Dê play para acompanhar";
+
+
+  }
+  catch(error){
+
+    console.error(
+      error
+    );
+
+
+    document.getElementById(
+      "currentChord"
+    ).textContent =
+      "Erro";
+
+
+    document.getElementById(
+      "currentNotes"
+    ).textContent =
+      "Não foi possível obter a cifra";
+
+
+    document.getElementById(
+      "nextChord"
+    ).textContent =
+      "—";
+
+  }
+
+}
 
 
   buildTimeline();
@@ -1504,6 +1664,20 @@ function updatePlayback(){
 
 function updateChord(time){
 
+  if(
+  !chordAnalysis
+  ||
+  !Array.isArray(
+    chordAnalysis.chords
+  )
+  ||
+  chordAnalysis.chords.length === 0
+){
+
+  return;
+
+}  
+
   let index =
     chordAnalysis.chords
       .findIndex(
@@ -1613,6 +1787,18 @@ function updateChord(time){
 ================================ */
 
 function buildTimeline(){
+
+  if(
+  !chordAnalysis
+  ||
+  !Array.isArray(
+    chordAnalysis.chords
+  )
+){
+
+  return;
+
+}
 
   const timeline =
     document.getElementById(
