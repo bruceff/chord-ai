@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Chord AI — Audio Test</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  background: #07090d;
+  color: #ffffff;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  padding: 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 650px;
+  margin: auto;
+}
+
+h1 {
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #8d96a5;
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #10141b;
+
+  border:
+    1px solid #252c37;
+
+  border-radius: 18px;
+
+  padding: 20px;
+
+  margin-bottom: 20px;
+}
+
+input[type="file"] {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+button {
+  width: 100%;
+
+  border: 0;
+
+  border-radius: 14px;
+
+  padding: 16px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  background: #3578ff;
+  color: white;
+
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .45;
+}
+
+.status {
+  margin-top: 18px;
+  color: #aab2c0;
+}
+
+.error {
+  color: #ff6767;
+}
+
+.success {
+  color: #6be89b;
+}
+
+.chord {
+  padding: 14px 0;
+
+  border-bottom:
+    1px solid #242a34;
+}
+
+.chord:last-child {
+  border-bottom: 0;
+}
+
+.chord-name {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.time {
+  color: #8993a3;
+  margin-top: 4px;
+}
+
+.confidence {
+  color: #657083;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  font-size: 12px;
+
+  color: #9ca6b7;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Chord AI</h1>
+
+  <p class="subtitle">
+    Teste do Audio Engine
+  </p>
+
+
+  <div class="card">
+
+    <input
+      id="file"
+      type="file"
+      accept=".wav,audio/wav,audio/x-wav"
+    >
+
+    <button id="analyze">
+      Analisar WAV
+    </button>
+
+    <div
+      id="status"
+      class="status"
+    >
+      Selecione um arquivo WAV.
+    </div>
+
+  </div>
+
+
+  <div
+    id="result"
+    class="card"
+    style="display:none"
+  >
+
+    <h2>Resultado</h2>
+
+    <div id="audioInfo"></div>
+
+    <div id="chords"></div>
+
+  </div>
+
+
+  <div
+    id="debugCard"
+    class="card"
+    style="display:none"
+  >
+
+    <h2>Resposta da API</h2>
+
+    <pre id="debug"></pre>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const API =
+  "https://chord-ai-api.onrender.com";
+
+
+const fileInput =
+  document.getElementById("file");
+
+const button =
+  document.getElementById("analyze");
+
+const status =
+  document.getElementById("status");
+
+const result =
+  document.getElementById("result");
+
+const audioInfo =
+  document.getElementById("audioInfo");
+
+const chordsContainer =
+  document.getElementById("chords");
+
+const debugCard =
+  document.getElementById("debugCard");
+
+const debug =
+  document.getElementById("debug");
+
+
+button.addEventListener(
+  "click",
+  async () => {
+
+    const file =
+      fileInput.files[0];
+
+
+    if(!file){
+
+      status.className =
+        "status error";
+
+      status.textContent =
+        "Escolha um arquivo WAV.";
+
+      return;
+
+    }
+
+
+    button.disabled =
+      true;
+
+
+    status.className =
+      "status";
+
+    status.textContent =
+      "Enviando e analisando áudio...";
+
+
+    result.style.display =
+      "none";
+
+    debugCard.style.display =
+      "none";
+
+
+    try{
+
+      const response =
+        await fetch(
+          API + "/analyze-wav",
+          {
+
+            method:
+              "POST",
+
+            headers:{
+
+              "Content-Type":
+                "audio/wav"
+
+            },
+
+            body:
+              file
+
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      debug.textContent =
+        JSON.stringify(
+          data,
+          null,
+          2
+        );
+
+
+      debugCard.style.display =
+        "block";
+
+
+      if(
+        !response.ok
+        ||
+        !data.success
+      ){
+
+        throw new Error(
+          data.message
+          ||
+          data.error
+          ||
+          "Falha na análise"
+        );
+
+      }
+
+
+      status.className =
+        "status success";
+
+      status.textContent =
+        "Análise concluída.";
+
+
+      audioInfo.innerHTML =
+        `
+          <p>
+            <strong>Duração:</strong>
+            ${data.audio.duration}s
+          </p>
+
+          <p>
+            <strong>Sample rate:</strong>
+            ${data.audio.sampleRate} Hz
+          </p>
+
+          <p>
+            <strong>Frames:</strong>
+            ${data.audio.frameCount}
+          </p>
+
+          <p>
+            <strong>Acordes detectados:</strong>
+            ${data.chordCount}
+          </p>
+        `;
+
+
+      chordsContainer.innerHTML =
+        "";
+
+
+      if(
+        !data.chords
+        ||
+        data.chords.length === 0
+      ){
+
+        chordsContainer.innerHTML =
+          `
+            <p>
+              Nenhum acorde detectado.
+            </p>
+          `;
+
+      }
+
+      else{
+
+        for(
+          const chord
+          of data.chords
+        ){
+
+          const element =
+            document.createElement(
+              "div"
+            );
+
+
+          element.className =
+            "chord";
+
+
+          element.innerHTML =
+            `
+              <div class="chord-name">
+                ${chord.chord}
+              </div>
+
+              <div class="time">
+                ${chord.start.toFixed(2)}s
+                →
+                ${chord.end.toFixed(2)}s
+              </div>
+
+              <div class="confidence">
+                Confiança:
+                ${Math.round(
+                  chord.confidence * 100
+                )}%
+              </div>
+            `;
+
+
+          chordsContainer.appendChild(
+            element
+          );
+
+        }
+
+      }
+
+
+      result.style.display =
+        "block";
+
+    }
+
+    catch(error){
+
+      status.className =
+        "status error";
+
+      status.textContent =
+        error.message;
+
+    }
+
+    finally{
+
+      button.disabled =
+        false;
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
