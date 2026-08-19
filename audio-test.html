@@ -34,7 +34,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 650px;
+  max-width: 680px;
   margin: auto;
 }
 
@@ -136,8 +136,10 @@ button:disabled {
 }
 
 .preview-status {
+  min-height: 20px;
+
   margin-top: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 
   font-size: 13px;
 
@@ -146,26 +148,114 @@ button:disabled {
 
 
 /* =========================================
+   HUMAN REVIEW
+========================================= */
+
+.review-bar {
+  display: none;
+
+  margin: 14px 0 10px;
+
+  padding: 13px;
+
+  background: #161c25;
+
+  border:
+    1px solid #2a3442;
+
+  border-radius: 12px;
+}
+
+.review-bar.visible {
+  display: block;
+}
+
+.review-title {
+  font-size: 13px;
+  font-weight: 800;
+
+  margin-bottom: 8px;
+}
+
+.review-info {
+  font-size: 12px;
+
+  color: #9ca6b7;
+
+  margin-bottom: 10px;
+}
+
+.reset-review {
+  background: #232a35;
+
+  padding: 11px;
+
+  font-size: 13px;
+
+  border-radius: 10px;
+}
+
+
+/* =========================================
    ACORDES
 ========================================= */
 
 .chord {
-  padding: 16px 0;
+  position: relative;
+
+  padding: 17px 0;
 
   border-bottom:
     1px solid #242a34;
-
-  transition:
-    opacity .2s ease;
 }
 
 .chord:last-child {
   border-bottom: 0;
 }
 
+.chord.reviewed {
+  padding-left: 12px;
+
+  border-left:
+    3px solid #6be89b;
+}
+
+.chord-name-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
 .chord-name {
   font-size: 22px;
   font-weight: 800;
+}
+
+.review-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 4px 7px;
+
+  border-radius: 7px;
+
+  background: #173525;
+
+  border:
+    1px solid #285d3f;
+
+  color: #78e7a3;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: .04em;
 }
 
 .time {
@@ -177,6 +267,19 @@ button:disabled {
   color: #657083;
   font-size: 13px;
   margin-top: 4px;
+}
+
+.review-detail {
+  margin-top: 7px;
+
+  color: #9ca6b7;
+
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.rejected-list {
+  color: #cf8995;
 }
 
 .chord-actions {
@@ -207,28 +310,29 @@ button:disabled {
 
 .chord-copy.copied {
   background: #173525;
+
   border-color: #285d3f;
 
   color: #78e7a3;
 }
 
-.chord-wrong {
+.chord-retry {
   background: #332027;
 
   border:
     1px solid #693540;
 }
 
-.chord-wrong.active {
-  background: #672b39;
+.chord-retry:hover {
+  background: #472632;
 }
 
-.chord.rejected {
-  opacity: .62;
-}
+.chord-retry.no-alternative {
+  background: #20242b;
 
-.chord.rejected .chord-name {
-  text-decoration: line-through;
+  border-color: #30343b;
+
+  color: #777f8c;
 }
 
 
@@ -362,6 +466,35 @@ pre {
     ></div>
 
 
+    <!-- =================================
+         REVISÃO HUMANA
+    ================================== -->
+
+    <div
+      id="reviewBar"
+      class="review-bar"
+    >
+
+      <div class="review-title">
+        Revisão humana ativa
+      </div>
+
+      <div
+        id="reviewInfo"
+        class="review-info"
+      ></div>
+
+      <button
+        id="resetReview"
+        class="reset-review"
+        type="button"
+      >
+        Desfazer todas as correções
+      </button>
+
+    </div>
+
+
     <div id="chords"></div>
 
   </div>
@@ -377,7 +510,7 @@ pre {
     style="display:none"
   >
 
-    <h2>Resposta da API</h2>
+    <h2>Resposta original da API</h2>
 
     <pre id="debug"></pre>
 
@@ -401,28 +534,44 @@ const API =
 ========================================= */
 
 const fileInput =
-  document.getElementById("file");
+  document.getElementById(
+    "file"
+  );
 
 const analyzeButton =
-  document.getElementById("analyze");
+  document.getElementById(
+    "analyze"
+  );
 
 const status =
-  document.getElementById("status");
+  document.getElementById(
+    "status"
+  );
 
 const result =
-  document.getElementById("result");
+  document.getElementById(
+    "result"
+  );
 
 const audioInfo =
-  document.getElementById("audioInfo");
+  document.getElementById(
+    "audioInfo"
+  );
 
 const chordsContainer =
-  document.getElementById("chords");
+  document.getElementById(
+    "chords"
+  );
 
 const debugCard =
-  document.getElementById("debugCard");
+  document.getElementById(
+    "debugCard"
+  );
 
 const debug =
-  document.getElementById("debug");
+  document.getElementById(
+    "debug"
+  );
 
 const playPreviewButton =
   document.getElementById(
@@ -439,6 +588,21 @@ const previewStatus =
     "previewStatus"
   );
 
+const reviewBar =
+  document.getElementById(
+    "reviewBar"
+  );
+
+const reviewInfo =
+  document.getElementById(
+    "reviewInfo"
+  );
+
+const resetReviewButton =
+  document.getElementById(
+    "resetReview"
+  );
+
 
 /* =========================================
    ESTADO
@@ -447,15 +611,44 @@ const previewStatus =
 let lastApiResponse =
   null;
 
-let lastAnalysis =
+
+/*
+  Guarda a timeline original exatamente
+  como a API entregou.
+*/
+let originalAnalysis =
   null;
 
-let rejectedRegions =
-  [];
+
+/*
+  Timeline atualmente usada na tela e
+  no Synth Preview.
+
+  Esta pode sofrer revisão humana.
+*/
+let workingAnalysis =
+  null;
+
+
+/*
+  Estrutura:
+
+  Map(
+    regionKey,
+    {
+      start,
+      end,
+      rejected: Set([...]),
+      history: [...]
+    }
+  )
+*/
+let humanReview =
+  new Map();
 
 
 /* =========================================
-   SYNTH STATE
+   SYNTH
 ========================================= */
 
 let previewContext =
@@ -475,19 +668,126 @@ let previewTimer =
 const NOTE_TO_SEMITONE = {
 
   C:0,
+
   "C#":1,
+
   D:2,
+
   "D#":3,
+
   E:4,
+
   F:5,
+
   "F#":6,
+
   G:7,
+
   "G#":8,
+
   A:9,
+
   "A#":10,
+
   B:11
 
 };
+
+
+/* =========================================
+   CLONE
+========================================= */
+
+function deepClone(
+  value
+){
+
+  if(
+    value === null
+    ||
+    value === undefined
+  ){
+
+    return value;
+
+  }
+
+
+  if(
+    typeof structuredClone ===
+    "function"
+  ){
+
+    return structuredClone(
+      value
+    );
+
+  }
+
+
+  return JSON.parse(
+    JSON.stringify(
+      value
+    )
+  );
+
+}
+
+
+/* =========================================
+   CHAVE DA REGIÃO
+========================================= */
+
+function regionKey(
+  chord
+){
+
+  return (
+    Number(
+      chord.start
+    ).toFixed(6)
+    +
+    "::"
+    +
+    Number(
+      chord.end
+    ).toFixed(6)
+  );
+
+}
+
+
+/* =========================================
+   BASE CHORD
+========================================= */
+
+function getBaseChord(
+  chord
+){
+
+  if(
+    chord.baseChord
+  ){
+
+    return chord.baseChord;
+
+  }
+
+
+  if(
+    typeof chord.chord ===
+    "string"
+  ){
+
+    return chord.chord
+      .split("/")[0];
+
+  }
+
+
+  return null;
+
+}
 
 
 /* =========================================
@@ -553,6 +853,7 @@ function stopPreview(){
     clearTimeout(
       previewTimer
     );
+
 
     previewTimer =
       null;
@@ -722,13 +1023,13 @@ function scheduleTone(
 async function playPreview(){
 
   if(
-    !lastAnalysis
+    !workingAnalysis
     ||
     !Array.isArray(
-      lastAnalysis.chords
+      workingAnalysis.chords
     )
     ||
-    lastAnalysis.chords.length === 0
+    workingAnalysis.chords.length === 0
   ){
 
     previewStatus.textContent =
@@ -748,7 +1049,9 @@ async function playPreview(){
     window.webkitAudioContext;
 
 
-  if(!AudioContextClass){
+  if(
+    !AudioContextClass
+  ){
 
     previewStatus.textContent =
       "Web Audio API não suportada.";
@@ -777,7 +1080,7 @@ async function playPreview(){
 
   const timelineStart =
     Number(
-      lastAnalysis.chords[0].start
+      workingAnalysis.chords[0].start
     );
 
 
@@ -787,7 +1090,7 @@ async function playPreview(){
 
   for(
     const chord
-    of lastAnalysis.chords
+    of workingAnalysis.chords
   ){
 
     const chordStart =
@@ -851,12 +1154,11 @@ async function playPreview(){
       [];
 
 
-    /* =====================================
-       VOZES DO ACORDE
-    ===================================== */
-
     notes.forEach(
-      (note,index) => {
+      (
+        note,
+        index
+      ) => {
 
         let octave =
           4;
@@ -887,18 +1189,13 @@ async function playPreview(){
     );
 
 
-    /* =====================================
-       BAIXO
-    ===================================== */
-
     if(
       chord.bassNote
       &&
       NOTE_TO_SEMITONE[
         chord.bassNote
       ]
-      !==
-      undefined
+      !== undefined
     ){
 
       scheduleTone(
@@ -918,7 +1215,11 @@ async function playPreview(){
 
 
   previewStatus.textContent =
-    "Tocando reconstrução...";
+    humanReview.size > 0
+    ?
+    "Tocando reconstrução revisada..."
+    :
+    "Tocando reconstrução original...";
 
 
   const totalDuration =
@@ -957,7 +1258,7 @@ async function playPreview(){
 
 
 /* =========================================
-   BOTÕES PREVIEW
+   PREVIEW BUTTONS
 ========================================= */
 
 playPreviewButton.addEventListener(
@@ -973,7 +1274,7 @@ stopPreviewButton.addEventListener(
 
 
 /* =========================================
-   COPIAR TEXTO
+   COPY
 ========================================= */
 
 async function copyText(
@@ -1036,7 +1337,9 @@ async function copyText(
   );
 
 
-  if(!success){
+  if(
+    !success
+  ){
 
     throw new Error(
       "Não foi possível copiar."
@@ -1048,7 +1351,7 @@ async function copyText(
 
 
 /* =========================================
-   COMPACTAR CANDIDATO
+   COMPACT CANDIDATE
 ========================================= */
 
 function compactCandidate(
@@ -1142,7 +1445,7 @@ function compactCandidate(
 
 
 /* =========================================
-   DEBUG COMPACTO DO ACORDE
+   DEBUG COMPACTO
 ========================================= */
 
 function buildChordDiagnostic(
@@ -1161,13 +1464,28 @@ function buildChordDiagnostic(
     {};
 
 
+  const key =
+    regionKey(
+      chord
+    );
+
+
+  const review =
+    humanReview.get(
+      key
+    );
+
+
   const topCandidates =
     Array.isArray(
       diagnostics.topCandidates
     )
     ?
     diagnostics.topCandidates
-      .slice(0,5)
+      .slice(
+        0,
+        5
+      )
       .map(
         compactCandidate
       )
@@ -1181,7 +1499,10 @@ function buildChordDiagnostic(
     )
     ?
     diagnostics.bassRootCandidates
-      .slice(0,5)
+      .slice(
+        0,
+        5
+      )
       .map(
         compactCandidate
       )
@@ -1194,19 +1515,13 @@ function buildChordDiagnostic(
     segment:{
 
       start:
-        chord.start
-        ??
-        null,
+        chord.start,
 
       end:
-        chord.end
-        ??
-        null,
+        chord.end,
 
       chord:
-        chord.chord
-        ??
-        null,
+        chord.chord,
 
       baseChord:
         chord.baseChord
@@ -1224,6 +1539,24 @@ function buildChordDiagnostic(
         null
 
     },
+
+
+    humanReview:
+      review
+      ?
+      {
+
+        rejected:
+          [
+            ...review.rejected
+          ],
+
+        history:
+          review.history
+
+      }
+      :
+      null,
 
 
     decision:{
@@ -1264,11 +1597,6 @@ function buildChordDiagnostic(
         ??
         null,
 
-      expectedTemplateCount:
-        search.expectedTemplateCount
-        ??
-        null,
-
       originalBase:
         search.originalBase
         ??
@@ -1276,16 +1604,6 @@ function buildChordDiagnostic(
 
       originalDetectorRank:
         search.originalDetectorRank
-        ??
-        null,
-
-      originalInTop256:
-        search.originalInTop256
-        ??
-        null,
-
-      originalInDecisionShortlist:
-        search.originalInDecisionShortlist
         ??
         null,
 
@@ -1324,7 +1642,7 @@ function buildChordDiagnostic(
 
 
 /* =========================================
-   COPIAR DEBUG DO ACORDE
+   COPY DEBUG
 ========================================= */
 
 async function copyChordDebug(
@@ -1401,57 +1719,623 @@ async function copyChordDebug(
 
 
 /* =========================================
-   MARCAR / DESMARCAR COMO ERRADO
+   NORMALIZAR NOTAS
 ========================================= */
 
-function toggleRejectedChord(
-  chord,
-  element,
-  wrongButton
+function candidateNotes(
+  candidate
 ){
 
-  const existingIndex =
-    rejectedRegions.findIndex(
-      item =>
-        item.start ===
-        chord.start
-        &&
-        item.end ===
-        chord.end
-        &&
-        item.chord ===
-        chord.chord
+  if(
+    Array.isArray(
+      candidate.notes
+    )
+  ){
+
+    return candidate.notes;
+  }
+
+
+  return [];
+
+}
+
+
+/* =========================================
+   FORMATAR SLASH LOCALMENTE
+
+   Apenas para apresentação da alternativa.
+
+   Não altera a lógica global da engine.
+========================================= */
+
+function formatCandidateChord(
+  candidate,
+  bassNote
+){
+
+  if(
+    !candidate
+    ||
+    !candidate.chord
+  ){
+
+    return null;
+
+  }
+
+
+  const base =
+    candidate.chord;
+
+
+  const root =
+    candidate.root
+    ??
+    null;
+
+
+  const notes =
+    candidateNotes(
+      candidate
     );
 
 
   if(
-    existingIndex >= 0
+    !bassNote
+    ||
+    bassNote === root
   ){
 
-    rejectedRegions.splice(
-      existingIndex,
-      1
+    return base;
+
+  }
+
+
+  if(
+    notes.includes(
+      bassNote
+    )
+  ){
+
+    return (
+      base
+      +
+      "/"
+      +
+      bassNote
+    );
+
+  }
+
+
+  return base;
+
+}
+
+
+/* =========================================
+   CANDIDATOS DISPONÍVEIS
+
+   Importante:
+
+   - se a decisão atual veio de
+     contradiction-rescue, priorizamos
+     candidatos cuja root coincide com
+     o baixo;
+
+   - caso contrário usamos o ranking geral.
+
+   Isso preserva o tipo de raciocínio que
+   levou à decisão atual.
+========================================= */
+
+function getAlternativeCandidates(
+  chord
+){
+
+  const diagnostics =
+    chord.reconstructionDiagnostics
+    ||
+    {};
+
+
+  const top =
+    Array.isArray(
+      diagnostics.topCandidates
+    )
+    ?
+    diagnostics.topCandidates
+    :
+    [];
+
+
+  const bassCandidates =
+    Array.isArray(
+      diagnostics.bassRootCandidates
+    )
+    ?
+    diagnostics.bassRootCandidates
+    :
+    [];
+
+
+  const contradictionMode =
+    chord.reconstructionReason ===
+    "contradiction-rescue";
+
+
+  /*
+    Também usamos contradiction mode quando
+    existe bass forte e o acorde foi alterado
+    manualmente a partir de uma decisão
+    contradiction-rescue anterior.
+  */
+
+  const humanSourceReason =
+    chord.humanReviewSourceReason
+    ??
+    null;
+
+
+  const preferBassRoot =
+    contradictionMode
+    ||
+    humanSourceReason ===
+    "contradiction-rescue";
+
+
+  const primary =
+    preferBassRoot
+    ?
+    bassCandidates
+    :
+    top;
+
+
+  const secondary =
+    preferBassRoot
+    ?
+    top
+    :
+    bassCandidates;
+
+
+  const map =
+    new Map();
+
+
+  for(
+    const candidate
+    of [
+      ...primary,
+      ...secondary
+    ]
+  ){
+
+    if(
+      !candidate
+      ||
+      !candidate.chord
+    ){
+
+      continue;
+
+    }
+
+
+    if(
+      !map.has(
+        candidate.chord
+      )
+    ){
+
+      map.set(
+        candidate.chord,
+        candidate
+      );
+
+    }
+
+  }
+
+
+  const all =
+    [
+      ...map.values()
+    ];
+
+
+  /*
+    Em contradiction mode, os candidatos
+    compatíveis com o baixo realmente
+    recebem prioridade.
+
+    Dentro de cada grupo mantemos o
+    finalScore do Validator.
+  */
+
+  all.sort(
+    (
+      a,
+      b
+    ) => {
+
+      if(
+        preferBassRoot
+      ){
+
+        const aIsBassRoot =
+          a.root ===
+          chord.bassNote;
+
+
+        const bIsBassRoot =
+          b.root ===
+          chord.bassNote;
+
+
+        if(
+          aIsBassRoot
+          !==
+          bIsBassRoot
+        ){
+
+          return aIsBassRoot
+            ?
+            -1
+            :
+            1;
+
+        }
+
+      }
+
+
+      return (
+        Number(
+          b.finalScore
+          ??
+          -Infinity
+        )
+        -
+        Number(
+          a.finalScore
+          ??
+          -Infinity
+        )
+      );
+
+    }
+  );
+
+
+  return all;
+
+}
+
+
+/* =========================================
+   TEM ALTERNATIVA?
+========================================= */
+
+function hasAlternative(
+  chord
+){
+
+  const key =
+    regionKey(
+      chord
     );
 
 
-    element.classList.remove(
-      "rejected"
+  const review =
+    humanReview.get(
+      key
     );
 
 
-    wrongButton.classList.remove(
-      "active"
+  const rejected =
+    review
+    ?
+    review.rejected
+    :
+    new Set();
+
+
+  const currentBase =
+    getBaseChord(
+      chord
     );
 
 
-    wrongButton.textContent =
-      "Marcar como errado";
-
-
-    console.log(
-      "Acordes rejeitados:",
-      rejectedRegions
+  const candidates =
+    getAlternativeCandidates(
+      chord
     );
+
+
+  return candidates.some(
+    candidate => {
+
+      return (
+        candidate.chord
+        !==
+        currentBase
+        &&
+        !rejected.has(
+          candidate.chord
+        )
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================
+   TENTAR OUTRA CIFRA
+
+   Este é o núcleo da revisão humana.
+
+   A cifra atual é eliminada apenas nessa
+   região. Em seguida escolhemos o próximo
+   candidato disponível.
+========================================= */
+
+function tryAnotherChord(
+  chord
+){
+
+  const key =
+    regionKey(
+      chord
+    );
+
+
+  let review =
+    humanReview.get(
+      key
+    );
+
+
+  if(!review){
+
+    review = {
+
+      start:
+        chord.start,
+
+      end:
+        chord.end,
+
+      rejected:
+        new Set(),
+
+      history:
+        []
+
+    };
+
+
+    humanReview.set(
+      key,
+      review
+    );
+
+  }
+
+
+  const currentBase =
+    getBaseChord(
+      chord
+    );
+
+
+  if(
+    currentBase
+  ){
+
+    review.rejected.add(
+      currentBase
+    );
+
+  }
+
+
+  const candidates =
+    getAlternativeCandidates(
+      chord
+    );
+
+
+  const available =
+    candidates.filter(
+      candidate => {
+
+        return (
+          candidate.chord
+          !==
+          currentBase
+          &&
+          !review.rejected.has(
+            candidate.chord
+          )
+        );
+
+      }
+    );
+
+
+  if(
+    available.length === 0
+  ){
+
+    return {
+
+      success:false,
+
+      reason:
+        "no-alternative"
+
+    };
+
+  }
+
+
+  /*
+    O array já foi ordenado pelo modo
+    apropriado da decisão.
+  */
+
+  const selected =
+    available[0];
+
+
+  const previousChord =
+    chord.chord;
+
+
+  const previousBase =
+    currentBase;
+
+
+  const selectedChord =
+    formatCandidateChord(
+      selected,
+      chord.bassNote
+    );
+
+
+  /*
+    Atualiza somente o objeto da timeline
+    de trabalho.
+  */
+
+  chord.baseChord =
+    selected.chord;
+
+
+  chord.chord =
+    selectedChord;
+
+
+  chord.notes =
+    candidateNotes(
+      selected
+    );
+
+
+  chord.humanReviewed =
+    true;
+
+
+  chord.humanReviewSourceReason =
+    chord.humanReviewSourceReason
+    ??
+    chord.reconstructionReason
+    ??
+    null;
+
+
+  chord.humanReview = {
+
+    rejectedCandidates:
+      [
+        ...review.rejected
+      ],
+
+    selectedCandidate:
+      selected.chord,
+
+    detectorRank:
+      selected.detectorRank
+      ??
+      null,
+
+    detectorScore:
+      selected.detectorScore
+      ??
+      null,
+
+    reconstructionScore:
+      selected.reconstructionScore
+      ??
+      null,
+
+    finalScore:
+      selected.finalScore
+      ??
+      null
+
+  };
+
+
+  /*
+    Não fingimos que finalScore é confiança.
+
+    A confiança original continua visível,
+    porém a interface marca explicitamente
+    que houve intervenção humana.
+  */
+
+
+  review.history.push({
+
+    from:
+      previousChord,
+
+    fromBase:
+      previousBase,
+
+    to:
+      selectedChord,
+
+    toBase:
+      selected.chord,
+
+    finalScore:
+      selected.finalScore
+      ??
+      null,
+
+    reconstructionScore:
+      selected.reconstructionScore
+      ??
+      null
+
+  });
+
+
+  return {
+
+    success:true,
+
+    selected
+
+  };
+
+}
+
+
+/* =========================================
+   REVISÃO INFO
+========================================= */
+
+function updateReviewBar(){
+
+  if(
+    humanReview.size === 0
+  ){
+
+    reviewBar.classList.remove(
+      "visible"
+    );
+
+
+    reviewInfo.textContent =
+      "";
 
 
     return;
@@ -1459,44 +2343,79 @@ function toggleRejectedChord(
   }
 
 
-  rejectedRegions.push({
-
-    start:
-      chord.start,
-
-    end:
-      chord.end,
-
-    chord:
-      chord.chord
-
-  });
+  let rejectedCount =
+    0;
 
 
-  element.classList.add(
-    "rejected"
+  for(
+    const review
+    of humanReview.values()
+  ){
+
+    rejectedCount +=
+      review.rejected.size;
+
+  }
+
+
+  reviewBar.classList.add(
+    "visible"
   );
 
 
-  wrongButton.classList.add(
-    "active"
-  );
-
-
-  wrongButton.textContent =
-    "Marcado como errado ✓";
-
-
-  console.log(
-    "Acordes rejeitados:",
-    rejectedRegions
-  );
+  reviewInfo.textContent =
+    `${humanReview.size} região(ões) revisada(s) · `
+    +
+    `${rejectedCount} candidato(s) rejeitado(s).`;
 
 }
 
 
 /* =========================================
-   RENDERIZAR ACORDES
+   RESET
+========================================= */
+
+function resetHumanReview(){
+
+  stopPreview();
+
+
+  humanReview =
+    new Map();
+
+
+  workingAnalysis =
+    deepClone(
+      originalAnalysis
+    );
+
+
+  renderChords(
+    workingAnalysis.chords
+  );
+
+
+  updateReviewBar();
+
+
+  previewStatus.textContent =
+    "Correções desfeitas. Resultado original restaurado.";
+
+}
+
+
+/* =========================================
+   RESET BUTTON
+========================================= */
+
+resetReviewButton.addEventListener(
+  "click",
+  resetHumanReview
+);
+
+
+/* =========================================
+   RENDER CHORDS
 ========================================= */
 
 function renderChords(
@@ -1508,7 +2427,9 @@ function renderChords(
 
 
   if(
-    !Array.isArray(chords)
+    !Array.isArray(
+      chords
+    )
     ||
     chords.length === 0
   ){
@@ -1519,6 +2440,7 @@ function renderChords(
           Nenhum acorde detectado.
         </p>
       `;
+
 
     return;
 
@@ -1540,10 +2462,67 @@ function renderChords(
       "chord";
 
 
+    if(
+      chord.humanReviewed
+    ){
+
+      element.classList.add(
+        "reviewed"
+      );
+
+    }
+
+
+    const key =
+      regionKey(
+        chord
+      );
+
+
+    const review =
+      humanReview.get(
+        key
+      );
+
+
+    const rejectedText =
+      review
+      &&
+      review.rejected.size > 0
+      ?
+      [
+        ...review.rejected
+      ].join(", ")
+      :
+      null;
+
+
+    const alternativeAvailable =
+      hasAlternative(
+        chord
+      );
+
+
     element.innerHTML =
       `
-        <div class="chord-name">
-          ${chord.chord}
+        <div class="chord-name-row">
+
+          <div class="chord-name">
+            ${chord.chord}
+          </div>
+
+          ${
+            chord.humanReviewed
+            ?
+            `
+              <span class="review-badge">
+                revisado
+              </span>
+            `
+            :
+            ""
+          }
+
         </div>
 
         <div class="time">
@@ -1557,7 +2536,7 @@ function renderChords(
         </div>
 
         <div class="confidence">
-          Confiança:
+          Confiança original:
           ${Math.round(
             Number(
               chord.confidence
@@ -1568,6 +2547,59 @@ function renderChords(
             100
           )}%
         </div>
+
+        ${
+          chord.humanReviewed
+          ?
+          `
+            <div class="review-detail">
+
+              Escolhida após revisão:
+              <strong>
+                ${chord.baseChord}
+              </strong>
+
+              ${
+                chord.humanReview
+                ?.reconstructionScore
+                !=
+                null
+                ?
+                `
+                  · Reconstruction:
+                  ${Math.round(
+                    Number(
+                      chord.humanReview
+                        .reconstructionScore
+                    )
+                    *
+                    100
+                  )}%
+                `
+                :
+                ""
+              }
+
+              ${
+                rejectedText
+                ?
+                `
+                  <br>
+
+                  <span class="rejected-list">
+                    Rejeitadas:
+                    ${rejectedText}
+                  </span>
+                `
+                :
+                ""
+              }
+
+            </div>
+          `
+          :
+          ""
+        }
 
         <div class="chord-actions">
 
@@ -1584,11 +2616,32 @@ function renderChords(
           <button
             class="
               chord-action
-              chord-wrong
+              chord-retry
+              ${
+                alternativeAvailable
+                ?
+                ""
+                :
+                "no-alternative"
+              }
             "
             type="button"
+
+            ${
+              alternativeAvailable
+              ?
+              ""
+              :
+              "disabled"
+            }
           >
-            Marcar como errado
+            ${
+              alternativeAvailable
+              ?
+              "Tentar outra cifra"
+              :
+              "Sem alternativas"
+            }
           </button>
 
         </div>
@@ -1601,9 +2654,9 @@ function renderChords(
       );
 
 
-    const wrongButton =
+    const retryButton =
       element.querySelector(
-        ".chord-wrong"
+        ".chord-retry"
       );
 
 
@@ -1620,15 +2673,44 @@ function renderChords(
     );
 
 
-    wrongButton.addEventListener(
+    retryButton.addEventListener(
       "click",
       () => {
 
-        toggleRejectedChord(
-          chord,
-          element,
-          wrongButton
+        stopPreview();
+
+
+        const result =
+          tryAnotherChord(
+            chord
+          );
+
+
+        if(
+          !result.success
+        ){
+
+          previewStatus.textContent =
+            "Não há outra candidata disponível nesta região.";
+
+
+          return;
+
+        }
+
+
+        previewStatus.textContent =
+          `Nova candidata: ${chord.chord}. `
+          +
+          `Use “Ouvir reconstrução” para comparar.`;
+
+
+        renderChords(
+          workingAnalysis.chords
         );
+
+
+        updateReviewBar();
 
       }
     );
@@ -1660,8 +2742,10 @@ analyzeButton.addEventListener(
       status.className =
         "status error";
 
+
       status.textContent =
         "Escolha um arquivo WAV.";
+
 
       return;
 
@@ -1695,12 +2779,19 @@ analyzeButton.addEventListener(
       null;
 
 
-    lastAnalysis =
+    originalAnalysis =
       null;
 
 
-    rejectedRegions =
-      [];
+    workingAnalysis =
+      null;
+
+
+    humanReview =
+      new Map();
+
+
+    updateReviewBar();
 
 
     try{
@@ -1731,21 +2822,25 @@ analyzeButton.addEventListener(
         await response.json();
 
 
-      /* =====================================
-         SALVA RESULTADO
-      ===================================== */
-
       lastApiResponse =
         data;
 
 
-      lastAnalysis =
-        data;
+      /*
+        Guarda duas versões independentes.
+      */
+
+      originalAnalysis =
+        deepClone(
+          data
+        );
 
 
-      /* =====================================
-         JSON COMPLETO
-      ===================================== */
+      workingAnalysis =
+        deepClone(
+          data
+        );
+
 
       debug.textContent =
         JSON.stringify(
@@ -1784,10 +2879,6 @@ analyzeButton.addEventListener(
         "Análise concluída.";
 
 
-      /* =====================================
-         INFO
-      ===================================== */
-
       audioInfo.innerHTML =
         `
           <p>
@@ -1812,12 +2903,8 @@ analyzeButton.addEventListener(
         `;
 
 
-      /* =====================================
-         ACORDES
-      ===================================== */
-
       renderChords(
-        data.chords
+        workingAnalysis.chords
       );
 
 
@@ -1849,7 +2936,7 @@ analyzeButton.addEventListener(
 
 
 /* =========================================
-   SE TROCAR O WAV, PARA A PREVIEW
+   TROCAR WAV
 ========================================= */
 
 fileInput.addEventListener(
