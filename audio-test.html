@@ -42,6 +42,10 @@ h1 {
   margin-bottom: 6px;
 }
 
+h2 {
+  margin-top: 0;
+}
+
 .subtitle {
   color: #8d96a5;
   margin-top: 0;
@@ -111,11 +115,48 @@ button:disabled {
   color: #6be89b;
 }
 
+
+/* =========================================
+   PREVIEW
+========================================= */
+
+.preview-controls {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 10px;
+
+  margin: 18px 0 10px;
+}
+
+.preview-stop {
+  background: #232a35;
+}
+
+.preview-status {
+  margin-top: 8px;
+  margin-bottom: 8px;
+
+  font-size: 13px;
+
+  color: #8d96a5;
+}
+
+
+/* =========================================
+   ACORDES
+========================================= */
+
 .chord {
-  padding: 14px 0;
+  padding: 16px 0;
 
   border-bottom:
     1px solid #242a34;
+
+  transition:
+    opacity .2s ease;
 }
 
 .chord:last-child {
@@ -138,38 +179,102 @@ button:disabled {
   margin-top: 4px;
 }
 
-.chord-copy {
-  margin-top: 11px;
+.chord-actions {
+  display: grid;
 
-  padding: 11px 12px;
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.chord-action {
+  padding: 11px 10px;
 
   font-size: 13px;
-  font-weight: 700;
 
+  border-radius: 10px;
+}
+
+.chord-copy {
   background: #1a2230;
 
   border:
     1px solid #303a49;
-
-  border-radius: 10px;
 }
 
 .chord-copy.copied {
   background: #173525;
   border-color: #285d3f;
+
   color: #78e7a3;
 }
+
+.chord-wrong {
+  background: #332027;
+
+  border:
+    1px solid #693540;
+}
+
+.chord-wrong.active {
+  background: #672b39;
+}
+
+.chord.rejected {
+  opacity: .62;
+}
+
+.chord.rejected .chord-name {
+  text-decoration: line-through;
+}
+
+
+/* =========================================
+   DEBUG
+========================================= */
 
 pre {
   white-space: pre-wrap;
   word-break: break-word;
 
   font-size: 12px;
+  line-height: 1.45;
 
   color: #9ca6b7;
 
   max-height: 520px;
+
   overflow-y: auto;
+
+  margin-bottom: 0;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 520px) {
+
+  body {
+    padding: 16px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  .preview-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .chord-actions {
+    grid-template-columns: 1fr;
+  }
+
 }
 
 </style>
@@ -185,6 +290,10 @@ pre {
     Teste do Audio Engine
   </p>
 
+
+  <!-- =====================================
+       UPLOAD
+  ====================================== -->
 
   <div class="card">
 
@@ -208,6 +317,10 @@ pre {
   </div>
 
 
+  <!-- =====================================
+       RESULTADO
+  ====================================== -->
+
   <div
     id="result"
     class="card"
@@ -218,10 +331,45 @@ pre {
 
     <div id="audioInfo"></div>
 
+
+    <!-- =================================
+         SYNTH PREVIEW
+    ================================== -->
+
+    <div class="preview-controls">
+
+      <button
+        id="playPreview"
+        type="button"
+      >
+        Ouvir reconstrução
+      </button>
+
+      <button
+        id="stopPreview"
+        class="preview-stop"
+        type="button"
+      >
+        Parar
+      </button>
+
+    </div>
+
+
+    <div
+      id="previewStatus"
+      class="preview-status"
+    ></div>
+
+
     <div id="chords"></div>
 
   </div>
 
+
+  <!-- =====================================
+       JSON COMPLETO
+  ====================================== -->
 
   <div
     id="debugCard"
@@ -240,14 +388,22 @@ pre {
 
 <script>
 
+/* =========================================
+   API
+========================================= */
+
 const API =
   "https://chord-ai-api.onrender.com";
 
 
+/* =========================================
+   ELEMENTOS
+========================================= */
+
 const fileInput =
   document.getElementById("file");
 
-const button =
+const analyzeButton =
   document.getElementById("analyze");
 
 const status =
@@ -268,13 +424,552 @@ const debugCard =
 const debug =
   document.getElementById("debug");
 
+const playPreviewButton =
+  document.getElementById(
+    "playPreview"
+  );
+
+const stopPreviewButton =
+  document.getElementById(
+    "stopPreview"
+  );
+
+const previewStatus =
+  document.getElementById(
+    "previewStatus"
+  );
+
 
 /* =========================================
-   ÚLTIMA RESPOSTA
+   ESTADO
 ========================================= */
 
 let lastApiResponse =
   null;
+
+let lastAnalysis =
+  null;
+
+let rejectedRegions =
+  [];
+
+
+/* =========================================
+   SYNTH STATE
+========================================= */
+
+let previewContext =
+  null;
+
+let previewNodes =
+  [];
+
+let previewTimer =
+  null;
+
+
+/* =========================================
+   NOTAS
+========================================= */
+
+const NOTE_TO_SEMITONE = {
+
+  C:0,
+  "C#":1,
+  D:2,
+  "D#":3,
+  E:4,
+  F:5,
+  "F#":6,
+  G:7,
+  "G#":8,
+  A:9,
+  "A#":10,
+  B:11
+
+};
+
+
+/* =========================================
+   FREQUÊNCIA
+========================================= */
+
+function noteFrequency(
+  note,
+  octave = 4
+){
+
+  const semitone =
+    NOTE_TO_SEMITONE[
+      note
+    ];
+
+
+  if(
+    semitone === undefined
+  ){
+
+    return null;
+
+  }
+
+
+  const midi =
+    12
+    *
+    (
+      octave + 1
+    )
+    +
+    semitone;
+
+
+  return (
+    440
+    *
+    Math.pow(
+      2,
+      (
+        midi - 69
+      )
+      /
+      12
+    )
+  );
+
+}
+
+
+/* =========================================
+   PARAR PREVIEW
+========================================= */
+
+function stopPreview(){
+
+  if(
+    previewTimer
+  ){
+
+    clearTimeout(
+      previewTimer
+    );
+
+    previewTimer =
+      null;
+
+  }
+
+
+  for(
+    const node
+    of previewNodes
+  ){
+
+    try{
+
+      node.stop();
+
+    }
+
+    catch{}
+
+  }
+
+
+  previewNodes =
+    [];
+
+
+  if(
+    previewContext
+  ){
+
+    try{
+
+      previewContext.close();
+
+    }
+
+    catch{}
+
+  }
+
+
+  previewContext =
+    null;
+
+
+  previewStatus.textContent =
+    "";
+
+}
+
+
+/* =========================================
+   AGENDAR TOM
+========================================= */
+
+function scheduleTone(
+  context,
+  frequency,
+  start,
+  duration,
+  volume
+){
+
+  if(!frequency)
+    return;
+
+
+  const oscillator =
+    context.createOscillator();
+
+
+  const gain =
+    context.createGain();
+
+
+  oscillator.type =
+    "sine";
+
+
+  oscillator.frequency.value =
+    frequency;
+
+
+  oscillator.connect(
+    gain
+  );
+
+
+  gain.connect(
+    context.destination
+  );
+
+
+  const attack =
+    Math.min(
+      0.06,
+      duration * 0.15
+    );
+
+
+  const release =
+    Math.min(
+      0.15,
+      duration * 0.25
+    );
+
+
+  gain.gain.setValueAtTime(
+    0.0001,
+    start
+  );
+
+
+  gain.gain.exponentialRampToValueAtTime(
+    Math.max(
+      0.001,
+      volume
+    ),
+    start + attack
+  );
+
+
+  const releaseStart =
+    Math.max(
+      start + attack,
+      start + duration - release
+    );
+
+
+  gain.gain.setValueAtTime(
+    Math.max(
+      0.001,
+      volume
+    ),
+    releaseStart
+  );
+
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001,
+    start + duration
+  );
+
+
+  oscillator.start(
+    start
+  );
+
+
+  oscillator.stop(
+    start + duration + 0.02
+  );
+
+
+  previewNodes.push(
+    oscillator
+  );
+
+}
+
+
+/* =========================================
+   OUVIR RECONSTRUÇÃO
+========================================= */
+
+async function playPreview(){
+
+  if(
+    !lastAnalysis
+    ||
+    !Array.isArray(
+      lastAnalysis.chords
+    )
+    ||
+    lastAnalysis.chords.length === 0
+  ){
+
+    previewStatus.textContent =
+      "Nenhuma análise disponível.";
+
+    return;
+
+  }
+
+
+  stopPreview();
+
+
+  const AudioContextClass =
+    window.AudioContext
+    ||
+    window.webkitAudioContext;
+
+
+  if(!AudioContextClass){
+
+    previewStatus.textContent =
+      "Web Audio API não suportada.";
+
+    return;
+
+  }
+
+
+  previewContext =
+    new AudioContextClass();
+
+
+  await previewContext.resume();
+
+
+  const context =
+    previewContext;
+
+
+  const now =
+    context.currentTime
+    +
+    0.08;
+
+
+  const timelineStart =
+    Number(
+      lastAnalysis.chords[0].start
+    );
+
+
+  let finalEnd =
+    timelineStart;
+
+
+  for(
+    const chord
+    of lastAnalysis.chords
+  ){
+
+    const chordStart =
+      Number(
+        chord.start
+      );
+
+
+    const chordEnd =
+      Number(
+        chord.end
+      );
+
+
+    if(
+      !Number.isFinite(
+        chordStart
+      )
+      ||
+      !Number.isFinite(
+        chordEnd
+      )
+    ){
+
+      continue;
+
+    }
+
+
+    const duration =
+      Math.max(
+        0.05,
+        chordEnd - chordStart
+      );
+
+
+    const start =
+      now
+      +
+      (
+        chordStart
+        -
+        timelineStart
+      );
+
+
+    finalEnd =
+      Math.max(
+        finalEnd,
+        chordEnd
+      );
+
+
+    const notes =
+      Array.isArray(
+        chord.notes
+      )
+      ?
+      chord.notes
+      :
+      [];
+
+
+    /* =====================================
+       VOZES DO ACORDE
+    ===================================== */
+
+    notes.forEach(
+      (note,index) => {
+
+        let octave =
+          4;
+
+
+        if(
+          index >= 3
+        ){
+
+          octave =
+            5;
+
+        }
+
+
+        scheduleTone(
+          context,
+          noteFrequency(
+            note,
+            octave
+          ),
+          start,
+          duration,
+          0.055
+        );
+
+      }
+    );
+
+
+    /* =====================================
+       BAIXO
+    ===================================== */
+
+    if(
+      chord.bassNote
+      &&
+      NOTE_TO_SEMITONE[
+        chord.bassNote
+      ]
+      !==
+      undefined
+    ){
+
+      scheduleTone(
+        context,
+        noteFrequency(
+          chord.bassNote,
+          2
+        ),
+        start,
+        duration,
+        0.075
+      );
+
+    }
+
+  }
+
+
+  previewStatus.textContent =
+    "Tocando reconstrução...";
+
+
+  const totalDuration =
+    Math.max(
+      0,
+      finalEnd
+      -
+      timelineStart
+    );
+
+
+  previewTimer =
+    setTimeout(
+      () => {
+
+        if(
+          previewContext ===
+          context
+        ){
+
+          stopPreview();
+
+        }
+
+      },
+      (
+        totalDuration
+        +
+        0.35
+      )
+      *
+      1000
+    );
+
+}
+
+
+/* =========================================
+   BOTÕES PREVIEW
+========================================= */
+
+playPreviewButton.addEventListener(
+  "click",
+  playPreview
+);
+
+
+stopPreviewButton.addEventListener(
+  "click",
+  stopPreview
+);
 
 
 /* =========================================
@@ -447,7 +1142,7 @@ function compactCandidate(
 
 
 /* =========================================
-   DEBUG COMPACTO DE UM ACORDE
+   DEBUG COMPACTO DO ACORDE
 ========================================= */
 
 function buildChordDiagnostic(
@@ -556,64 +1251,10 @@ function buildChordDiagnostic(
     },
 
 
-    reconstruction:{
-
-      score:
-        chord.reconstruction?.score
-        ??
-        null,
-
-      coverage:
-        chord.reconstruction?.coverage
-        ??
-        null,
-
-      persistence:
-        chord.reconstruction?.persistence
-        ??
-        null,
-
-      bassCompatibility:
-        chord.reconstruction?.bassCompatibility
-        ??
-        null,
-
-      original:
-        chord.reconstruction?.original
-        ??
-        null,
-
-      selected:
-        chord.reconstruction?.selected
-        ??
-        null,
-
-      reconstructionGain:
-        chord.reconstruction?.reconstructionGain
-        ??
-        null,
-
-      finalAdvantage:
-        chord.reconstruction?.finalAdvantage
-        ??
-        null,
-
-      detectorNorm:
-        chord.reconstruction?.detectorNorm
-        ??
-        null,
-
-      marginal:
-        chord.reconstruction?.marginal
-        ??
-        null,
-
-      bass:
-        chord.reconstruction?.bass
-        ??
-        null
-
-    },
+    reconstruction:
+      chord.reconstruction
+      ??
+      null,
 
 
     candidateSearch:{
@@ -734,7 +1375,7 @@ async function copyChordDebug(
 
   }
 
-  catch(error){
+  catch{
 
     const oldText =
       copyButton.textContent;
@@ -760,10 +1401,253 @@ async function copyChordDebug(
 
 
 /* =========================================
+   MARCAR / DESMARCAR COMO ERRADO
+========================================= */
+
+function toggleRejectedChord(
+  chord,
+  element,
+  wrongButton
+){
+
+  const existingIndex =
+    rejectedRegions.findIndex(
+      item =>
+        item.start ===
+        chord.start
+        &&
+        item.end ===
+        chord.end
+        &&
+        item.chord ===
+        chord.chord
+    );
+
+
+  if(
+    existingIndex >= 0
+  ){
+
+    rejectedRegions.splice(
+      existingIndex,
+      1
+    );
+
+
+    element.classList.remove(
+      "rejected"
+    );
+
+
+    wrongButton.classList.remove(
+      "active"
+    );
+
+
+    wrongButton.textContent =
+      "Marcar como errado";
+
+
+    console.log(
+      "Acordes rejeitados:",
+      rejectedRegions
+    );
+
+
+    return;
+
+  }
+
+
+  rejectedRegions.push({
+
+    start:
+      chord.start,
+
+    end:
+      chord.end,
+
+    chord:
+      chord.chord
+
+  });
+
+
+  element.classList.add(
+    "rejected"
+  );
+
+
+  wrongButton.classList.add(
+    "active"
+  );
+
+
+  wrongButton.textContent =
+    "Marcado como errado ✓";
+
+
+  console.log(
+    "Acordes rejeitados:",
+    rejectedRegions
+  );
+
+}
+
+
+/* =========================================
+   RENDERIZAR ACORDES
+========================================= */
+
+function renderChords(
+  chords
+){
+
+  chordsContainer.innerHTML =
+    "";
+
+
+  if(
+    !Array.isArray(chords)
+    ||
+    chords.length === 0
+  ){
+
+    chordsContainer.innerHTML =
+      `
+        <p>
+          Nenhum acorde detectado.
+        </p>
+      `;
+
+    return;
+
+  }
+
+
+  for(
+    const chord
+    of chords
+  ){
+
+    const element =
+      document.createElement(
+        "div"
+      );
+
+
+    element.className =
+      "chord";
+
+
+    element.innerHTML =
+      `
+        <div class="chord-name">
+          ${chord.chord}
+        </div>
+
+        <div class="time">
+          ${Number(
+            chord.start
+          ).toFixed(2)}s
+          →
+          ${Number(
+            chord.end
+          ).toFixed(2)}s
+        </div>
+
+        <div class="confidence">
+          Confiança:
+          ${Math.round(
+            Number(
+              chord.confidence
+              ||
+              0
+            )
+            *
+            100
+          )}%
+        </div>
+
+        <div class="chord-actions">
+
+          <button
+            class="
+              chord-action
+              chord-copy
+            "
+            type="button"
+          >
+            Copiar debug
+          </button>
+
+          <button
+            class="
+              chord-action
+              chord-wrong
+            "
+            type="button"
+          >
+            Marcar como errado
+          </button>
+
+        </div>
+      `;
+
+
+    const copyButton =
+      element.querySelector(
+        ".chord-copy"
+      );
+
+
+    const wrongButton =
+      element.querySelector(
+        ".chord-wrong"
+      );
+
+
+    copyButton.addEventListener(
+      "click",
+      () => {
+
+        copyChordDebug(
+          chord,
+          copyButton
+        );
+
+      }
+    );
+
+
+    wrongButton.addEventListener(
+      "click",
+      () => {
+
+        toggleRejectedChord(
+          chord,
+          element,
+          wrongButton
+        );
+
+      }
+    );
+
+
+    chordsContainer.appendChild(
+      element
+    );
+
+  }
+
+}
+
+
+/* =========================================
    ANALISAR WAV
 ========================================= */
 
-button.addEventListener(
+analyzeButton.addEventListener(
   "click",
   async () => {
 
@@ -784,12 +1668,16 @@ button.addEventListener(
     }
 
 
-    button.disabled =
+    stopPreview();
+
+
+    analyzeButton.disabled =
       true;
 
 
     status.className =
       "status";
+
 
     status.textContent =
       "Enviando e analisando áudio...";
@@ -798,12 +1686,21 @@ button.addEventListener(
     result.style.display =
       "none";
 
+
     debugCard.style.display =
       "none";
 
 
     lastApiResponse =
       null;
+
+
+    lastAnalysis =
+      null;
+
+
+    rejectedRegions =
+      [];
 
 
     try{
@@ -835,15 +1732,19 @@ button.addEventListener(
 
 
       /* =====================================
-         GUARDA RESPOSTA
+         SALVA RESULTADO
       ===================================== */
 
       lastApiResponse =
         data;
 
 
+      lastAnalysis =
+        data;
+
+
       /* =====================================
-         JSON COMPLETO CONTINUA VISÍVEL
+         JSON COMPLETO
       ===================================== */
 
       debug.textContent =
@@ -878,9 +1779,14 @@ button.addEventListener(
       status.className =
         "status success";
 
+
       status.textContent =
         "Análise concluída.";
 
+
+      /* =====================================
+         INFO
+      ===================================== */
 
       audioInfo.innerHTML =
         `
@@ -906,106 +1812,13 @@ button.addEventListener(
         `;
 
 
-      chordsContainer.innerHTML =
-        "";
+      /* =====================================
+         ACORDES
+      ===================================== */
 
-
-      if(
-        !data.chords
-        ||
-        data.chords.length === 0
-      ){
-
-        chordsContainer.innerHTML =
-          `
-            <p>
-              Nenhum acorde detectado.
-            </p>
-          `;
-
-      }
-
-      else{
-
-        for(
-          const chord
-          of data.chords
-        ){
-
-          const element =
-            document.createElement(
-              "div"
-            );
-
-
-          element.className =
-            "chord";
-
-
-          element.innerHTML =
-            `
-              <div class="chord-name">
-                ${chord.chord}
-              </div>
-
-              <div class="time">
-                ${Number(
-                  chord.start
-                ).toFixed(2)}s
-                →
-                ${Number(
-                  chord.end
-                ).toFixed(2)}s
-              </div>
-
-              <div class="confidence">
-                Confiança:
-                ${Math.round(
-                  Number(
-                    chord.confidence
-                    ||
-                    0
-                  )
-                  *
-                  100
-                )}%
-              </div>
-
-              <button
-                class="chord-copy"
-                type="button"
-              >
-                Copiar debug deste acorde
-              </button>
-            `;
-
-
-          const copyButton =
-            element.querySelector(
-              ".chord-copy"
-            );
-
-
-          copyButton.addEventListener(
-            "click",
-            () => {
-
-              copyChordDebug(
-                chord,
-                copyButton
-              );
-
-            }
-          );
-
-
-          chordsContainer.appendChild(
-            element
-          );
-
-        }
-
-      }
+      renderChords(
+        data.chords
+      );
 
 
       result.style.display =
@@ -1018,6 +1831,7 @@ button.addEventListener(
       status.className =
         "status error";
 
+
       status.textContent =
         error.message;
 
@@ -1025,10 +1839,24 @@ button.addEventListener(
 
     finally{
 
-      button.disabled =
+      analyzeButton.disabled =
         false;
 
     }
+
+  }
+);
+
+
+/* =========================================
+   SE TROCAR O WAV, PARA A PREVIEW
+========================================= */
+
+fileInput.addEventListener(
+  "change",
+  () => {
+
+    stopPreview();
 
   }
 );
