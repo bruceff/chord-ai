@@ -8,100 +8,40 @@
   content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
 
-<meta
-  name="theme-color"
-  content="#090b11"
->
-
 <title>Chord AI</title>
 
 <style>
 
 :root {
+  --bg: #07090f;
+  --surface: #0d1119;
+  --surface-2: #111722;
+  --border: #252d3a;
 
-  --bg:
-    #080a0f;
+  --text: #f7f8fb;
+  --muted: #9ba3b0;
+  --muted-2: #626b79;
 
-  --bg-soft:
-    #0d1018;
+  --purple: #7d3cff;
+  --purple-2: #9c63ff;
+  --purple-3: #5f20d7;
 
-  --surface:
-    #11151f;
-
-  --surface-2:
-    #151a26;
-
-  --surface-3:
-    #1a2030;
-
-  --border:
-    #252c3a;
-
-  --border-soft:
-    #1d2330;
-
-  --text:
-    #f7f7fb;
-
-  --text-soft:
-    #a4a9b5;
-
-  --text-muted:
-    #6f7685;
-
-  --purple:
-    #7b3ff2;
-
-  --purple-2:
-    #9b63ff;
-
-  --purple-soft:
-    rgba(123,63,242,.14);
-
-  --green:
-    #67df9a;
-
-  --red:
-    #ff6f82;
-
-  --yellow:
-    #f4c756;
-
-  --radius-lg:
-    24px;
-
-  --radius-md:
-    16px;
-
-  --radius-sm:
-    11px;
-
-  --shadow:
-    0 22px 70px rgba(0,0,0,.35);
-
+  --yellow: #f6c95c;
+  --green: #65df99;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
+html,
+body {
+  margin: 0;
+  min-height: 100%;
   background: var(--bg);
 }
 
 body {
-  margin: 0;
-
-  min-height: 100vh;
-
-  background:
-    radial-gradient(
-      circle at 50% -10%,
-      rgba(117,62,231,.12),
-      transparent 30%
-    ),
-    var(--bg);
-
   color: var(--text);
 
   font-family:
@@ -109,12 +49,10 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     Roboto,
+    Arial,
     sans-serif;
 
-  -webkit-font-smoothing:
-    antialiased;
-
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -123,19 +61,19 @@ input {
 }
 
 button {
-  -webkit-tap-highlight-color:
-    transparent;
+  cursor: pointer;
 }
 
-
-/* =====================================================
-   APP
-===================================================== */
-
 .app {
-  width: 100%;
-
   min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 74% 27%,
+      rgba(111,42,255,.09),
+      transparent 23%
+    ),
+    var(--bg);
 }
 
 
@@ -143,34 +81,37 @@ button {
    HEADER
 ===================================================== */
 
-.topbar {
+.header {
+  height: 72px;
+
+  display: flex;
+
+  align-items: center;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.045);
+
+  background:
+    rgba(5,7,12,.92);
+
+  backdrop-filter:
+    blur(14px);
+
   position: sticky;
-
   top: 0;
-
   z-index: 100;
+}
+
+.header-inner {
+  width: min(1180px, calc(100% - 44px));
+
+  margin: 0 auto;
 
   display: flex;
 
   align-items: center;
 
   justify-content: space-between;
-
-  height: 64px;
-
-  padding:
-    0
-    18px;
-
-  background:
-    rgba(8,10,15,.86);
-
-  backdrop-filter:
-    blur(20px);
-
-  border-bottom:
-    1px solid
-    rgba(255,255,255,.05);
 }
 
 .brand {
@@ -180,74 +121,129 @@ button {
 
   gap: 10px;
 
+  font-size: 16px;
   font-weight: 800;
 
-  letter-spacing:
-    -.02em;
+  letter-spacing: -.02em;
 }
 
-.brand-mark {
-  width: 31px;
+.logo {
+  width: 29px;
+  height: 29px;
 
-  height: 31px;
+  border: 2px solid var(--purple);
 
-  display: grid;
+  border-radius: 7px;
 
-  place-items: center;
+  position: relative;
 
-  border-radius: 9px;
+  box-shadow:
+    0 0 22px rgba(124,60,255,.18);
+}
+
+.logo::before,
+.logo::after {
+  content: "";
+
+  position: absolute;
+
+  width: 5px;
+  height: 5px;
+
+  border: 2px solid var(--purple);
+
+  border-radius: 50%;
+
+  background: var(--bg);
+}
+
+.logo::before {
+  left: -5px;
+  top: 9px;
+}
+
+.logo::after {
+  right: -5px;
+  top: 9px;
+}
+
+.logo-line {
+  position: absolute;
+
+  left: 8px;
+  top: 7px;
+
+  width: 9px;
+  height: 11px;
+
+  border: 2px solid var(--purple);
+
+  border-radius: 3px;
+}
+
+.nav {
+  display: flex;
+
+  align-items: center;
+
+  gap: 27px;
+}
+
+.nav a {
+  position: relative;
+
+  color: #d7dae1;
+
+  text-decoration: none;
+
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+.nav a.active {
+  color: #fff;
+}
+
+.nav a.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  bottom: -25px;
+
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--purple),
+      var(--purple-2)
+    );
+}
+
+.nav-create {
+  min-height: 38px;
+
+  padding: 0 17px;
+
+  border: 1px solid #8e50ff;
+
+  border-radius: 8px;
 
   background:
     linear-gradient(
       135deg,
-      #7137ed,
-      #9d65ff
+      #6f2ee9,
+      #8e48f7
     );
 
-  box-shadow:
-    0 0 25px
-    rgba(123,63,242,.25);
-}
-
-.brand-mark svg {
-  width: 18px;
-
-  height: 18px;
-
-  fill: none;
-
-  stroke: white;
-
-  stroke-width: 1.8;
-}
-
-.plan-chip {
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 5px;
-
-  height: 30px;
-
-  padding:
-    0
-    10px;
-
-  border-radius: 999px;
-
-  border:
-    1px solid
-    rgba(244,199,86,.35);
-
-  color: var(--yellow);
-
-  font-size: 11px;
+  color: white;
 
   font-weight: 700;
-
-  background:
-    rgba(244,199,86,.06);
 }
 
 
@@ -257,11 +253,6 @@ button {
 
 .screen {
   display: none;
-
-  min-height:
-    calc(
-      100vh - 64px
-    );
 }
 
 .screen.active {
@@ -273,22 +264,28 @@ button {
    HOME
 ===================================================== */
 
-.home {
-  max-width: 850px;
+.hero {
+  position: relative;
 
-  margin: auto;
+  width: min(1020px, calc(100% - 40px));
+
+  margin: 0 auto;
 
   padding:
-    66px
-    20px
-    80px;
+    45px
+    0
+    35px;
 }
 
-.hero {
-  text-align: center;
+.hero-content {
+  position: relative;
+
+  z-index: 2;
+
+  width: 58%;
 }
 
-.hero-badge {
+.badge {
   display: inline-flex;
 
   align-items: center;
@@ -297,118 +294,178 @@ button {
 
   margin-bottom: 24px;
 
-  padding:
-    7px
-    10px;
+  color: #bfc5ce;
+
+  font-size: 11px;
+}
+
+.badge-new {
+  padding: 4px 8px;
 
   border-radius: 999px;
 
+  color: white;
+
   background:
-    var(--purple-soft);
+    linear-gradient(
+      135deg,
+      #6724dd,
+      #934fff
+    );
 
-  border:
-    1px solid
-    rgba(141,83,255,.2);
-
-  color:
-    #c5a8ff;
-
-  font-size: 11px;
-
-  font-weight: 700;
+  font-size: 9px;
+  font-weight: 800;
 }
 
 .hero h1 {
-  margin:
-    0
-    auto;
+  margin: 0;
 
-  max-width: 700px;
+  max-width: 500px;
 
   font-size:
     clamp(
-      38px,
-      7vw,
-      68px
+      42px,
+      5.2vw,
+      70px
     );
 
-  line-height:
-    .99;
+  line-height: 1.04;
 
-  letter-spacing:
-    -.055em;
+  letter-spacing: -.045em;
+
+  font-weight: 800;
 }
 
 .hero h1 span {
   background:
     linear-gradient(
       90deg,
-      #9b62ff,
-      #7c45ef
+      #7d3cff,
+      #9c63ff
     );
 
-  -webkit-background-clip:
-    text;
+  -webkit-background-clip: text;
+
+  background-clip: text;
 
   color: transparent;
 }
 
-.hero p {
-  max-width: 520px;
+.hero-description {
+  max-width: 490px;
 
   margin:
-    22px
-    auto
+    23px
+    0
     0;
 
-  color:
-    var(--text-soft);
+  color: var(--muted);
 
   font-size: 15px;
 
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
+.harmonic-art {
+  position: absolute;
 
-/* =====================================================
-   URL / DEV INPUT
-===================================================== */
+  z-index: 1;
 
-.analyze-box {
-  margin:
-    38px
-    auto
-    0;
+  right: 0;
+  top: 100px;
 
-  max-width: 700px;
-
-  padding: 7px;
+  width: 38%;
+  height: 310px;
 
   display: flex;
 
-  gap: 8px;
+  align-items: flex-end;
 
-  background:
-    #10141d;
+  justify-content: center;
 
-  border:
-    1px solid
-    #292f3d;
+  gap: 9px;
 
-  border-radius:
-    15px;
+  pointer-events: none;
 
-  box-shadow:
-    0 20px 60px
-    rgba(0,0,0,.28);
+  opacity: .72;
 }
 
-.url-field {
+.harmonic-art span {
+  width: 6px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(131,54,255,.08),
+      rgba(124,52,255,.7),
+      rgba(119,41,255,.05)
+    );
+
+  box-shadow:
+    0 0 18px rgba(122,49,255,.12);
+}
+
+.harmonic-art span:nth-child(1)  { height: 45px; }
+.harmonic-art span:nth-child(2)  { height: 92px; }
+.harmonic-art span:nth-child(3)  { height: 150px; }
+.harmonic-art span:nth-child(4)  { height: 210px; }
+.harmonic-art span:nth-child(5)  { height: 278px; }
+.harmonic-art span:nth-child(6)  { height: 190px; }
+.harmonic-art span:nth-child(7)  { height: 240px; }
+.harmonic-art span:nth-child(8)  { height: 128px; }
+.harmonic-art span:nth-child(9)  { height: 178px; }
+.harmonic-art span:nth-child(10) { height: 95px; }
+.harmonic-art span:nth-child(11) { height: 155px; }
+
+.link-box {
+  margin-top: 30px;
+
+  width: 100%;
+
+  max-width: 740px;
+
+  min-height: 70px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 7px;
+
+  background: #0f141d;
+
+  border:
+    1px solid #433063;
+
+  border-radius: 12px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(129,53,255,.08),
+    0 12px 34px rgba(0,0,0,.2);
+}
+
+.link-icon {
+  width: 43px;
+
+  display: grid;
+
+  place-items: center;
+
+  color: #8e54ff;
+
+  font-size: 22px;
+}
+
+.link-input {
   flex: 1;
 
   min-width: 0;
 
-  height: 51px;
+  height: 54px;
 
   border: 0;
 
@@ -418,62 +475,158 @@ button {
 
   color: white;
 
-  padding:
-    0
-    14px;
-
   font-size: 14px;
 }
 
-.url-field::placeholder {
-  color:
-    #686f7d;
+.link-input::placeholder {
+  color: #737c89;
 }
 
-.primary-button {
+.analyze-btn {
+  height: 54px;
+
+  padding: 0 23px;
+
   border: 0;
 
-  min-height: 51px;
+  border-radius: 9px;
 
-  padding:
-    0
-    20px;
-
-  border-radius: 11px;
+  color: white;
 
   background:
     linear-gradient(
       135deg,
-      #7638ee,
-      #8d4df6
+      #722bea,
+      #8d44fa
     );
 
-  color: white;
-
+  font-size: 13px;
   font-weight: 800;
 
-  cursor: pointer;
+  white-space: nowrap;
 }
 
-.primary-button:disabled {
-  opacity: .5;
+.example-area {
+  max-width: 740px;
 
-  cursor: default;
+  margin-top: 22px;
+
+  text-align: center;
 }
 
+.or {
+  margin-bottom: 18px;
 
-/* =====================================================
-   DEV INPUT
-===================================================== */
+  color: #868e9b;
 
-.dev-upload {
+  font-size: 11px;
+}
+
+.example-btn {
+  min-height: 43px;
+
+  padding: 0 23px;
+
+  border:
+    1px solid #513078;
+
+  border-radius: 8px;
+
+  background: #0c1018;
+
+  color: #d8dbe2;
+
+  font-size: 12px;
+}
+
+.section-divider {
+  width: 100%;
+
+  height: 1px;
+
+  margin-top: 34px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.07),
+      transparent
+    );
+}
+
+.features {
+  width: min(1020px, calc(100% - 40px));
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap: 26px;
+
+  padding:
+    23px
+    0
+    34px;
+}
+
+.feature {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #a069ff;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(122,51,255,.18),
+      rgba(122,51,255,.06)
+    );
+
+  border:
+    1px solid rgba(124,60,255,.15);
+}
+
+.feature strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  font-size: 12px;
+}
+
+.feature small {
+  color: var(--muted-2);
+
+  font-size: 10px;
+}
+
+.dev-area {
+  width: min(1020px, calc(100% - 40px));
+
   margin:
-    16px
+    0
     auto
-    0;
-
-  max-width:
-    700px;
+    40px;
 
   text-align: center;
 }
@@ -483,124 +636,71 @@ button {
 
   background: transparent;
 
-  color:
-    #606979;
+  color: #4f5968;
 
-  font-size: 11px;
-
-  cursor: pointer;
+  font-size: 10px;
 }
 
 .dev-panel {
   display: none;
 
-  margin-top: 12px;
+  width: min(480px, 100%);
 
-  padding: 15px;
+  margin:
+    14px
+    auto
+    0;
 
-  border-radius:
-    13px;
+  padding: 16px;
 
   border:
-    1px dashed
-    #303747;
+    1px dashed #2a3341;
 
-  background:
-    #0d1017;
+  border-radius: 11px;
+
+  background: #0c1017;
 }
 
 .dev-panel.open {
   display: block;
 }
 
-.dev-panel input[type="file"] {
+.dev-panel input {
   width: 100%;
 
-  color:
-    #818a9a;
-
-  font-size: 12px;
-}
-
-
-/* =====================================================
-   FEATURES
-===================================================== */
-
-.feature-row {
-  margin-top: 58px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  gap: 13px;
-}
-
-.feature {
-  min-height: 112px;
-
-  padding: 18px;
-
-  text-align: left;
-
-  background:
-    rgba(16,20,29,.55);
-
-  border:
-    1px solid
-    rgba(255,255,255,.05);
-
-  border-radius:
-    15px;
-}
-
-.feature-icon {
-  width: 34px;
-
-  height: 34px;
-
-  display: grid;
-
-  place-items: center;
-
-  margin-bottom: 13px;
-
-  border-radius: 10px;
-
-  background:
-    var(--purple-soft);
-
-  color:
-    #aa79ff;
-}
-
-.feature strong {
-  display: block;
-
-  margin-bottom: 5px;
-
-  font-size: 13px;
-}
-
-.feature span {
-  color:
-    var(--text-muted);
+  color: #8a93a1;
 
   font-size: 11px;
 }
 
+.dev-panel button {
+  width: 100%;
+
+  height: 42px;
+
+  margin-top: 12px;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  background: #242c38;
+
+  color: white;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
 
 /* =====================================================
-   ANALYZING
+   ANALYSIS SCREEN
 ===================================================== */
 
-.analysis-screen {
+.analysis-page {
   min-height:
-    calc(
-      100vh - 64px
-    );
+    calc(100vh - 72px);
 
   display: flex;
 
@@ -609,53 +709,77 @@ button {
   justify-content: center;
 
   padding:
-    30px
-    20px;
+    50px
+    20px
+    70px;
 }
 
-.analysis-card {
+.analysis-content {
   width: 100%;
-
-  max-width: 620px;
+  max-width: 700px;
 
   text-align: center;
 }
 
-.analysis-card h2 {
-  margin: 0;
+.back-link {
+  position: absolute;
 
-  font-size: 25px;
+  top: 96px;
+  left: max(20px, calc((100vw - 1120px) / 2));
 
-  letter-spacing:
-    -.03em;
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  border: 1px solid #282f3b;
+
+  background: #0d1119;
+
+  color: #aab1bc;
+
+  cursor: pointer;
 }
 
-.analysis-card p {
+.analysis-content h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      25px,
+      3vw,
+      34px
+    );
+
+  letter-spacing: -.035em;
+}
+
+.analysis-description {
   margin:
-    9px
+    10px
     0
-    30px;
+    34px;
 
-  color:
-    var(--text-muted);
+  color: #77808d;
 
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .progress-ring {
   position: relative;
 
   width: 190px;
-
   height: 190px;
 
   margin:
     0
     auto
-    36px;
+    34px;
 
   display: grid;
-
   place-items: center;
 }
 
@@ -665,18 +789,15 @@ button {
   inset: 0;
 
   width: 100%;
-
   height: 100%;
 
-  transform:
-    rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .ring-track {
   fill: none;
 
-  stroke:
-    #1c2230;
+  stroke: #171d29;
 
   stroke-width: 8;
 }
@@ -684,59 +805,84 @@ button {
 .ring-value {
   fill: none;
 
-  stroke:
-    url(#ringGradient);
+  stroke: url(#progressGradient);
 
   stroke-width: 8;
 
   stroke-linecap: round;
 
-  stroke-dasharray:
-    527;
-
-  stroke-dashoffset:
-    527;
+  stroke-dasharray: 527;
+  stroke-dashoffset: 527;
 
   transition:
-    stroke-dashoffset
-    .35s ease;
+    stroke-dashoffset .35s ease;
 }
 
-.progress-value {
+.progress-number {
   position: relative;
 
-  font-size: 35px;
+  font-size: 42px;
 
-  font-weight: 800;
+  font-weight: 700;
 
-  letter-spacing:
-    -.04em;
+  letter-spacing: -.045em;
 }
 
-.steps {
+.analysis-steps {
+  width: 100%;
+
   display: grid;
 
   grid-template-columns:
     repeat(4,1fr);
 
-  gap: 8px;
+  align-items: start;
 
-  max-width: 560px;
-
-  margin: auto;
+  margin-top: 10px;
 }
 
-.step {
-  color:
-    #555e6d;
+.analysis-step {
+  position: relative;
 
-  font-size: 11px;
+  color: #515968;
+
+  font-size: 10px;
+
+  text-align: center;
 }
 
-.step-dot {
-  width: 30px;
+.analysis-step:not(:last-child)::after {
+  content: "";
 
-  height: 30px;
+  position: absolute;
+
+  top: 17px;
+
+  left: calc(50% + 21px);
+
+  width: calc(100% - 42px);
+
+  height: 1px;
+
+  background: #292f3b;
+}
+
+.analysis-step.done:not(:last-child)::after {
+  background:
+    linear-gradient(
+      90deg,
+      #7235e8,
+      #5e29bd
+    );
+}
+
+.step-circle {
+  position: relative;
+
+  z-index: 2;
+
+  width: 35px;
+  height: 35px;
 
   display: grid;
 
@@ -745,848 +891,156 @@ button {
   margin:
     0
     auto
-    8px;
+    9px;
 
   border-radius: 50%;
 
-  background:
-    #151a23;
-
   border:
-    1px solid
-    #262d3b;
+    1px solid #292f3a;
+
+  background: #10151e;
+
+  color: #656e7c;
+
+  font-size: 11px;
+
+  font-weight: 700;
 }
 
-.step.active {
-  color:
-    #d9caef;
+.analysis-step.active {
+  color: white;
 }
 
-.step.active .step-dot {
-  background:
-    var(--purple);
-
-  border-color:
-    var(--purple);
-}
-
-.step.done {
-  color:
-    #8f7aaa;
-}
-
-.step.done .step-dot {
-  background:
-    #5122a7;
-
-  border-color:
-    #6630cb;
-}
-
-
-/* =====================================================
-   RESULT
-===================================================== */
-
-.result-layout {
-  max-width:
-    1180px;
-
-  margin: auto;
-
-  padding:
-    22px
-    16px
-    80px;
-}
-
-.song-head {
-  display: flex;
-
-  align-items: center;
-
-  gap: 14px;
-
-  padding:
-    14px
-    0
-    20px;
-}
-
-.cover {
-  width: 64px;
-
-  height: 64px;
-
-  flex: 0 0 auto;
-
-  display: grid;
-
-  place-items: center;
-
-  border-radius:
-    12px;
+.analysis-step.active .step-circle {
+  border-color: #7d3cff;
 
   background:
     linear-gradient(
       135deg,
-      #45216e,
-      #251338
-    );
-
-  color:
-    #be9cff;
-
-  font-size: 24px;
-}
-
-.song-info {
-  flex: 1;
-
-  min-width: 0;
-}
-
-.song-info h2 {
-  margin:
-    0
-    0
-    5px;
-
-  font-size: 19px;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow:
-    ellipsis;
-}
-
-.song-info p {
-  margin: 0;
-
-  color:
-    var(--text-muted);
-
-  font-size: 12px;
-}
-
-.song-stats {
-  display: flex;
-
-  gap: 22px;
-}
-
-.stat {
-  text-align: right;
-}
-
-.stat small {
-  display: block;
-
-  color:
-    var(--text-muted);
-
-  font-size: 9px;
-
-  text-transform: uppercase;
-
-  letter-spacing: .08em;
-}
-
-.stat strong {
-  display: block;
-
-  margin-top: 4px;
-
-  font-size: 13px;
-}
-
-
-/* =====================================================
-   PLAYER
-===================================================== */
-
-.player-card {
-  background:
-    var(--surface);
-
-  border:
-    1px solid
-    var(--border-soft);
-
-  border-radius:
-    17px;
-
-  overflow: hidden;
-}
-
-.player-main {
-  padding:
-    18px;
-}
-
-.player-controls {
-  display: flex;
-
-  align-items: center;
-
-  gap: 13px;
-}
-
-.play-button {
-  width: 54px;
-
-  height: 54px;
-
-  flex: 0 0 auto;
-
-  display: grid;
-
-  place-items: center;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background:
-    linear-gradient(
-      135deg,
-      #793cf0,
-      #985dfd
+      #6a2ddb,
+      #8645ef
     );
 
   color: white;
 
-  cursor: pointer;
+  box-shadow:
+    0 0 24px rgba(125,60,255,.19);
 }
 
-.play-button svg {
-  width: 21px;
-
-  fill: currentColor;
+.analysis-step.done {
+  color: #9879c5;
 }
 
-.track-area {
-  flex: 1;
+.analysis-step.done .step-circle {
+  background: #682ed1;
 
-  min-width: 0;
+  border-color: #7138dc;
+
+  color: white;
 }
 
-.track-time {
+.analysis-hint {
+  margin:
+    36px
+    auto
+    0;
+
+  max-width: 620px;
+
+  min-height: 58px;
+
   display: flex;
 
-  justify-content: space-between;
+  align-items: center;
 
-  margin-bottom: 9px;
+  gap: 11px;
 
-  color:
-    var(--text-muted);
+  padding:
+    0
+    17px;
 
-  font-size: 10px;
+  border:
+    1px solid #1f2631;
+
+  border-radius: 10px;
+
+  background: #0d1118;
+
+  color: #838c9a;
+
+  font-size: 11px;
+
+  text-align: left;
 }
 
-.seek {
-  position: relative;
+.analysis-hint-icon {
+  color: #e6c548;
 
-  height: 5px;
-
-  border-radius: 999px;
-
-  background:
-    #222938;
-
-  cursor: pointer;
-}
-
-.seek-progress {
-  width: 0%;
-
-  height: 100%;
-
-  border-radius: inherit;
-
-  background:
-    linear-gradient(
-      90deg,
-      #7140df,
-      #a062ff
-    );
+  font-size: 18px;
 }
 
 
 /* =====================================================
-   HARMONIC TIMELINE
+   RESULT PLACEHOLDER
 ===================================================== */
 
-.timeline-header {
-  display: flex;
+.result-page {
+  width: min(1000px, calc(100% - 40px));
 
-  justify-content: space-between;
+  margin: 0 auto;
+
+  padding:
+    50px
+    0;
+}
+
+.result-card {
+  padding: 24px;
+
+  border:
+    1px solid #252c38;
+
+  border-radius: 15px;
+
+  background: #0f141c;
+}
+
+.result-card h2 {
+  margin-top: 0;
+}
+
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.result-chord {
+  display: flex;
 
   align-items: center;
 
-  margin:
-    25px
-    0
-    10px;
-}
-
-.timeline-header strong {
-  font-size: 12px;
-}
-
-.timeline-header span {
-  color:
-    var(--text-muted);
-
-  font-size: 10px;
-}
-
-.timeline-wrap {
-  position: relative;
-
-  overflow-x: auto;
-
-  scrollbar-width: none;
-
-  padding-bottom: 4px;
-}
-
-.timeline-wrap::-webkit-scrollbar {
-  display: none;
-}
-
-.timeline {
-  display: flex;
-
-  gap: 7px;
-
-  min-width:
-    max-content;
-}
-
-.timeline-chord {
-  min-width: 76px;
+  justify-content: space-between;
 
   padding:
     12px
     14px;
 
-  border:
-    1px solid
-    #252b39;
+  border-radius: 9px;
 
-  border-radius:
-    10px;
+  background: #151a23;
 
-  background:
-    #151a24;
-
-  color:
-    #c9ccd3;
-
-  text-align: center;
-
-  cursor: pointer;
-
-  transition:
-    .2s ease;
+  border: 1px solid #252b36;
 }
 
-.timeline-chord strong {
-  display: block;
-
+.result-chord strong {
   font-size: 15px;
 }
 
-.timeline-chord small {
-  display: block;
-
-  margin-top: 5px;
-
-  color:
-    #727988;
-
-  font-size: 9px;
-}
-
-.timeline-chord.active {
-  color: white;
-
-  background:
-    linear-gradient(
-      180deg,
-      #8147ef,
-      #682ed3
-    );
-
-  border-color:
-    #9c6aff;
-
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 10px 28px
-    rgba(112,51,220,.24);
-}
-
-
-/* =====================================================
-   CURRENT CHORD
-===================================================== */
-
-.current-grid {
-  display: grid;
-
-  grid-template-columns:
-    1fr
-    1fr
-    150px;
-
-  margin-top: 18px;
-
-  border-top:
-    1px solid
-    #202633;
-}
-
-.current-block {
-  min-height: 132px;
-
-  padding:
-    19px;
-
-  border-right:
-    1px solid
-    #202633;
-}
-
-.current-block:last-child {
-  border-right: 0;
-}
-
-.current-block small {
-  color:
-    var(--text-muted);
+.result-chord span {
+  color: #7e8794;
 
   font-size: 10px;
-}
-
-.big-chord {
-  margin-top: 5px;
-
-  font-size: 37px;
-
-  font-weight: 850;
-
-  letter-spacing:
-    -.05em;
-}
-
-.next-chord {
-  color:
-    #aeb3bf;
-}
-
-.confidence-value {
-  margin-top: 10px;
-
-  font-size: 25px;
-
-  font-weight: 800;
-}
-
-.confidence-label {
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 4px;
-
-  margin-top: 7px;
-
-  padding:
-    4px
-    6px;
-
-  border-radius:
-    6px;
-
-  color:
-    var(--green);
-
-  background:
-    rgba(103,223,154,.08);
-
-  font-size: 9px;
-}
-
-
-/* =====================================================
-   ACTIONS
-===================================================== */
-
-.result-actions {
-  display: grid;
-
-  grid-template-columns:
-    1.3fr
-    1fr
-    1fr;
-
-  gap: 9px;
-
-  margin-top: 12px;
-}
-
-.action-button {
-  min-height: 47px;
-
-  border:
-    1px solid
-    #2c3341;
-
-  border-radius:
-    11px;
-
-  background:
-    #121720;
-
-  color: white;
-
-  font-size: 12px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-.action-button.primary {
-  background:
-    linear-gradient(
-      135deg,
-      #7135e8,
-      #8b4df4
-    );
-
-  border-color:
-    transparent;
-}
-
-
-/* =====================================================
-   ADJUST PANEL
-===================================================== */
-
-.panel-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 500;
-
-  display: none;
-
-  align-items: flex-end;
-
-  justify-content: center;
-
-  padding:
-    20px;
-
-  background:
-    rgba(0,0,0,.66);
-
-  backdrop-filter:
-    blur(8px);
-}
-
-.panel-overlay.open {
-  display: flex;
-}
-
-.sheet {
-  width: 100%;
-
-  max-width: 660px;
-
-  max-height:
-    82vh;
-
-  overflow-y: auto;
-
-  background:
-    #10141d;
-
-  border:
-    1px solid
-    #29303e;
-
-  border-radius:
-    22px;
-
-  box-shadow:
-    var(--shadow);
-}
-
-.sheet-head {
-  position: sticky;
-
-  top: 0;
-
-  z-index: 5;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  padding:
-    17px
-    19px;
-
-  background:
-    rgba(16,20,29,.95);
-
-  backdrop-filter:
-    blur(15px);
-
-  border-bottom:
-    1px solid
-    #242a36;
-}
-
-.sheet-head strong {
-  font-size: 15px;
-}
-
-.sheet-close {
-  width: 33px;
-
-  height: 33px;
-
-  display: grid;
-
-  place-items: center;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background:
-    #191e28;
-
-  color: white;
-
-  font-size: 20px;
-
-  cursor: pointer;
-}
-
-.sheet-body {
-  padding: 18px;
-}
-
-.adjust-summary {
-  display: grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  gap: 8px;
-
-  margin-bottom: 17px;
-}
-
-.adjust-stat {
-  padding: 11px;
-
-  border-radius:
-    10px;
-
-  background:
-    #151a24;
-
-  color:
-    var(--text-muted);
-
-  font-size: 10px;
-}
-
-.adjust-stat strong {
-  display: block;
-
-  margin-top: 5px;
-
-  color: white;
-
-  font-size: 12px;
-}
-
-.candidate-list {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 8px;
-}
-
-.candidate {
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  min-height: 58px;
-
-  padding:
-    10px
-    12px;
-
-  border:
-    1px solid
-    #292f3c;
-
-  border-radius:
-    11px;
-
-  background:
-    #141923;
-
-  cursor: pointer;
-}
-
-.candidate.selected {
-  border-color:
-    #8050e7;
-
-  background:
-    rgba(118,61,230,.11);
-}
-
-.candidate-name {
-  flex: 1;
-
-  font-weight: 800;
-}
-
-.candidate-score {
-  color:
-    #ab8dde;
-
-  font-size: 11px;
-}
-
-
-/* =====================================================
-   DEV DEBUG
-===================================================== */
-
-.debug-drawer {
-  display: none;
-
-  margin-top: 16px;
-
-  padding: 16px;
-
-  border-radius:
-    14px;
-
-  background:
-    #0a0d12;
-
-  border:
-    1px solid
-    #252b36;
-}
-
-.debug-drawer.open {
-  display: block;
-}
-
-.debug-drawer pre {
-  margin: 0;
-
-  max-height: 440px;
-
-  overflow: auto;
-
-  white-space: pre-wrap;
-
-  word-break: break-word;
-
-  color:
-    #858e9d;
-
-  font-size: 10px;
-
-  line-height: 1.5;
-}
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-.toast {
-  position: fixed;
-
-  left: 50%;
-
-  bottom:
-    calc(
-      24px +
-      env(
-        safe-area-inset-bottom
-      )
-    );
-
-  z-index: 1000;
-
-  transform:
-    translate(
-      -50%,
-      20px
-    );
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  padding:
-    11px
-    15px;
-
-  border-radius:
-    10px;
-
-  background:
-    #202633;
-
-  border:
-    1px solid
-    #323a49;
-
-  color: white;
-
-  font-size: 12px;
-
-  transition:
-    .25s ease;
-}
-
-.toast.show {
-  opacity: 1;
-
-  transform:
-    translate(
-      -50%,
-      0
-    );
 }
 
 
@@ -1594,113 +1048,267 @@ button {
    MOBILE
 ===================================================== */
 
-@media(
-  max-width: 680px
-){
+@media (max-width: 760px) {
 
-  .topbar {
-    height: 58px;
+  .header {
+    height: 62px;
   }
 
-  .screen {
-    min-height:
-      calc(
-        100vh - 58px
-      );
+  .header-inner {
+    width:
+      calc(100% - 28px);
   }
 
-  .home {
-    padding:
-      44px
-      15px
-      60px;
+  .brand {
+    font-size: 15px;
   }
 
-  .hero h1 {
-    font-size:
-      clamp(
-        40px,
-        13vw,
-        57px
-      );
+  .logo {
+    width: 27px;
+    height: 27px;
   }
 
-  .hero p {
-    font-size: 13px;
-  }
-
-  .analyze-box {
-    flex-direction:
-      column;
-
-    padding: 8px;
-  }
-
-  .primary-button {
-    width: 100%;
-  }
-
-  .feature-row {
-    grid-template-columns:
-      1fr;
-  }
-
-  .feature {
-    min-height: 86px;
-  }
-
-  .steps {
-    gap: 4px;
-  }
-
-  .step {
-    font-size: 9px;
-  }
-
-  .song-head {
-    align-items:
-      flex-start;
-  }
-
-  .song-stats {
+  .nav {
     display: none;
   }
 
-  .player-main {
-    padding: 14px;
+  .hero {
+    width:
+      calc(100% - 34px);
+
+    padding:
+      36px
+      0
+      24px;
   }
 
-  .current-grid {
-    grid-template-columns:
-      1fr
-      1fr;
+  .hero-content {
+    width: 100%;
   }
 
-  .current-block:nth-child(2) {
-    border-right: 0;
+  .badge {
+    margin-bottom: 21px;
+
+    font-size: 10px;
   }
 
-  .current-block:last-child {
-    grid-column:
-      1 / -1;
+  .hero h1 {
+    max-width: 92%;
 
-    min-height: auto;
+    font-size:
+      clamp(
+        41px,
+        11vw,
+        58px
+      );
 
-    border-top:
-      1px solid
-      #202633;
-
-    text-align: center;
+    line-height: 1.03;
   }
 
-  .result-actions {
-    grid-template-columns:
-      1fr;
+  .hero-description {
+    max-width: 91%;
+
+    font-size: 13px;
+
+    line-height: 1.55;
   }
 
-  .adjust-summary {
-    grid-template-columns:
-      1fr;
+  .harmonic-art {
+    right: -7%;
+    top: 177px;
+
+    width: 47%;
+    height: 205px;
+
+    opacity: .26;
+  }
+
+  .harmonic-art span {
+    width: 4px;
+  }
+
+  .link-box {
+    margin-top: 29px;
+
+    min-height: 62px;
+
+    gap: 3px;
+
+    padding: 5px;
+  }
+
+  .link-icon {
+    width: 36px;
+
+    font-size: 18px;
+  }
+
+  .link-input {
+    height: 49px;
+
+    font-size: 12px;
+  }
+
+  .analyze-btn {
+    height: 49px;
+
+    padding: 0 14px;
+
+    font-size: 11px;
+  }
+
+  .features {
+    width:
+      calc(100% - 34px);
+
+    gap: 8px;
+
+    padding:
+      20px
+      0
+      26px;
+  }
+
+  .feature {
+    align-items: flex-start;
+
+    gap: 8px;
+  }
+
+  .feature-icon {
+    width: 31px;
+    height: 31px;
+
+    font-size: 12px;
+  }
+
+  .feature strong {
+    font-size: 10px;
+  }
+
+  .feature small {
+    font-size: 8px;
+
+    line-height: 1.35;
+  }
+
+  .analysis-page {
+    min-height:
+      calc(100vh - 62px);
+
+    padding:
+      45px
+      16px;
+  }
+
+  .back-link {
+    top: 79px;
+    left: 15px;
+  }
+
+  .analysis-content {
+    padding-top: 18px;
+  }
+
+  .progress-ring {
+    width: 165px;
+    height: 165px;
+  }
+
+  .progress-number {
+    font-size: 35px;
+  }
+
+  .analysis-step {
+    font-size: 8px;
+  }
+
+  .analysis-step:not(:last-child)::after {
+    left: calc(50% + 18px);
+
+    width: calc(100% - 36px);
+  }
+
+  .step-circle {
+    width: 31px;
+    height: 31px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .hero {
+    width:
+      calc(100% - 28px);
+  }
+
+  .hero h1 {
+    max-width: 100%;
+
+    font-size:
+      clamp(
+        38px,
+        10.7vw,
+        52px
+      );
+  }
+
+  .hero-description {
+    max-width: 100%;
+  }
+
+  .link-box {
+    align-items: stretch;
+
+    flex-wrap: wrap;
+
+    padding: 6px;
+  }
+
+  .link-icon {
+    width: 34px;
+  }
+
+  .link-input {
+    min-width:
+      calc(100% - 40px);
+  }
+
+  .analyze-btn {
+    width: 100%;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .feature {
+    align-items: center;
+  }
+
+  .feature-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .feature strong {
+    font-size: 12px;
+  }
+
+  .feature small {
+    font-size: 10px;
+  }
+
+  .analysis-steps {
+    gap: 2px;
+  }
+
+  .analysis-step {
+    font-size: 7px;
   }
 
 }
@@ -1713,95 +1321,242 @@ button {
 <div class="app">
 
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+  <!-- =================================================
+       HEADER
+  ================================================== -->
 
-<header class="topbar">
+  <header class="header">
 
-  <div class="brand">
+    <div class="header-inner">
 
-    <div class="brand-mark">
+      <div class="brand">
 
-      <svg viewBox="0 0 24 24">
-        <rect
-          x="4"
-          y="4"
-          width="16"
-          height="16"
-          rx="4"
-        />
-        <path
-          d="M9 9v6M15 8v8M9 12h6"
-        />
-      </svg>
+        <div class="logo">
+          <div class="logo-line"></div>
+        </div>
+
+        <span>
+          Chord AI
+        </span>
+
+      </div>
+
+
+      <nav class="nav">
+
+        <a
+          href="#"
+          class="active"
+        >
+          Início
+        </a>
+
+        <a href="#">
+          Recursos
+        </a>
+
+        <a href="#">
+          Planos
+        </a>
+
+        <a href="#">
+          Como funciona
+        </a>
+
+        <a href="#">
+          Entrar
+        </a>
+
+        <button
+          class="nav-create"
+          type="button"
+        >
+          Criar conta
+        </button>
+
+      </nav>
 
     </div>
 
-    Chord AI
-
-  </div>
+  </header>
 
 
-  <div class="plan-chip">
-    ★ Plano Gratuito
-  </div>
+  <!-- =================================================
+       HOME
+  ================================================== -->
 
-</header>
+  <section
+    id="homeScreen"
+    class="screen active"
+  >
 
+    <main>
 
-<!-- =====================================================
-     HOME
-===================================================== -->
-
-<section
-  id="homeScreen"
-  class="screen active"
->
-
-  <div class="home">
-
-    <div class="hero">
-
-      <div class="hero-badge">
-        ✦ Inteligência artificial para músicos
-      </div>
-
-      <h1>
-        Entenda a
-        <span>
-          harmonia
-        </span>
-        de qualquer música.
-      </h1>
-
-      <p>
-        Cole o link de uma música e a Chord AI
-        identifica as cifras, acompanha as mudanças
-        harmônicas e ajuda você a tocar junto.
-      </p>
+      <section class="hero">
 
 
-      <div class="analyze-box">
+        <div class="harmonic-art">
 
-        <input
-          id="urlInput"
-          class="url-field"
-          placeholder="Cole o link da música aqui..."
-        >
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
 
-        <button
-          id="analyzeUrlButton"
-          class="primary-button"
-          type="button"
-        >
-          Analisar música
-        </button>
-
-      </div>
+        </div>
 
 
-      <div class="dev-upload">
+        <div class="hero-content">
+
+          <div class="badge">
+
+            <span class="badge-new">
+              NOVO
+            </span>
+
+            <span>
+              Conversão de músicas em cifras com inteligência artificial
+            </span>
+
+          </div>
+
+
+          <h1>
+            Entenda a
+            <span>
+              harmonia
+            </span>
+            de qualquer música.
+          </h1>
+
+
+          <p class="hero-description">
+            Cole o link de uma música do YouTube e nossa IA detecta as cifras para você tocar.
+          </p>
+
+
+          <div class="link-box">
+
+            <div class="link-icon">
+              ↗
+            </div>
+
+            <input
+              id="urlInput"
+              class="link-input"
+              type="text"
+              placeholder="Cole o link do YouTube aqui..."
+            >
+
+            <button
+              id="analyzeButton"
+              class="analyze-btn"
+              type="button"
+            >
+              Analisar música
+            </button>
+
+          </div>
+
+
+          <div class="example-area">
+
+            <div class="or">
+              ou
+            </div>
+
+            <button
+              id="exampleButton"
+              class="example-btn"
+              type="button"
+            >
+              Exemplo: Imagine – John Lennon
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="section-divider"></div>
+
+      </section>
+
+
+      <section class="features">
+
+        <div class="feature">
+
+          <div class="feature-icon">
+            ◉
+          </div>
+
+          <div>
+
+            <strong>
+              Rápido
+            </strong>
+
+            <small>
+              Análise em segundos
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="feature">
+
+          <div class="feature-icon">
+            ✦
+          </div>
+
+          <div>
+
+            <strong>
+              Preciso
+            </strong>
+
+            <small>
+              Alta qualidade de detecção
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="feature">
+
+          <div class="feature-icon">
+            ⌗
+          </div>
+
+          <div>
+
+            <strong>
+              Fácil de usar
+            </strong>
+
+            <small>
+              Interface intuitiva
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="dev-area">
 
         <button
           id="devToggle"
@@ -1824,428 +1579,181 @@ button {
           >
 
           <button
-            id="analyzeWavButton"
-            class="primary-button"
+            id="wavAnalyze"
             type="button"
-            style="
-              width:100%;
-              margin-top:12px;
-            "
           >
             Analisar WAV de teste
           </button>
 
         </div>
 
-      </div>
+      </section>
 
-    </div>
+    </main>
 
+  </section>
 
-    <div class="feature-row">
 
-      <div class="feature">
+  <!-- =================================================
+       ANALYSIS
+  ================================================== -->
 
-        <div class="feature-icon">
-          ⚡
-        </div>
+  <section
+    id="analysisScreen"
+    class="screen"
+  >
 
-        <strong>
-          Rápido
-        </strong>
+    <button
+      id="backButton"
+      class="back-link"
+      type="button"
+    >
+      ←
+    </button>
 
-        <span>
-          Análise automática da harmonia.
-        </span>
 
-      </div>
+    <div class="analysis-page">
 
+      <div class="analysis-content">
 
-      <div class="feature">
-
-        <div class="feature-icon">
-          ◎
-        </div>
-
-        <strong>
-          Preciso
-        </strong>
-
-        <span>
-          Reconstrução e validação dos acordes.
-        </span>
-
-      </div>
-
-
-      <div class="feature">
-
-        <div class="feature-icon">
-          ♫
-        </div>
-
-        <strong>
-          Feito para tocar
-        </strong>
-
-        <span>
-          Cifras sincronizadas com a música.
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-     ANALYZING
-===================================================== -->
-
-<section
-  id="analysisScreen"
-  class="screen"
->
-
-  <div class="analysis-screen">
-
-    <div class="analysis-card">
-
-      <h2>
-        Analisando sua música...
-      </h2>
-
-      <p id="analysisMessage">
-        Preparando o áudio para análise.
-      </p>
-
-
-      <div class="progress-ring">
-
-        <svg viewBox="0 0 180 180">
-
-          <defs>
-
-            <linearGradient
-              id="ringGradient"
-              x1="0"
-              x2="1"
-            >
-
-              <stop
-                offset="0%"
-                stop-color="#6d30dd"
-              />
-
-              <stop
-                offset="100%"
-                stop-color="#a96fff"
-              />
-
-            </linearGradient>
-
-          </defs>
-
-          <circle
-            class="ring-track"
-            cx="90"
-            cy="90"
-            r="84"
-          />
-
-          <circle
-            id="ringValue"
-            class="ring-value"
-            cx="90"
-            cy="90"
-            r="84"
-          />
-
-        </svg>
-
-
-        <div
-          id="progressValue"
-          class="progress-value"
-        >
-          0%
-        </div>
-
-      </div>
-
-
-      <div class="steps">
-
-        <div
-          id="step1"
-          class="step active"
-        >
-
-          <div class="step-dot">
-            1
-          </div>
-
-          Obtendo áudio
-
-        </div>
-
-
-        <div
-          id="step2"
-          class="step"
-        >
-
-          <div class="step-dot">
-            2
-          </div>
-
-          Processando
-
-        </div>
-
-
-        <div
-          id="step3"
-          class="step"
-        >
-
-          <div class="step-dot">
-            3
-          </div>
-
-          Detectando harmonia
-
-        </div>
-
-
-        <div
-          id="step4"
-          class="step"
-        >
-
-          <div class="step-dot">
-            4
-          </div>
-
-          Finalizando
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-     RESULT
-===================================================== -->
-
-<section
-  id="resultScreen"
-  class="screen"
->
-
-  <div class="result-layout">
-
-
-    <div class="song-head">
-
-      <div class="cover">
-        ♫
-      </div>
-
-
-      <div class="song-info">
-
-        <h2 id="songTitle">
-          Música analisada
+        <h2>
+          Analisando sua música...
         </h2>
 
-        <p id="songMeta">
-          Chord AI
+        <p
+          id="analysisDescription"
+          class="analysis-description"
+        >
+          Isso pode levar alguns segundos.
         </p>
 
-      </div>
+
+        <div class="progress-ring">
+
+          <svg viewBox="0 0 180 180">
+
+            <defs>
+
+              <linearGradient
+                id="progressGradient"
+                x1="0"
+                x2="1"
+              >
+
+                <stop
+                  offset="0%"
+                  stop-color="#7133e8"
+                />
+
+                <stop
+                  offset="100%"
+                  stop-color="#a25fff"
+                />
+
+              </linearGradient>
+
+            </defs>
 
 
-      <div class="song-stats">
-
-        <div class="stat">
-
-          <small>
-            Duração
-          </small>
-
-          <strong id="songDuration">
-            —
-          </strong>
-
-        </div>
+            <circle
+              class="ring-track"
+              cx="90"
+              cy="90"
+              r="84"
+            />
 
 
-        <div class="stat">
+            <circle
+              id="ringValue"
+              class="ring-value"
+              cx="90"
+              cy="90"
+              r="84"
+            />
 
-          <small>
-            Acordes
-          </small>
+          </svg>
 
-          <strong id="songChordCount">
-            —
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="player-card">
-
-      <div class="player-main">
-
-
-        <div class="player-controls">
-
-          <button
-            id="playButton"
-            class="play-button"
-            type="button"
-          >
-
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M8 5v14l11-7z"
-              />
-            </svg>
-
-          </button>
-
-
-          <div class="track-area">
-
-            <div class="track-time">
-
-              <span id="currentTime">
-                00:00
-              </span>
-
-              <span id="totalTime">
-                00:00
-              </span>
-
-            </div>
-
-
-            <div
-              id="seek"
-              class="seek"
-            >
-
-              <div
-                id="seekProgress"
-                class="seek-progress"
-              ></div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="timeline-header">
-
-          <strong>
-            Linha do tempo da harmonia
-          </strong>
-
-          <span>
-            Toque em uma cifra para selecionar
-          </span>
-
-        </div>
-
-
-        <div class="timeline-wrap">
 
           <div
-            id="timeline"
-            class="timeline"
-          ></div>
+            id="progressNumber"
+            class="progress-number"
+          >
+            0%
+          </div>
 
         </div>
 
 
-        <div class="current-grid">
+        <div class="analysis-steps">
 
-          <div class="current-block">
 
-            <small>
-              Cifra atual
-            </small>
+          <div
+            id="step0"
+            class="analysis-step active"
+          >
 
-            <div
-              id="currentChord"
-              class="big-chord"
-            >
-              —
+            <div class="step-circle">
+              1
             </div>
 
-            <small id="currentChordTime">
-              —
-            </small>
+            Obtendo áudio
 
           </div>
 
 
-          <div class="current-block">
+          <div
+            id="step1"
+            class="analysis-step"
+          >
 
-            <small>
-              Próxima cifra
-            </small>
-
-            <div
-              id="nextChord"
-              class="big-chord next-chord"
-            >
-              —
+            <div class="step-circle">
+              2
             </div>
 
-            <small id="nextChordTime">
-              —
-            </small>
+            Processando
 
           </div>
 
 
-          <div class="current-block">
+          <div
+            id="step2"
+            class="analysis-step"
+          >
 
-            <small>
-              Confiança
-            </small>
-
-            <div
-              id="confidenceValue"
-              class="confidence-value"
-            >
-              —
+            <div class="step-circle">
+              3
             </div>
 
-            <div
-              id="confidenceLabel"
-              class="confidence-label"
-            >
-              ● analisando
+            Detectando harmonia
+
+          </div>
+
+
+          <div
+            id="step3"
+            class="analysis-step"
+          >
+
+            <div class="step-circle">
+              4
             </div>
 
+            Finalizando
+
+          </div>
+
+
+        </div>
+
+
+        <div class="analysis-hint">
+
+          <div class="analysis-hint-icon">
+            ♧
+          </div>
+
+          <div>
+            Dica: músicas mais longas podem levar um pouco mais de tempo.
           </div>
 
         </div>
@@ -2254,151 +1762,58 @@ button {
 
     </div>
 
-
-    <div class="result-actions">
-
-      <button
-        id="playHarmonyButton"
-        class="action-button primary"
-        type="button"
-      >
-        ▶ Ouvir harmonia
-      </button>
+  </section>
 
 
-      <button
-        id="adjustChordButton"
-        class="action-button"
-        type="button"
-      >
-        ✎ Ajustar cifra
-      </button>
+  <!-- =================================================
+       RESULT TEMPORÁRIO
+  ================================================== -->
+
+  <section
+    id="resultScreen"
+    class="screen"
+  >
+
+    <main class="result-page">
+
+      <div class="result-card">
+
+        <h2>
+          Resultado da análise
+        </h2>
+
+        <p
+          id="resultInfo"
+          style="
+            color:#7c8593;
+            font-size:12px;
+          "
+        ></p>
 
 
-      <button
-        id="debugButton"
-        class="action-button"
-        type="button"
-      >
-        ⋯ Diagnóstico
-      </button>
-
-    </div>
-
-
-    <div
-      id="debugDrawer"
-      class="debug-drawer"
-    >
-
-      <pre id="debugOutput"></pre>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-     ADJUST CHORD
-===================================================== -->
-
-<div
-  id="adjustOverlay"
-  class="panel-overlay"
->
-
-  <div class="sheet">
-
-    <div class="sheet-head">
-
-      <strong>
-        Ajustar cifra
-      </strong>
-
-      <button
-        id="closeAdjustButton"
-        class="sheet-close"
-        type="button"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div class="sheet-body">
-
-      <div class="adjust-summary">
-
-        <div class="adjust-stat">
-
-          Tempo
-
-          <strong id="adjustTime">
-            —
-          </strong>
-
-        </div>
-
-
-        <div class="adjust-stat">
-
-          Cifra atual
-
-          <strong id="adjustCurrent">
-            —
-          </strong>
-
-        </div>
-
-
-        <div class="adjust-stat">
-
-          Duração
-
-          <strong id="adjustDuration">
-            —
-          </strong>
-
-        </div>
+        <div
+          id="resultList"
+          class="result-list"
+        ></div>
 
       </div>
 
+    </main>
 
-      <div
-        id="candidateList"
-        class="candidate-list"
-      ></div>
+  </section>
 
-    </div>
-
-  </div>
-
-</div>
-
-
-<div
-  id="toast"
-  class="toast"
-></div>
 
 </div>
 
 
 <script>
 
-/* =====================================================
-   CONFIG
-===================================================== */
-
 const API =
   "https://chord-ai-api.onrender.com";
 
 
 /* =====================================================
-   ELEMENTS
+   ELEMENTOS
 ===================================================== */
 
 const homeScreen =
@@ -2422,9 +1837,14 @@ const urlInput =
     "urlInput"
   );
 
-const analyzeUrlButton =
+const analyzeButton =
   document.getElementById(
-    "analyzeUrlButton"
+    "analyzeButton"
+  );
+
+const exampleButton =
+  document.getElementById(
+    "exampleButton"
   );
 
 
@@ -2443,15 +1863,21 @@ const wavInput =
     "wavInput"
   );
 
-const analyzeWavButton =
+const wavAnalyze =
   document.getElementById(
-    "analyzeWavButton"
+    "wavAnalyze"
   );
 
 
-const progressValue =
+const backButton =
   document.getElementById(
-    "progressValue"
+    "backButton"
+  );
+
+
+const progressNumber =
+  document.getElementById(
+    "progressNumber"
   );
 
 const ringValue =
@@ -2459,226 +1885,28 @@ const ringValue =
     "ringValue"
   );
 
-const analysisMessage =
+const analysisDescription =
   document.getElementById(
-    "analysisMessage"
+    "analysisDescription"
   );
 
 
-const songTitle =
+const resultInfo =
   document.getElementById(
-    "songTitle"
+    "resultInfo"
   );
 
-const songMeta =
+const resultList =
   document.getElementById(
-    "songMeta"
-  );
-
-const songDuration =
-  document.getElementById(
-    "songDuration"
-  );
-
-const songChordCount =
-  document.getElementById(
-    "songChordCount"
+    "resultList"
   );
 
 
-const timeline =
-  document.getElementById(
-    "timeline"
-  );
-
-
-const currentChord =
-  document.getElementById(
-    "currentChord"
-  );
-
-const nextChord =
-  document.getElementById(
-    "nextChord"
-  );
-
-const currentChordTime =
-  document.getElementById(
-    "currentChordTime"
-  );
-
-const nextChordTime =
-  document.getElementById(
-    "nextChordTime"
-  );
-
-const confidenceValue =
-  document.getElementById(
-    "confidenceValue"
-  );
-
-const confidenceLabel =
-  document.getElementById(
-    "confidenceLabel"
-  );
-
-
-const playButton =
-  document.getElementById(
-    "playButton"
-  );
-
-const playHarmonyButton =
-  document.getElementById(
-    "playHarmonyButton"
-  );
-
-const seek =
-  document.getElementById(
-    "seek"
-  );
-
-const seekProgress =
-  document.getElementById(
-    "seekProgress"
-  );
-
-const currentTime =
-  document.getElementById(
-    "currentTime"
-  );
-
-const totalTime =
-  document.getElementById(
-    "totalTime"
-  );
-
-
-const adjustChordButton =
-  document.getElementById(
-    "adjustChordButton"
-  );
-
-const adjustOverlay =
-  document.getElementById(
-    "adjustOverlay"
-  );
-
-const closeAdjustButton =
-  document.getElementById(
-    "closeAdjustButton"
-  );
-
-const adjustTime =
-  document.getElementById(
-    "adjustTime"
-  );
-
-const adjustCurrent =
-  document.getElementById(
-    "adjustCurrent"
-  );
-
-const adjustDuration =
-  document.getElementById(
-    "adjustDuration"
-  );
-
-const candidateList =
-  document.getElementById(
-    "candidateList"
-  );
-
-
-const debugButton =
-  document.getElementById(
-    "debugButton"
-  );
-
-const debugDrawer =
-  document.getElementById(
-    "debugDrawer"
-  );
-
-const debugOutput =
-  document.getElementById(
-    "debugOutput"
-  );
-
-
-const toast =
-  document.getElementById(
-    "toast"
-  );
-
-
-/* =====================================================
-   STATE
-===================================================== */
-
-let originalAnalysis =
+let progressTimer =
   null;
 
-let workingAnalysis =
-  null;
-
-let selectedIndex =
+let progress =
   0;
-
-let fakeProgressTimer =
-  null;
-
-
-/* =====================================================
-   SYNTH
-===================================================== */
-
-let previewContext =
-  null;
-
-let previewNodes =
-  [];
-
-let previewStartTime =
-  null;
-
-let previewOffset =
-  0;
-
-let previewAnimation =
-  null;
-
-let previewPlaying =
-  false;
-
-
-const NOTE_TO_SEMITONE = {
-
-  C:0,
-
-  "C#":1,
-
-  D:2,
-
-  "D#":3,
-
-  E:4,
-
-  F:5,
-
-  "F#":6,
-
-  G:7,
-
-  "G#":8,
-
-  A:9,
-
-  "A#":10,
-
-  B:11
-
-};
 
 
 /* =====================================================
@@ -2695,10 +1923,13 @@ function showScreen(
     resultScreen
   ]
   .forEach(
-    item =>
+    item => {
+
       item.classList.remove(
         "active"
-      )
+      );
+
+    }
   );
 
 
@@ -2711,43 +1942,6 @@ function showScreen(
     0,
     0
   );
-
-}
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-function showToast(
-  message
-){
-
-  toast.textContent =
-    message;
-
-
-  toast.classList.add(
-    "show"
-  );
-
-
-  clearTimeout(
-    showToast.timer
-  );
-
-
-  showToast.timer =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          "show"
-        );
-
-      },
-      2200
-    );
 
 }
 
@@ -2769,13 +1963,28 @@ devToggle.addEventListener(
 
 
 /* =====================================================
-   URL PLACEHOLDER
-
-   Ainda não fazemos extração comercial
-   de áudio a partir de links.
+   EXAMPLE
 ===================================================== */
 
-analyzeUrlButton.addEventListener(
+exampleButton.addEventListener(
+  "click",
+  () => {
+
+    urlInput.value =
+      "https://www.youtube.com/watch?v=YBcdt6DsLQA";
+
+
+    urlInput.focus();
+
+  }
+);
+
+
+/* =====================================================
+   LINK
+===================================================== */
+
+analyzeButton.addEventListener(
   "click",
   () => {
 
@@ -2785,8 +1994,8 @@ analyzeUrlButton.addEventListener(
 
     if(!url){
 
-      showToast(
-        "Cole um link para continuar."
+      alert(
+        "Cole um link do YouTube."
       );
 
       return;
@@ -2794,8 +2003,8 @@ analyzeUrlButton.addEventListener(
     }
 
 
-    showToast(
-      "A entrada por links será conectada à próxima camada da API."
+    alert(
+      "A entrada por links será conectada à API depois."
     );
 
   }
@@ -2803,14 +2012,35 @@ analyzeUrlButton.addEventListener(
 
 
 /* =====================================================
-   ANALYSIS PROGRESS
+   BACK
+===================================================== */
+
+backButton.addEventListener(
+  "click",
+  () => {
+
+    clearInterval(
+      progressTimer
+    );
+
+
+    showScreen(
+      homeScreen
+    );
+
+  }
+);
+
+
+/* =====================================================
+   PROGRESS
 ===================================================== */
 
 function setProgress(
   value
 ){
 
-  const safe =
+  progress =
     Math.max(
       0,
       Math.min(
@@ -2820,9 +2050,9 @@ function setProgress(
     );
 
 
-  progressValue.textContent =
+  progressNumber.textContent =
     Math.round(
-      safe
+      progress
     )
     +
     "%";
@@ -2838,30 +2068,10 @@ function setProgress(
     (
       circumference
       *
-      safe
+      progress
       /
       100
     );
-
-
-  const steps =
-    [
-      document.getElementById(
-        "step1"
-      ),
-
-      document.getElementById(
-        "step2"
-      ),
-
-      document.getElementById(
-        "step3"
-      ),
-
-      document.getElementById(
-        "step4"
-      )
-    ];
 
 
   let activeStep =
@@ -2869,7 +2079,8 @@ function setProgress(
 
 
   if(
-    safe >= 25
+    progress >=
+    25
   ){
 
     activeStep =
@@ -2879,7 +2090,8 @@ function setProgress(
 
 
   if(
-    safe >= 55
+    progress >=
+    55
   ){
 
     activeStep =
@@ -2889,7 +2101,8 @@ function setProgress(
 
 
   if(
-    safe >= 84
+    progress >=
+    84
   ){
 
     activeStep =
@@ -2898,111 +2111,112 @@ function setProgress(
   }
 
 
-  steps.forEach(
-    (
-      step,
-      index
-    ) => {
+  for(
+    let i = 0;
+    i < 4;
+    i++
+  ){
 
-      step.classList.remove(
-        "active",
-        "done"
+    const step =
+      document.getElementById(
+        "step" + i
       );
 
 
-      if(
-        index <
-        activeStep
-      ){
+    step.classList.remove(
+      "active",
+      "done"
+    );
 
-        step.classList.add(
-          "done"
-        );
 
-      }
+    if(
+      i <
+      activeStep
+    ){
 
-      else if(
-        index ===
-        activeStep
-      ){
-
-        step.classList.add(
-          "active"
-        );
-
-      }
+      step.classList.add(
+        "done"
+      );
 
     }
-  );
+
+    else if(
+      i ===
+      activeStep
+    ){
+
+      step.classList.add(
+        "active"
+      );
+
+    }
+
+  }
 
 
   if(
-    safe <
+    progress <
     25
   ){
 
-    analysisMessage.textContent =
+    analysisDescription.textContent =
       "Obtendo e preparando o áudio.";
 
   }
 
   else if(
-    safe <
+    progress <
     55
   ){
 
-    analysisMessage.textContent =
-      "Extraindo informações acústicas.";
+    analysisDescription.textContent =
+      "Processando informações acústicas.";
 
   }
 
   else if(
-    safe <
+    progress <
     84
   ){
 
-    analysisMessage.textContent =
-      "Detectando a estrutura harmônica.";
+    analysisDescription.textContent =
+      "Detectando a harmonia da música.";
 
   }
 
   else{
 
-    analysisMessage.textContent =
-      "Validando e organizando as cifras.";
+    analysisDescription.textContent =
+      "Validando as cifras encontradas.";
 
   }
 
 }
 
 
-function startFakeProgress(){
+function startProgress(){
 
   clearInterval(
-    fakeProgressTimer
+    progressTimer
   );
-
-
-  let value =
-    5;
 
 
   setProgress(
-    value
+    4
   );
 
 
-  fakeProgressTimer =
+  progressTimer =
     setInterval(
       () => {
 
         if(
-          value >=
-          91
+          progress >=
+          92
         ){
 
           clearInterval(
-            fakeProgressTimer
+            progressTimer
           );
 
           return;
@@ -3010,23 +2224,41 @@ function startFakeProgress(){
         }
 
 
-        const gain =
+        let gain =
+          1
+          +
           Math.random()
           *
-          6
-          +
-          1;
+          5;
 
 
-        value =
-          Math.min(
-            91,
-            value + gain
-          );
+        if(
+          progress >
+          70
+        ){
+
+          gain *=
+            .55;
+
+        }
+
+
+        if(
+          progress >
+          86
+        ){
+
+          gain *=
+            .25;
+
+        }
 
 
         setProgress(
-          value
+          Math.min(
+            92,
+            progress + gain
+          )
         );
 
       },
@@ -3037,77 +2269,78 @@ function startFakeProgress(){
 
 
 /* =====================================================
-   FORMAT
+   RESULT
 ===================================================== */
 
-function formatTime(
-  seconds
+function renderResult(
+  data
 ){
 
-  const value =
-    Math.max(
-      0,
-      Number(
-        seconds
-      )
+  resultInfo.textContent =
+    `${data.chordCount} cifras detectadas · `
+    +
+    `${Number(
+      data.audio.duration
       ||
       0
+    ).toFixed(
+      1
+    )} segundos`;
+
+
+  resultList.innerHTML =
+    "";
+
+
+  for(
+    const chord
+    of data.chords
+    ||
+    []
+  ){
+
+    const item =
+      document.createElement(
+        "div"
+      );
+
+
+    item.className =
+      "result-chord";
+
+
+    item.innerHTML =
+      `
+        <strong>
+          ${chord.chord}
+        </strong>
+
+        <span>
+          ${Number(
+            chord.start
+          ).toFixed(2)}s
+          →
+          ${Number(
+            chord.end
+          ).toFixed(2)}s
+        </span>
+      `;
+
+
+    resultList.appendChild(
+      item
     );
 
-
-  const minutes =
-    Math.floor(
-      value / 60
-    );
-
-
-  const secs =
-    Math.floor(
-      value % 60
-    );
-
-
-  return (
-    String(
-      minutes
-    )
-    .padStart(
-      2,
-      "0"
-    )
-    +
-    ":"
-    +
-    String(
-      secs
-    )
-    .padStart(
-      2,
-      "0"
-    )
-  );
-
-}
-
-
-function clone(
-  value
-){
-
-  return JSON.parse(
-    JSON.stringify(
-      value
-    )
-  );
+  }
 
 }
 
 
 /* =====================================================
-   WAV ANALYZE
+   WAV
 ===================================================== */
 
-analyzeWavButton.addEventListener(
+wavAnalyze.addEventListener(
   "click",
   async () => {
 
@@ -3117,8 +2350,8 @@ analyzeWavButton.addEventListener(
 
     if(!file){
 
-      showToast(
-        "Selecione um arquivo WAV de teste."
+      alert(
+        "Escolha um WAV."
       );
 
       return;
@@ -3131,7 +2364,7 @@ analyzeWavButton.addEventListener(
     );
 
 
-    startFakeProgress();
+    startProgress();
 
 
     try{
@@ -3182,7 +2415,7 @@ analyzeWavButton.addEventListener(
 
 
       clearInterval(
-        fakeProgressTimer
+        progressTimer
       );
 
 
@@ -3200,23 +2433,9 @@ analyzeWavButton.addEventListener(
       );
 
 
-      originalAnalysis =
-        clone(
-          data
-        );
-
-
-      workingAnalysis =
-        clone(
-          data
-        );
-
-
-      selectedIndex =
-        0;
-
-
-      renderResult();
+      renderResult(
+        data
+      );
 
 
       showScreen(
@@ -3228,11 +2447,11 @@ analyzeWavButton.addEventListener(
     catch(error){
 
       clearInterval(
-        fakeProgressTimer
+        progressTimer
       );
 
 
-      showToast(
+      alert(
         error.message
       );
 
@@ -3242,1441 +2461,6 @@ analyzeWavButton.addEventListener(
       );
 
     }
-
-  }
-);
-
-
-/* =====================================================
-   RESULT
-===================================================== */
-
-function renderResult(){
-
-  if(
-    !workingAnalysis
-  ){
-
-    return;
-
-  }
-
-
-  const chords =
-    workingAnalysis.chords
-    ||
-    [];
-
-
-  const duration =
-    Number(
-      workingAnalysis.audio
-      ?.duration
-      ||
-      0
-    );
-
-
-  songTitle.textContent =
-    "Música analisada";
-
-
-  songMeta.textContent =
-    "Resultado gerado pela Chord AI";
-
-
-  songDuration.textContent =
-    formatTime(
-      duration
-    );
-
-
-  songChordCount.textContent =
-    chords.length;
-
-
-  totalTime.textContent =
-    formatTime(
-      duration
-    );
-
-
-  debugOutput.textContent =
-    JSON.stringify(
-      workingAnalysis,
-      null,
-      2
-    );
-
-
-  renderTimeline();
-
-
-  selectChord(
-    Math.min(
-      selectedIndex,
-      Math.max(
-        0,
-        chords.length - 1
-      )
-    )
-  );
-
-}
-
-
-/* =====================================================
-   TIMELINE
-===================================================== */
-
-function renderTimeline(){
-
-  const chords =
-    workingAnalysis
-      ?.chords
-    ||
-    [];
-
-
-  timeline.innerHTML =
-    "";
-
-
-  chords.forEach(
-    (
-      chord,
-      index
-    ) => {
-
-      const element =
-        document.createElement(
-          "button"
-        );
-
-
-      element.type =
-        "button";
-
-
-      element.className =
-        "timeline-chord";
-
-
-      if(
-        index ===
-        selectedIndex
-      ){
-
-        element.classList.add(
-          "active"
-        );
-
-      }
-
-
-      element.innerHTML =
-        `
-          <strong>
-            ${chord.chord}
-          </strong>
-
-          <small>
-            ${formatTime(
-              chord.start
-            )}
-          </small>
-        `;
-
-
-      element.addEventListener(
-        "click",
-        () => {
-
-          selectChord(
-            index
-          );
-
-        }
-      );
-
-
-      timeline.appendChild(
-        element
-      );
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   SELECT CHORD
-===================================================== */
-
-function selectChord(
-  index
-){
-
-  const chords =
-    workingAnalysis
-      ?.chords
-    ||
-    [];
-
-
-  if(
-    !chords.length
-  ){
-
-    return;
-
-  }
-
-
-  selectedIndex =
-    Math.max(
-      0,
-      Math.min(
-        chords.length - 1,
-        index
-      )
-    );
-
-
-  const chord =
-    chords[
-      selectedIndex
-    ];
-
-
-  const next =
-    chords[
-      selectedIndex + 1
-    ]
-    ||
-    null;
-
-
-  currentChord.textContent =
-    chord.chord;
-
-
-  currentChordTime.textContent =
-    `${formatTime(
-      chord.start
-    )}
-    →
-    ${formatTime(
-      chord.end
-    )}`;
-
-
-  nextChord.textContent =
-    next
-    ?
-    next.chord
-    :
-    "Fim";
-
-
-  nextChordTime.textContent =
-    next
-    ?
-    `em ${
-      Math.max(
-        0,
-        Number(
-          next.start
-        )
-        -
-        Number(
-          chord.start
-        )
-      )
-      .toFixed(
-        1
-      )
-    }s`
-    :
-    "última cifra";
-
-
-  const confidence =
-    Math.round(
-      Number(
-        chord.confidence
-        ||
-        0
-      )
-      *
-      100
-    );
-
-
-  confidenceValue.textContent =
-    confidence
-    +
-    "%";
-
-
-  if(
-    confidence >=
-    80
-  ){
-
-    confidenceLabel.textContent =
-      "● muito alta";
-
-  }
-
-  else if(
-    confidence >=
-    60
-  ){
-
-    confidenceLabel.textContent =
-      "● boa";
-
-  }
-
-  else{
-
-    confidenceLabel.textContent =
-      "● moderada";
-
-  }
-
-
-  [
-    ...timeline.children
-  ]
-  .forEach(
-    (
-      item,
-      i
-    ) => {
-
-      item.classList.toggle(
-        "active",
-        i === selectedIndex
-      );
-
-    }
-  );
-
-
-  const selectedElement =
-    timeline.children[
-      selectedIndex
-    ];
-
-
-  selectedElement
-    ?.scrollIntoView(
-      {
-
-        behavior:
-          "smooth",
-
-        inline:
-          "center",
-
-        block:
-          "nearest"
-
-      }
-    );
-
-}
-
-
-/* =====================================================
-   SYNTH
-===================================================== */
-
-function noteFrequency(
-  note,
-  octave = 4
-){
-
-  const semitone =
-    NOTE_TO_SEMITONE[
-      note
-    ];
-
-
-  if(
-    semitone === undefined
-  ){
-
-    return null;
-
-  }
-
-
-  const midi =
-    12
-    *
-    (
-      octave + 1
-    )
-    +
-    semitone;
-
-
-  return (
-    440
-    *
-    Math.pow(
-      2,
-      (
-        midi - 69
-      )
-      /
-      12
-    )
-  );
-
-}
-
-
-function stopHarmony(){
-
-  previewPlaying =
-    false;
-
-
-  if(
-    previewAnimation
-  ){
-
-    cancelAnimationFrame(
-      previewAnimation
-    );
-
-  }
-
-
-  for(
-    const node
-    of previewNodes
-  ){
-
-    try{
-
-      node.stop();
-
-    }
-
-    catch{}
-
-  }
-
-
-  previewNodes =
-    [];
-
-
-  if(
-    previewContext
-  ){
-
-    try{
-
-      previewContext.close();
-
-    }
-
-    catch{}
-
-  }
-
-
-  previewContext =
-    null;
-
-
-  playHarmonyButton.textContent =
-    "▶ Ouvir harmonia";
-
-
-  playButton.innerHTML =
-    `
-      <svg viewBox="0 0 24 24">
-        <path d="M8 5v14l11-7z"/>
-      </svg>
-    `;
-
-}
-
-
-function scheduleTone(
-  context,
-  frequency,
-  start,
-  duration,
-  volume
-){
-
-  if(!frequency)
-    return;
-
-
-  const oscillator =
-    context.createOscillator();
-
-
-  const gain =
-    context.createGain();
-
-
-  oscillator.type =
-    "sine";
-
-
-  oscillator.frequency.value =
-    frequency;
-
-
-  oscillator.connect(
-    gain
-  );
-
-
-  gain.connect(
-    context.destination
-  );
-
-
-  const attack =
-    Math.min(
-      .05,
-      duration * .15
-    );
-
-
-  const release =
-    Math.min(
-      .13,
-      duration * .25
-    );
-
-
-  gain.gain.setValueAtTime(
-    .0001,
-    start
-  );
-
-
-  gain.gain.exponentialRampToValueAtTime(
-    Math.max(
-      .001,
-      volume
-    ),
-    start + attack
-  );
-
-
-  gain.gain.setValueAtTime(
-    Math.max(
-      .001,
-      volume
-    ),
-    Math.max(
-      start + attack,
-      start + duration - release
-    )
-  );
-
-
-  gain.gain.exponentialRampToValueAtTime(
-    .0001,
-    start + duration
-  );
-
-
-  oscillator.start(
-    start
-  );
-
-
-  oscillator.stop(
-    start
-    +
-    duration
-    +
-    .02
-  );
-
-
-  previewNodes.push(
-    oscillator
-  );
-
-}
-
-
-async function playHarmony(){
-
-  if(
-    previewPlaying
-  ){
-
-    stopHarmony();
-
-    return;
-
-  }
-
-
-  const chords =
-    workingAnalysis
-      ?.chords
-    ||
-    [];
-
-
-  if(
-    !chords.length
-  ){
-
-    return;
-
-  }
-
-
-  const AudioContextClass =
-    window.AudioContext
-    ||
-    window.webkitAudioContext;
-
-
-  if(
-    !AudioContextClass
-  ){
-
-    showToast(
-      "Seu navegador não suporta reprodução de áudio."
-    );
-
-    return;
-
-  }
-
-
-  previewContext =
-    new AudioContextClass();
-
-
-  await previewContext.resume();
-
-
-  const context =
-    previewContext;
-
-
-  const timelineStart =
-    Number(
-      chords[0].start
-    );
-
-
-  const start =
-    context.currentTime
-    +
-    .08;
-
-
-  previewStartTime =
-    start;
-
-
-  previewOffset =
-    timelineStart;
-
-
-  for(
-    const chord
-    of chords
-  ){
-
-    const chordStart =
-      Number(
-        chord.start
-      );
-
-
-    const chordEnd =
-      Number(
-        chord.end
-      );
-
-
-    const duration =
-      Math.max(
-        .05,
-        chordEnd - chordStart
-      );
-
-
-    const when =
-      start
-      +
-      (
-        chordStart
-        -
-        timelineStart
-      );
-
-
-    const notes =
-      Array.isArray(
-        chord.notes
-      )
-      ?
-      chord.notes
-      :
-      [];
-
-
-    notes.forEach(
-      (
-        note,
-        index
-      ) => {
-
-        scheduleTone(
-          context,
-          noteFrequency(
-            note,
-            index >= 3
-            ?
-            5
-            :
-            4
-          ),
-          when,
-          duration,
-          .05
-        );
-
-      }
-    );
-
-
-    if(
-      chord.bassNote
-    ){
-
-      scheduleTone(
-        context,
-        noteFrequency(
-          chord.bassNote,
-          2
-        ),
-        when,
-        duration,
-        .07
-      );
-
-    }
-
-  }
-
-
-  previewPlaying =
-    true;
-
-
-  playHarmonyButton.textContent =
-    "■ Parar harmonia";
-
-
-  playButton.innerHTML =
-    `
-      <svg viewBox="0 0 24 24">
-        <path d="M7 5h4v14H7zM13 5h4v14h-4z"/>
-      </svg>
-    `;
-
-
-  updatePlayback();
-
-}
-
-
-/* =====================================================
-   PLAYBACK UI
-===================================================== */
-
-function updatePlayback(){
-
-  if(
-    !previewPlaying
-    ||
-    !previewContext
-  ){
-
-    return;
-
-  }
-
-
-  const elapsed =
-    Math.max(
-      0,
-      previewContext.currentTime
-      -
-      previewStartTime
-      +
-      previewOffset
-    );
-
-
-  const duration =
-    Number(
-      workingAnalysis.audio
-      ?.duration
-      ||
-      0
-    );
-
-
-  currentTime.textContent =
-    formatTime(
-      elapsed
-    );
-
-
-  const percent =
-    duration > 0
-    ?
-    Math.min(
-      100,
-      elapsed
-      /
-      duration
-      *
-      100
-    )
-    :
-    0;
-
-
-  seekProgress.style.width =
-    percent
-    +
-    "%";
-
-
-  const chords =
-    workingAnalysis.chords
-    ||
-    [];
-
-
-  let foundIndex =
-    selectedIndex;
-
-
-  for(
-    let i = 0;
-    i < chords.length;
-    i++
-  ){
-
-    if(
-      elapsed >=
-      Number(
-        chords[i].start
-      )
-      &&
-      elapsed <
-      Number(
-        chords[i].end
-      )
-    ){
-
-      foundIndex =
-        i;
-
-      break;
-
-    }
-
-  }
-
-
-  if(
-    foundIndex !==
-    selectedIndex
-  ){
-
-    selectChord(
-      foundIndex
-    );
-
-  }
-
-
-  if(
-    elapsed >=
-    duration
-  ){
-
-    stopHarmony();
-
-    currentTime.textContent =
-      formatTime(
-        duration
-      );
-
-
-    seekProgress.style.width =
-      "100%";
-
-
-    return;
-
-  }
-
-
-  previewAnimation =
-    requestAnimationFrame(
-      updatePlayback
-    );
-
-}
-
-
-playHarmonyButton.addEventListener(
-  "click",
-  playHarmony
-);
-
-
-playButton.addEventListener(
-  "click",
-  playHarmony
-);
-
-
-/* =====================================================
-   SEEK VISUAL
-
-   Nesta V1 apenas seleciona a cifra.
-===================================================== */
-
-seek.addEventListener(
-  "click",
-  event => {
-
-    if(
-      !workingAnalysis
-    ){
-
-      return;
-
-    }
-
-
-    const rect =
-      seek.getBoundingClientRect();
-
-
-    const ratio =
-      Math.max(
-        0,
-        Math.min(
-          1,
-          (
-            event.clientX
-            -
-            rect.left
-          )
-          /
-          rect.width
-        )
-      );
-
-
-    const target =
-      ratio
-      *
-      Number(
-        workingAnalysis.audio
-          ?.duration
-          ||
-          0
-      );
-
-
-    const index =
-      workingAnalysis.chords
-        .findIndex(
-          chord =>
-            target >=
-            chord.start
-            &&
-            target <
-            chord.end
-        );
-
-
-    if(
-      index >= 0
-    ){
-
-      selectChord(
-        index
-      );
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   ADJUST
-===================================================== */
-
-adjustChordButton.addEventListener(
-  "click",
-  openAdjust
-);
-
-
-closeAdjustButton.addEventListener(
-  "click",
-  closeAdjust
-);
-
-
-adjustOverlay.addEventListener(
-  "click",
-  event => {
-
-    if(
-      event.target ===
-      adjustOverlay
-    ){
-
-      closeAdjust();
-
-    }
-
-  }
-);
-
-
-function closeAdjust(){
-
-  adjustOverlay.classList.remove(
-    "open"
-  );
-
-}
-
-
-function openAdjust(){
-
-  const chord =
-    workingAnalysis
-      ?.chords
-      ?.[selectedIndex];
-
-
-  if(!chord){
-
-    return;
-
-  }
-
-
-  adjustTime.textContent =
-    formatTime(
-      chord.start
-    );
-
-
-  adjustCurrent.textContent =
-    chord.chord;
-
-
-  adjustDuration.textContent =
-    (
-      Number(
-        chord.end
-      )
-      -
-      Number(
-        chord.start
-      )
-    )
-    .toFixed(
-      2
-    )
-    +
-    "s";
-
-
-  const diagnostics =
-    chord.reconstructionDiagnostics
-    ||
-    {};
-
-
-  const map =
-    new Map();
-
-
-  const candidates =
-    [
-      ...(
-        diagnostics
-          .topCandidates
-        ||
-        []
-      ),
-
-      ...(
-        diagnostics
-          .bassRootCandidates
-        ||
-        []
-      )
-    ];
-
-
-  for(
-    const candidate
-    of candidates
-  ){
-
-    if(
-      candidate
-      &&
-      candidate.chord
-      &&
-      !map.has(
-        candidate.chord
-      )
-    ){
-
-      map.set(
-        candidate.chord,
-        candidate
-      );
-
-    }
-
-  }
-
-
-  const unique =
-    [
-      ...map.values()
-    ]
-    .slice(
-      0,
-      8
-    );
-
-
-  candidateList.innerHTML =
-    "";
-
-
-  if(
-    unique.length === 0
-  ){
-
-    candidateList.innerHTML =
-      `
-        <div
-          style="
-            color:#777f8d;
-            font-size:12px;
-            padding:20px 0;
-          "
-        >
-          Nenhuma alternativa disponível
-          para esta região.
-        </div>
-      `;
-
-  }
-
-
-  unique.forEach(
-    candidate => {
-
-      const item =
-        document.createElement(
-          "div"
-        );
-
-
-      item.className =
-        "candidate";
-
-
-      if(
-        candidate.chord ===
-        chord.baseChord
-        ||
-        candidate.chord ===
-        chord.chord
-      ){
-
-        item.classList.add(
-          "selected"
-        );
-
-      }
-
-
-      const score =
-        candidate.finalScore
-        !=
-        null
-        ?
-        Math.round(
-          candidate.finalScore
-          *
-          100
-        )
-        :
-        null;
-
-
-      item.innerHTML =
-        `
-          <div class="candidate-name">
-            ${candidate.chord}
-          </div>
-
-          <div class="candidate-score">
-            ${
-              score !=
-              null
-              ?
-              score + "%"
-              :
-              "alternativa"
-            }
-          </div>
-        `;
-
-
-      item.addEventListener(
-        "click",
-        () => {
-
-          applyCandidate(
-            candidate
-          );
-
-        }
-      );
-
-
-      candidateList.appendChild(
-        item
-      );
-
-    }
-  );
-
-
-  adjustOverlay.classList.add(
-    "open"
-  );
-
-}
-
-
-/* =====================================================
-   APPLY CANDIDATE
-===================================================== */
-
-function applyCandidate(
-  candidate
-){
-
-  const chord =
-    workingAnalysis
-      ?.chords
-      ?.[selectedIndex];
-
-
-  if(
-    !chord
-    ||
-    !candidate
-  ){
-
-    return;
-
-  }
-
-
-  chord.baseChord =
-    candidate.chord;
-
-
-  chord.chord =
-    candidate.chord;
-
-
-  if(
-    Array.isArray(
-      candidate.notes
-    )
-  ){
-
-    chord.notes =
-      candidate.notes;
-
-  }
-
-
-  chord.humanReviewed =
-    true;
-
-
-  closeAdjust();
-
-
-  mergeEqualNeighbors();
-
-
-  renderResult();
-
-
-  showToast(
-    "Cifra atualizada."
-  );
-
-}
-
-
-/* =====================================================
-   MERGE
-===================================================== */
-
-function mergeEqualNeighbors(){
-
-  const chords =
-    workingAnalysis
-      ?.chords;
-
-
-  if(
-    !Array.isArray(
-      chords
-    )
-  ){
-
-    return;
-
-  }
-
-
-  const merged =
-    [];
-
-
-  const EPSILON =
-    .001;
-
-
-  for(
-    const chord
-    of chords
-  ){
-
-    const previous =
-      merged[
-        merged.length - 1
-      ];
-
-
-    if(
-      previous
-      &&
-      previous.chord ===
-      chord.chord
-      &&
-      Math.abs(
-        Number(
-          previous.end
-        )
-        -
-        Number(
-          chord.start
-        )
-      )
-      <=
-      EPSILON
-    ){
-
-      previous.end =
-        chord.end;
-
-
-      previous.humanReviewed =
-        Boolean(
-          previous.humanReviewed
-          ||
-          chord.humanReviewed
-        );
-
-
-      continue;
-
-    }
-
-
-    merged.push(
-      clone(
-        chord
-      )
-    );
-
-  }
-
-
-  workingAnalysis.chords =
-    merged;
-
-
-  workingAnalysis.chordCount =
-    merged.length;
-
-
-  selectedIndex =
-    Math.min(
-      selectedIndex,
-      merged.length - 1
-    );
-
-}
-
-
-/* =====================================================
-   DEBUG
-===================================================== */
-
-debugButton.addEventListener(
-  "click",
-  () => {
-
-    debugDrawer.classList.toggle(
-      "open"
-    );
 
   }
 );
