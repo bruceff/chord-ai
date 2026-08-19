@@ -1108,7 +1108,7 @@ button:disabled{
 }
 
 .seek{
-  height:5px;
+  height:7px;
 
   position:relative;
 
@@ -1117,6 +1117,8 @@ button:disabled{
   border-radius:999px;
 
   background:#232a37;
+
+  cursor:pointer;
 }
 
 .seek-progress{
@@ -1131,6 +1133,8 @@ button:disabled{
       #7134df,
       #a15dff
     );
+
+  pointer-events:none;
 }
 
 .player-label{
@@ -1350,6 +1354,7 @@ button:disabled{
   grid-template-columns:
     1.2fr
     1fr
+    1fr
     1fr;
 
   gap:9px;
@@ -1386,8 +1391,10 @@ button:disabled{
   color:white;
 }
 
-.action-btn.danger{
-  color:#bb8590;
+.action-btn.retry{
+  color:#e7c9ff;
+  border-color:#46315f;
+  background:#151020;
 }
 
 
@@ -1599,6 +1606,10 @@ button:disabled{
 
   background:
     rgba(125,60,255,.09);
+}
+
+.candidate.rejected{
+  opacity:.45;
 }
 
 .candidate-main{
@@ -1879,7 +1890,8 @@ button:disabled{
   }
 
   .result-actions{
-    grid-template-columns:1fr;
+    grid-template-columns:
+      1fr 1fr;
   }
 
 }
@@ -1954,6 +1966,10 @@ button:disabled{
     grid-template-columns:1fr;
   }
 
+  .result-actions{
+    grid-template-columns:1fr;
+  }
+
 }
 
 </style>
@@ -1963,10 +1979,6 @@ button:disabled{
 
 <div class="app">
 
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
 
 <header class="header">
 
@@ -2012,10 +2024,6 @@ button:disabled{
 </header>
 
 
-<!-- =====================================================
-     HOME
-===================================================== -->
-
 <section
   id="homeScreen"
   class="screen active"
@@ -2024,7 +2032,6 @@ button:disabled{
   <main>
 
     <section class="hero">
-
 
       <div class="harmonic-art">
 
@@ -2203,10 +2210,6 @@ button:disabled{
 </section>
 
 
-<!-- =====================================================
-     ANALYSIS
-===================================================== -->
-
 <section
   id="analysisScreen"
   class="screen"
@@ -2290,55 +2293,32 @@ button:disabled{
           id="step0"
           class="analysis-step active"
         >
-
-          <div class="step-circle">
-            1
-          </div>
-
+          <div class="step-circle">1</div>
           Obtendo áudio
-
         </div>
-
 
         <div
           id="step1"
           class="analysis-step"
         >
-
-          <div class="step-circle">
-            2
-          </div>
-
+          <div class="step-circle">2</div>
           Processando
-
         </div>
-
 
         <div
           id="step2"
           class="analysis-step"
         >
-
-          <div class="step-circle">
-            3
-          </div>
-
+          <div class="step-circle">3</div>
           Detectando harmonia
-
         </div>
-
 
         <div
           id="step3"
           class="analysis-step"
         >
-
-          <div class="step-circle">
-            4
-          </div>
-
+          <div class="step-circle">4</div>
           Finalizando
-
         </div>
 
       </div>
@@ -2355,17 +2335,12 @@ button:disabled{
 </section>
 
 
-<!-- =====================================================
-     RESULT
-===================================================== -->
-
 <section
   id="resultScreen"
   class="screen"
 >
 
   <main class="result-page">
-
 
     <div class="result-top">
 
@@ -2409,9 +2384,6 @@ button:disabled{
 
       <div class="harmony-player">
 
-
-        <!-- PLAYER DA RECONSTRUÇÃO -->
-
         <div class="player-row">
 
           <button
@@ -2438,7 +2410,10 @@ button:disabled{
             </div>
 
 
-            <div class="seek">
+            <div
+              id="seek"
+              class="seek"
+            >
 
               <div
                 id="seekProgress"
@@ -2456,8 +2431,6 @@ button:disabled{
 
         </div>
 
-
-        <!-- TIMELINE -->
 
         <div class="timeline-section">
 
@@ -2485,8 +2458,6 @@ button:disabled{
 
         </div>
 
-
-        <!-- CURRENT -->
 
         <div class="chord-status">
 
@@ -2565,8 +2536,6 @@ button:disabled{
     </div>
 
 
-    <!-- ACTIONS -->
-
     <div class="result-actions">
 
       <button
@@ -2575,6 +2544,15 @@ button:disabled{
         type="button"
       >
         ▶ Ouvir harmonia
+      </button>
+
+
+      <button
+        id="retryChord"
+        class="action-btn retry"
+        type="button"
+      >
+        Tentar outra cifra
       </button>
 
 
@@ -2588,24 +2566,22 @@ button:disabled{
 
 
       <button
-        id="debugButton"
+        id="copyDiagnostic"
         class="action-btn"
         type="button"
       >
-        Diagnóstico
+        Copiar diagnóstico
       </button>
 
     </div>
 
-
-    <!-- HUMAN REVIEW -->
 
     <div
       id="reviewNotice"
       class="review-notice"
     >
 
-      <span>
+      <span id="reviewText">
         O resultado possui ajustes feitos durante esta sessão.
       </span>
 
@@ -2620,7 +2596,28 @@ button:disabled{
     </div>
 
 
-    <!-- DEBUG -->
+    <div
+      style="
+        display:flex;
+        justify-content:flex-end;
+        margin-top:10px;
+      "
+    >
+
+      <button
+        id="debugButton"
+        class="action-btn"
+        type="button"
+        style="
+          min-height:36px;
+          padding:0 14px;
+        "
+      >
+        Ver diagnóstico completo
+      </button>
+
+    </div>
+
 
     <div
       id="debugPanel"
@@ -2635,10 +2632,6 @@ button:disabled{
 
 </section>
 
-
-<!-- =====================================================
-     ADJUST
-===================================================== -->
 
 <div
   id="adjustOverlay"
@@ -2670,25 +2663,17 @@ button:disabled{
 
         <div class="adjust-info-box">
           Região
-          <strong id="adjustRegion">
-            —
-          </strong>
+          <strong id="adjustRegion">—</strong>
         </div>
-
 
         <div class="adjust-info-box">
           Cifra atual
-          <strong id="adjustCurrent">
-            —
-          </strong>
+          <strong id="adjustCurrent">—</strong>
         </div>
-
 
         <div class="adjust-info-box">
           Baixo
-          <strong id="adjustBass">
-            —
-          </strong>
+          <strong id="adjustBass">—</strong>
         </div>
 
       </div>
@@ -2713,10 +2698,6 @@ button:disabled{
 
 
 <script>
-
-/* =====================================================
-   CONFIG
-===================================================== */
 
 const API =
   "https://chord-ai-api.onrender.com";
@@ -2862,16 +2843,32 @@ const totalPlayerTime =
     "totalPlayerTime"
   );
 
+const seek =
+  document.getElementById(
+    "seek"
+  );
+
 const seekProgress =
   document.getElementById(
     "seekProgress"
   );
 
 
+const retryChord =
+  document.getElementById(
+    "retryChord"
+  );
+
 const adjustChord =
   document.getElementById(
     "adjustChord"
   );
+
+const copyDiagnostic =
+  document.getElementById(
+    "copyDiagnostic"
+  );
+
 
 const adjustOverlay =
   document.getElementById(
@@ -2907,6 +2904,11 @@ const candidateList =
 const reviewNotice =
   document.getElementById(
     "reviewNotice"
+  );
+
+const reviewText =
+  document.getElementById(
+    "reviewText"
   );
 
 const resetReview =
@@ -2953,12 +2955,27 @@ let selectedIndex =
 let reviewed =
   false;
 
-
 let progress =
   0;
 
 let progressTimer =
   null;
+
+
+/*
+  Guarda rejeições por região.
+
+  key:
+  start::end
+
+  value:
+  {
+    rejected:Set(),
+    history:[]
+  }
+*/
+let humanReview =
+  new Map();
 
 
 /* =====================================================
@@ -3015,6 +3032,54 @@ function clone(
       value
     )
   );
+
+}
+
+
+function regionKey(
+  chord
+){
+
+  return (
+    Number(
+      chord.start
+    ).toFixed(6)
+    +
+    "::"
+    +
+    Number(
+      chord.end
+    ).toFixed(6)
+  );
+
+}
+
+
+function getBaseChord(
+  chord
+){
+
+  if(
+    chord.baseChord
+  ){
+
+    return chord.baseChord;
+
+  }
+
+
+  if(
+    typeof chord.chord ===
+    "string"
+  ){
+
+    return chord.chord
+      .split("/")[0];
+
+  }
+
+
+  return null;
 
 }
 
@@ -3106,18 +3171,12 @@ function formatTime(
 
   return (
     String(minutes)
-      .padStart(
-        2,
-        "0"
-      )
+      .padStart(2,"0")
     +
     ":"
     +
     String(secs)
-      .padStart(
-        2,
-        "0"
-      )
+      .padStart(2,"0")
   );
 
 }
@@ -3419,8 +3478,7 @@ analyzeWav.addEventListener(
           "/analyze-wav",
           {
 
-            method:
-              "POST",
+            method:"POST",
 
             headers:{
               "Content-Type":
@@ -3483,6 +3541,10 @@ analyzeWav.addEventListener(
 
       reviewed =
         false;
+
+
+      humanReview =
+        new Map();
 
 
       selectedIndex =
@@ -3567,10 +3629,7 @@ function renderResult(){
     );
 
 
-  reviewNotice.classList.toggle(
-    "visible",
-    reviewed
-  );
+  updateReviewNotice();
 
 
   renderTimeline();
@@ -3723,17 +3782,13 @@ function selectChord(
   currentChordTime.textContent =
     Number(
       chord.start
-    ).toFixed(
-      2
-    )
+    ).toFixed(2)
     +
     "s → "
     +
     Number(
       chord.end
-    ).toFixed(
-      2
-    )
+    ).toFixed(2)
     +
     "s";
 
@@ -3751,9 +3806,7 @@ function selectChord(
     ?
     Number(
       next.start
-    ).toFixed(
-      2
-    )
+    ).toFixed(2)
     +
     "s"
     :
@@ -3831,6 +3884,104 @@ function selectChord(
   );
 
 }
+
+
+/* =====================================================
+   CLICKABLE SEEK
+===================================================== */
+
+seek.addEventListener(
+  "click",
+  event => {
+
+    if(
+      !workingAnalysis
+    ){
+
+      return;
+
+    }
+
+
+    const rect =
+      seek.getBoundingClientRect();
+
+
+    const ratio =
+      Math.max(
+        0,
+        Math.min(
+          1,
+          (
+            event.clientX
+            -
+            rect.left
+          )
+          /
+          rect.width
+        )
+      );
+
+
+    const duration =
+      Number(
+        workingAnalysis.audio
+        ?.duration
+        ||
+        0
+      );
+
+
+    const target =
+      ratio
+      *
+      duration;
+
+
+    seekProgress.style.width =
+      (
+        ratio
+        *
+        100
+      )
+      +
+      "%";
+
+
+    currentPlayerTime.textContent =
+      formatTime(
+        target
+      );
+
+
+    const index =
+      workingAnalysis.chords
+        .findIndex(
+          chord =>
+            target >=
+            Number(
+              chord.start
+            )
+            &&
+            target <
+            Number(
+              chord.end
+            )
+        );
+
+
+    if(
+      index >= 0
+    ){
+
+      selectChord(
+        index
+      );
+
+    }
+
+  }
+);
 
 
 /* =====================================================
@@ -4358,6 +4509,283 @@ harmonyAction.addEventListener(
 
 
 /* =====================================================
+   CANDIDATES
+===================================================== */
+
+function getCandidates(
+  chord
+){
+
+  const diagnostics =
+    chord
+      .reconstructionDiagnostics
+    ||
+    {};
+
+
+  const top =
+    diagnostics.topCandidates
+    ||
+    [];
+
+
+  const bass =
+    diagnostics.bassRootCandidates
+    ||
+    [];
+
+
+  const preferBass =
+    chord.reconstructionReason ===
+    "contradiction-rescue"
+    ||
+    chord.humanReviewSourceReason ===
+    "contradiction-rescue";
+
+
+  const all =
+    preferBass
+    ?
+    [
+      ...bass,
+      ...top
+    ]
+    :
+    [
+      ...top,
+      ...bass
+    ];
+
+
+  const map =
+    new Map();
+
+
+  for(
+    const candidate
+    of all
+  ){
+
+    if(
+      candidate
+      &&
+      candidate.chord
+      &&
+      !map.has(
+        candidate.chord
+      )
+    ){
+
+      map.set(
+        candidate.chord,
+        candidate
+      );
+
+    }
+
+  }
+
+
+  return [
+    ...map.values()
+  ];
+
+}
+
+
+/* =====================================================
+   RETRY / REJECT CURRENT
+===================================================== */
+
+retryChord.addEventListener(
+  "click",
+  () => {
+
+    stopHarmony();
+
+
+    const chord =
+      workingAnalysis
+      ?.chords
+      ?.[selectedIndex];
+
+
+    if(!chord){
+
+      return;
+
+    }
+
+
+    const key =
+      regionKey(
+        chord
+      );
+
+
+    let review =
+      humanReview.get(
+        key
+      );
+
+
+    if(!review){
+
+      review = {
+
+        rejected:
+          new Set(),
+
+        history:
+          []
+
+      };
+
+
+      humanReview.set(
+        key,
+        review
+      );
+
+    }
+
+
+    const currentBase =
+      getBaseChord(
+        chord
+      );
+
+
+    if(
+      currentBase
+    ){
+
+      review.rejected.add(
+        currentBase
+      );
+
+    }
+
+
+    const candidates =
+      getCandidates(
+        chord
+      );
+
+
+    const selected =
+      candidates.find(
+        candidate =>
+          candidate.chord
+          !==
+          currentBase
+          &&
+          !review.rejected.has(
+            candidate.chord
+          )
+      );
+
+
+    if(!selected){
+
+      showToast(
+        "Não há outra candidata disponível."
+      );
+
+      return;
+
+    }
+
+
+    const previous =
+      chord.chord;
+
+
+    chord.baseChord =
+      selected.chord;
+
+
+    chord.chord =
+      selected.chord;
+
+
+    if(
+      Array.isArray(
+        selected.notes
+      )
+    ){
+
+      chord.notes =
+        selected.notes;
+
+    }
+
+
+    chord.humanReviewed =
+      true;
+
+
+    chord.humanReviewSourceReason =
+      chord.humanReviewSourceReason
+      ||
+      chord.reconstructionReason
+      ||
+      null;
+
+
+    chord.humanReview = {
+
+      rejectedCandidates:
+        [
+          ...review.rejected
+        ],
+
+      selectedCandidate:
+        selected.chord,
+
+      reconstructionScore:
+        selected.reconstructionScore
+        ??
+        null,
+
+      finalScore:
+        selected.finalScore
+        ??
+        null
+
+    };
+
+
+    review.history.push({
+
+      from:
+        previous,
+
+      to:
+        selected.chord
+
+    });
+
+
+    reviewed =
+      true;
+
+
+    mergeEqualNeighbors();
+
+
+    renderResult();
+
+
+    showToast(
+      "Outra cifra foi selecionada."
+    );
+
+  }
+);
+
+
+/* =====================================================
    ADJUST CHORD
 ===================================================== */
 
@@ -4395,72 +4823,6 @@ adjustOverlay.addEventListener(
 );
 
 
-function getCandidates(
-  chord
-){
-
-  const diagnostics =
-    chord
-      .reconstructionDiagnostics
-    ||
-    {};
-
-
-  const top =
-    diagnostics.topCandidates
-    ||
-    [];
-
-
-  const bass =
-    diagnostics.bassRootCandidates
-    ||
-    [];
-
-
-  const candidates =
-    [
-      ...top,
-      ...bass
-    ];
-
-
-  const map =
-    new Map();
-
-
-  for(
-    const candidate
-    of candidates
-  ){
-
-    if(
-      candidate
-      &&
-      candidate.chord
-      &&
-      !map.has(
-        candidate.chord
-      )
-    ){
-
-      map.set(
-        candidate.chord,
-        candidate
-      );
-
-    }
-
-  }
-
-
-  return [
-    ...map.values()
-  ];
-
-}
-
-
 function openAdjust(){
 
   const chord =
@@ -4476,17 +4838,13 @@ function openAdjust(){
   adjustRegion.textContent =
     Number(
       chord.start
-    ).toFixed(
-      2
-    )
+    ).toFixed(2)
     +
     "s → "
     +
     Number(
       chord.end
-    ).toFixed(
-      2
-    )
+    ).toFixed(2)
     +
     "s";
 
@@ -4509,6 +4867,26 @@ function openAdjust(){
     getCandidates(
       chord
     );
+
+
+  const key =
+    regionKey(
+      chord
+    );
+
+
+  const review =
+    humanReview.get(
+      key
+    );
+
+
+  const rejected =
+    review
+    ?
+    review.rejected
+    :
+    new Set();
 
 
   if(
@@ -4565,6 +4943,19 @@ function openAdjust(){
         }
 
 
+        if(
+          rejected.has(
+            candidate.chord
+          )
+        ){
+
+          item.classList.add(
+            "rejected"
+          );
+
+        }
+
+
         const reconstruction =
           candidate.reconstructionScore
           !=
@@ -4589,6 +4980,12 @@ function openAdjust(){
 
               <small>
                 ${
+                  rejected.has(
+                    candidate.chord
+                  )
+                  ?
+                  "Rejeitada nesta região"
+                  :
                   reconstruction != null
                   ?
                   "Reconstrução "
@@ -4623,13 +5020,21 @@ function openAdjust(){
           `;
 
 
-        item.addEventListener(
-          "click",
-          () =>
-            applyCandidate(
-              candidate
-            )
-        );
+        if(
+          !rejected.has(
+            candidate.chord
+          )
+        ){
+
+          item.addEventListener(
+            "click",
+            () =>
+              applyCandidate(
+                candidate
+              )
+          );
+
+        }
 
 
         candidateList.appendChild(
@@ -4665,6 +5070,10 @@ function applyCandidate(
     return;
 
 
+  const previous =
+    chord.chord;
+
+
   chord.baseChord =
     candidate.chord;
 
@@ -4687,6 +5096,76 @@ function applyCandidate(
 
   chord.humanReviewed =
     true;
+
+
+  const key =
+    regionKey(
+      chord
+    );
+
+
+  let review =
+    humanReview.get(
+      key
+    );
+
+
+  if(!review){
+
+    review = {
+
+      rejected:
+        new Set(),
+
+      history:
+        []
+
+    };
+
+
+    humanReview.set(
+      key,
+      review
+    );
+
+  }
+
+
+  review.history.push({
+
+    from:
+      previous,
+
+    to:
+      candidate.chord,
+
+    manual:
+      true
+
+  });
+
+
+  chord.humanReview = {
+
+    rejectedCandidates:
+      [
+        ...review.rejected
+      ],
+
+    selectedCandidate:
+      candidate.chord,
+
+    reconstructionScore:
+      candidate.reconstructionScore
+      ??
+      null,
+
+    finalScore:
+      candidate.finalScore
+      ??
+      null
+
+  };
 
 
   reviewed =
@@ -4783,6 +5262,35 @@ function mergeEqualNeighbors(){
         );
 
 
+      if(
+        !Array.isArray(
+          previous.humanMergeEvents
+        )
+      ){
+
+        previous.humanMergeEvents =
+          [];
+
+      }
+
+
+      previous.humanMergeEvents.push({
+
+        chord:
+          chord.chord,
+
+        start:
+          chord.start,
+
+        end:
+          chord.end,
+
+        reason:
+          "adjacent-equal-after-human-review"
+
+      });
+
+
       continue;
 
     }
@@ -4818,6 +5326,53 @@ function mergeEqualNeighbors(){
 
 
 /* =====================================================
+   REVIEW NOTICE
+===================================================== */
+
+function updateReviewNotice(){
+
+  if(
+    !reviewed
+  ){
+
+    reviewNotice.classList.remove(
+      "visible"
+    );
+
+    return;
+
+  }
+
+
+  let rejectedCount =
+    0;
+
+
+  for(
+    const review
+    of humanReview.values()
+  ){
+
+    rejectedCount +=
+      review.rejected.size;
+
+  }
+
+
+  reviewText.textContent =
+    `${humanReview.size} região(ões) revisada(s) · `
+    +
+    `${rejectedCount} candidata(s) rejeitada(s).`;
+
+
+  reviewNotice.classList.add(
+    "visible"
+  );
+
+}
+
+
+/* =====================================================
    RESET HUMAN REVIEW
 ===================================================== */
 
@@ -4838,6 +5393,10 @@ resetReview.addEventListener(
       false;
 
 
+    humanReview =
+      new Map();
+
+
     selectedIndex =
       0;
 
@@ -4854,7 +5413,404 @@ resetReview.addEventListener(
 
 
 /* =====================================================
-   DEBUG
+   COMPACT DEBUG
+===================================================== */
+
+function compactCandidate(
+  candidate
+){
+
+  if(!candidate)
+    return null;
+
+
+  return {
+
+    chord:
+      candidate.chord
+      ??
+      null,
+
+    detectorRank:
+      candidate.detectorRank
+      ??
+      null,
+
+    detectorScore:
+      candidate.detectorScore
+      ??
+      null,
+
+    detectorGap:
+      candidate.detectorGap
+      ??
+      null,
+
+    detectorNorm:
+      candidate.detectorNorm
+      ??
+      null,
+
+    reconstructionScore:
+      candidate.reconstructionScore
+      ??
+      null,
+
+    coverage:
+      candidate.coverage
+      ??
+      null,
+
+    persistence:
+      candidate.persistence
+      ??
+      null,
+
+    bassCompatibility:
+      candidate.bassCompatibility
+      ??
+      null,
+
+    marginalGain:
+      candidate.marginalGain
+      ??
+      null,
+
+    complexityPenalty:
+      candidate.complexityPenalty
+      ??
+      null,
+
+    incompatibleBassPenalty:
+      candidate.incompatibleBassPenalty
+      ??
+      null,
+
+    finalScore:
+      candidate.finalScore
+      ??
+      null,
+
+    inDecisionShortlist:
+      candidate.inDecisionShortlist
+      ??
+      null,
+
+    shortlistStatus:
+      candidate.shortlistStatus
+      ??
+      null
+
+  };
+
+}
+
+
+function buildSelectedChordDiagnostic(){
+
+  const chord =
+    workingAnalysis
+      ?.chords
+      ?.[selectedIndex];
+
+
+  if(!chord){
+
+    return null;
+
+  }
+
+
+  const diagnostics =
+    chord.reconstructionDiagnostics
+    ||
+    {};
+
+
+  const search =
+    diagnostics.candidateSearch
+    ||
+    {};
+
+
+  const key =
+    regionKey(
+      chord
+    );
+
+
+  const review =
+    humanReview.get(
+      key
+    );
+
+
+  return {
+
+    segment:{
+
+      start:
+        chord.start,
+
+      end:
+        chord.end,
+
+      chord:
+        chord.chord,
+
+      baseChord:
+        chord.baseChord
+        ??
+        null,
+
+      bassNote:
+        chord.bassNote
+        ??
+        null,
+
+      confidence:
+        chord.confidence
+        ??
+        null
+
+    },
+
+
+    humanReview:
+      review
+      ?
+      {
+
+        rejected:
+          [
+            ...review.rejected
+          ],
+
+        history:
+          review.history
+
+      }
+      :
+      null,
+
+
+    decision:{
+
+      reconstructionValidated:
+        chord.reconstructionValidated
+        ??
+        false,
+
+      reconstructionChanged:
+        chord.reconstructionChanged
+        ??
+        false,
+
+      reconstructionReason:
+        chord.reconstructionReason
+        ??
+        null,
+
+      reconstructionBoundary:
+        chord.reconstructionBoundary
+        ??
+        null
+
+    },
+
+
+    reconstruction:
+      chord.reconstruction
+      ??
+      null,
+
+
+    candidateSearch:{
+
+      totalObserved:
+        search.totalObserved
+        ??
+        null,
+
+      originalBase:
+        search.originalBase
+        ??
+        null,
+
+      originalDetectorRank:
+        search.originalDetectorRank
+        ??
+        null,
+
+      bassRoot:
+        search.bassRoot
+        ??
+        null,
+
+      bassRatio:
+        search.bassRatio
+        ??
+        null,
+
+      decisionShortlistCount:
+        search.decisionShortlistCount
+        ??
+        null
+
+    },
+
+
+    topCandidates:
+      (
+        diagnostics.topCandidates
+        ||
+        []
+      )
+      .slice(
+        0,
+        5
+      )
+      .map(
+        compactCandidate
+      ),
+
+
+    bassRootCandidates:
+      (
+        diagnostics.bassRootCandidates
+        ||
+        []
+      )
+      .slice(
+        0,
+        5
+      )
+      .map(
+        compactCandidate
+      )
+
+  };
+
+}
+
+
+/* =====================================================
+   COPY
+===================================================== */
+
+async function copyText(
+  text
+){
+
+  if(
+    navigator.clipboard
+    &&
+    window.isSecureContext
+  ){
+
+    await navigator.clipboard.writeText(
+      text
+    );
+
+    return;
+
+  }
+
+
+  const textarea =
+    document.createElement(
+      "textarea"
+    );
+
+
+  textarea.value =
+    text;
+
+
+  textarea.style.position =
+    "fixed";
+
+  textarea.style.left =
+    "-9999px";
+
+
+  document.body.appendChild(
+    textarea
+  );
+
+
+  textarea.focus();
+  textarea.select();
+
+
+  const success =
+    document.execCommand(
+      "copy"
+    );
+
+
+  document.body.removeChild(
+    textarea
+  );
+
+
+  if(!success){
+
+    throw new Error(
+      "Não foi possível copiar."
+    );
+
+  }
+
+}
+
+
+copyDiagnostic.addEventListener(
+  "click",
+  async () => {
+
+    const diagnostic =
+      buildSelectedChordDiagnostic();
+
+
+    if(!diagnostic){
+
+      return;
+
+    }
+
+
+    try{
+
+      await copyText(
+        JSON.stringify(
+          diagnostic,
+          null,
+          2
+        )
+      );
+
+
+      showToast(
+        "Diagnóstico da cifra copiado."
+      );
+
+    }
+
+    catch(error){
+
+      showToast(
+        error.message
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   FULL DEBUG
 ===================================================== */
 
 debugButton.addEventListener(
