@@ -42,10 +42,6 @@ h1 {
   margin-bottom: 6px;
 }
 
-h2 {
-  margin-top: 0;
-}
-
 .subtitle {
   color: #8d96a5;
   margin-top: 0;
@@ -102,44 +98,6 @@ button:disabled {
   cursor: default;
 }
 
-.button-secondary {
-  background: #1a2230;
-
-  border:
-    1px solid #303a49;
-}
-
-.copy-actions {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 10px;
-
-  margin-bottom: 16px;
-}
-
-.copy-actions button {
-  padding: 13px 10px;
-
-  border-radius: 12px;
-
-  font-size: 14px;
-}
-
-.copy-feedback {
-  min-height: 18px;
-
-  margin-top: -6px;
-  margin-bottom: 12px;
-
-  color: #6be89b;
-
-  font-size: 13px;
-  font-weight: 600;
-}
-
 .status {
   margin-top: 18px;
   color: #aab2c0;
@@ -180,38 +138,38 @@ button:disabled {
   margin-top: 4px;
 }
 
+.chord-copy {
+  margin-top: 11px;
+
+  padding: 11px 12px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  background: #1a2230;
+
+  border:
+    1px solid #303a49;
+
+  border-radius: 10px;
+}
+
+.chord-copy.copied {
+  background: #173525;
+  border-color: #285d3f;
+  color: #78e7a3;
+}
+
 pre {
   white-space: pre-wrap;
   word-break: break-word;
 
   font-size: 12px;
-  line-height: 1.45;
 
   color: #9ca6b7;
 
   max-height: 520px;
-
   overflow-y: auto;
-
-  margin-bottom: 0;
-
-  padding-right: 4px;
-}
-
-@media (max-width: 520px) {
-
-  body {
-    padding: 16px;
-  }
-
-  .card {
-    padding: 17px;
-  }
-
-  .copy-actions {
-    grid-template-columns: 1fr;
-  }
-
 }
 
 </style>
@@ -273,31 +231,6 @@ pre {
 
     <h2>Resposta da API</h2>
 
-    <div class="copy-actions">
-
-      <button
-        id="copyFull"
-        class="button-secondary"
-        type="button"
-      >
-        Copiar API completa
-      </button>
-
-      <button
-        id="copyDiagnostic"
-        class="button-secondary"
-        type="button"
-      >
-        Copiar diagnóstico
-      </button>
-
-    </div>
-
-    <div
-      id="copyFeedback"
-      class="copy-feedback"
-    ></div>
-
     <pre id="debug"></pre>
 
   </div>
@@ -335,22 +268,9 @@ const debugCard =
 const debug =
   document.getElementById("debug");
 
-const copyFullButton =
-  document.getElementById("copyFull");
-
-const copyDiagnosticButton =
-  document.getElementById(
-    "copyDiagnostic"
-  );
-
-const copyFeedback =
-  document.getElementById(
-    "copyFeedback"
-  );
-
 
 /* =========================================
-   ÚLTIMA RESPOSTA DA API
+   ÚLTIMA RESPOSTA
 ========================================= */
 
 let lastApiResponse =
@@ -359,11 +279,6 @@ let lastApiResponse =
 
 /* =========================================
    COPIAR TEXTO
-
-   Usa Clipboard API quando disponível.
-
-   Tem fallback para navegadores/mobile
-   que não permitem navigator.clipboard.
 ========================================= */
 
 async function copyText(
@@ -415,7 +330,7 @@ async function copyText(
   textarea.select();
 
 
-  const copied =
+  const success =
     document.execCommand(
       "copy"
     );
@@ -426,7 +341,7 @@ async function copyText(
   );
 
 
-  if(!copied){
+  if(!success){
 
     throw new Error(
       "Não foi possível copiar."
@@ -438,192 +353,328 @@ async function copyText(
 
 
 /* =========================================
-   FEEDBACK DO BOTÃO
+   COMPACTAR CANDIDATO
 ========================================= */
 
-function showCopyFeedback(
-  message
+function compactCandidate(
+  candidate
 ){
 
-  copyFeedback.textContent =
-    message;
+  if(!candidate)
+    return null;
 
 
-  clearTimeout(
-    showCopyFeedback.timer
-  );
+  return {
 
-
-  showCopyFeedback.timer =
-    setTimeout(
-      () => {
-
-        copyFeedback.textContent =
-          "";
-
-      },
-      2200
-    );
-
-}
-
-
-/* =========================================
-   DIAGNÓSTICO COMPACTO
-
-   Copia somente o que realmente interessa
-   para analisar decisões do Validator.
-========================================= */
-
-function buildDiagnosticCopy(
-  data
-){
-
-  if(
-    !data
-    ||
-    !Array.isArray(
-      data.chords
-    )
-  ){
-
-    return JSON.stringify(
-      data,
-      null,
-      2
-    );
-
-  }
-
-
-  const diagnostic = {
-
-    engine:
-      data.engine
+    chord:
+      candidate.chord
       ??
       null,
 
-    audioEngine:
-      data.audioEngine
+    detectorRank:
+      candidate.detectorRank
       ??
       null,
 
-    chordEngine:
-      data.chordEngine
+    detectorScore:
+      candidate.detectorScore
       ??
       null,
 
-    reconstructionValidator:
-      data.reconstructionValidator
+    detectorGap:
+      candidate.detectorGap
       ??
       null,
 
-    audio:
-      data.audio
+    detectorNorm:
+      candidate.detectorNorm
       ??
       null,
 
-    rawChordCount:
-      data.rawChordCount
+    reconstructionScore:
+      candidate.reconstructionScore
       ??
       null,
 
-    validatedChordCount:
-      data.validatedChordCount
+    coverage:
+      candidate.coverage
       ??
       null,
 
-    chordCount:
-      data.chordCount
+    persistence:
+      candidate.persistence
       ??
       null,
 
-    chords:
-      data.chords.map(
-        chord => ({
-
-          start:
-            chord.start,
-
-          end:
-            chord.end,
-
-          chord:
-            chord.chord,
-
-          baseChord:
-            chord.baseChord
-            ??
-            null,
-
-          bassNote:
-            chord.bassNote
-            ??
-            null,
-
-          confidence:
-            chord.confidence
-            ??
-            null,
-
-          regionalCorrection:
-            chord.regionalCorrection
-            ??
-            false,
-
-          reconstructionValidated:
-            chord.reconstructionValidated
-            ??
-            false,
-
-          reconstructionChanged:
-            chord.reconstructionChanged
-            ??
-            false,
-
-          reconstructionReason:
-            chord.reconstructionReason
-            ??
-            null,
-
-          reconstruction:
-            chord.reconstruction
-            ??
-            null,
-
-          reconstructionDiagnostics:
-            chord.reconstructionDiagnostics
-            ??
-            null,
-
-          boundaryDiagnostic:
-            chord.boundaryDiagnostic
-            ??
-            null,
-
-          boundaryEvents:
-            chord.boundaryEvents
-            ??
-            null
-
-        })
-      ),
-
-    bassTimeline:
-      data.debug?.bassTimeline
+    bassCompatibility:
+      candidate.bassCompatibility
       ??
       null,
 
-    bassByChordRegion:
-      data.debug?.bassByChordRegion
+    marginalGain:
+      candidate.marginalGain
+      ??
+      null,
+
+    complexityPenalty:
+      candidate.complexityPenalty
+      ??
+      null,
+
+    incompatibleBassPenalty:
+      candidate.incompatibleBassPenalty
+      ??
+      null,
+
+    finalScore:
+      candidate.finalScore
+      ??
+      null,
+
+    inDecisionShortlist:
+      candidate.inDecisionShortlist
+      ??
+      null,
+
+    shortlistStatus:
+      candidate.shortlistStatus
       ??
       null
 
   };
 
+}
+
+
+/* =========================================
+   DEBUG COMPACTO DE UM ACORDE
+========================================= */
+
+function buildChordDiagnostic(
+  chord
+){
+
+  const diagnostics =
+    chord.reconstructionDiagnostics
+    ||
+    {};
+
+
+  const search =
+    diagnostics.candidateSearch
+    ||
+    {};
+
+
+  const topCandidates =
+    Array.isArray(
+      diagnostics.topCandidates
+    )
+    ?
+    diagnostics.topCandidates
+      .slice(0,5)
+      .map(
+        compactCandidate
+      )
+    :
+    [];
+
+
+  const bassRootCandidates =
+    Array.isArray(
+      diagnostics.bassRootCandidates
+    )
+    ?
+    diagnostics.bassRootCandidates
+      .slice(0,5)
+      .map(
+        compactCandidate
+      )
+    :
+    [];
+
+
+  const compact = {
+
+    segment:{
+
+      start:
+        chord.start
+        ??
+        null,
+
+      end:
+        chord.end
+        ??
+        null,
+
+      chord:
+        chord.chord
+        ??
+        null,
+
+      baseChord:
+        chord.baseChord
+        ??
+        null,
+
+      bassNote:
+        chord.bassNote
+        ??
+        null,
+
+      confidence:
+        chord.confidence
+        ??
+        null
+
+    },
+
+
+    decision:{
+
+      reconstructionValidated:
+        chord.reconstructionValidated
+        ??
+        false,
+
+      reconstructionChanged:
+        chord.reconstructionChanged
+        ??
+        false,
+
+      reconstructionReason:
+        chord.reconstructionReason
+        ??
+        null,
+
+      reconstructionBoundary:
+        chord.reconstructionBoundary
+        ??
+        null
+
+    },
+
+
+    reconstruction:{
+
+      score:
+        chord.reconstruction?.score
+        ??
+        null,
+
+      coverage:
+        chord.reconstruction?.coverage
+        ??
+        null,
+
+      persistence:
+        chord.reconstruction?.persistence
+        ??
+        null,
+
+      bassCompatibility:
+        chord.reconstruction?.bassCompatibility
+        ??
+        null,
+
+      original:
+        chord.reconstruction?.original
+        ??
+        null,
+
+      selected:
+        chord.reconstruction?.selected
+        ??
+        null,
+
+      reconstructionGain:
+        chord.reconstruction?.reconstructionGain
+        ??
+        null,
+
+      finalAdvantage:
+        chord.reconstruction?.finalAdvantage
+        ??
+        null,
+
+      detectorNorm:
+        chord.reconstruction?.detectorNorm
+        ??
+        null,
+
+      marginal:
+        chord.reconstruction?.marginal
+        ??
+        null,
+
+      bass:
+        chord.reconstruction?.bass
+        ??
+        null
+
+    },
+
+
+    candidateSearch:{
+
+      totalObserved:
+        search.totalObserved
+        ??
+        null,
+
+      expectedTemplateCount:
+        search.expectedTemplateCount
+        ??
+        null,
+
+      originalBase:
+        search.originalBase
+        ??
+        null,
+
+      originalDetectorRank:
+        search.originalDetectorRank
+        ??
+        null,
+
+      originalInTop256:
+        search.originalInTop256
+        ??
+        null,
+
+      originalInDecisionShortlist:
+        search.originalInDecisionShortlist
+        ??
+        null,
+
+      bassRoot:
+        search.bassRoot
+        ??
+        null,
+
+      bassRatio:
+        search.bassRatio
+        ??
+        null,
+
+      decisionShortlistCount:
+        search.decisionShortlistCount
+        ??
+        null
+
+    },
+
+
+    topCandidates,
+
+    bassRootCandidates
+
+  };
+
 
   return JSON.stringify(
-    diagnostic,
+    compact,
     null,
     2
   );
@@ -632,139 +683,80 @@ function buildDiagnosticCopy(
 
 
 /* =========================================
-   COPIAR API COMPLETA
+   COPIAR DEBUG DO ACORDE
 ========================================= */
 
-copyFullButton.addEventListener(
-  "click",
-  async () => {
+async function copyChordDebug(
+  chord,
+  copyButton
+){
 
-    if(!lastApiResponse){
+  try{
 
-      showCopyFeedback(
-        "Nenhuma resposta para copiar."
-      );
-
-      return;
-
-    }
-
-
-    try{
-
-      await copyText(
-        JSON.stringify(
-          lastApiResponse,
-          null,
-          2
-        )
+    const text =
+      buildChordDiagnostic(
+        chord
       );
 
 
-      const originalText =
-        copyFullButton.textContent;
+    await copyText(
+      text
+    );
 
 
-      copyFullButton.textContent =
-        "Copiado ✓";
+    const oldText =
+      copyButton.textContent;
 
 
-      showCopyFeedback(
-        "API completa copiada."
-      );
+    copyButton.textContent =
+      "Copiado ✓";
 
 
-      setTimeout(
-        () => {
-
-          copyFullButton.textContent =
-            originalText;
-
-        },
-        1600
-      );
-
-    }
-
-    catch(error){
-
-      showCopyFeedback(
-        error.message
-      );
-
-    }
-
-  }
-);
+    copyButton.classList.add(
+      "copied"
+    );
 
 
-/* =========================================
-   COPIAR DIAGNÓSTICO
-========================================= */
+    setTimeout(
+      () => {
 
-copyDiagnosticButton.addEventListener(
-  "click",
-  async () => {
-
-    if(!lastApiResponse){
-
-      showCopyFeedback(
-        "Nenhuma resposta para copiar."
-      );
-
-      return;
-
-    }
+        copyButton.textContent =
+          oldText;
 
 
-    try{
-
-      const diagnosticText =
-        buildDiagnosticCopy(
-          lastApiResponse
+        copyButton.classList.remove(
+          "copied"
         );
 
-
-      await copyText(
-        diagnosticText
-      );
-
-
-      const originalText =
-        copyDiagnosticButton.textContent;
-
-
-      copyDiagnosticButton.textContent =
-        "Copiado ✓";
-
-
-      showCopyFeedback(
-        "Diagnóstico copiado."
-      );
-
-
-      setTimeout(
-        () => {
-
-          copyDiagnosticButton.textContent =
-            originalText;
-
-        },
-        1600
-      );
-
-    }
-
-    catch(error){
-
-      showCopyFeedback(
-        error.message
-      );
-
-    }
+      },
+      1500
+    );
 
   }
-);
+
+  catch(error){
+
+    const oldText =
+      copyButton.textContent;
+
+
+    copyButton.textContent =
+      "Erro ao copiar";
+
+
+    setTimeout(
+      () => {
+
+        copyButton.textContent =
+          oldText;
+
+      },
+      1600
+    );
+
+  }
+
+}
 
 
 /* =========================================
@@ -810,10 +802,6 @@ button.addEventListener(
       "none";
 
 
-    copyFeedback.textContent =
-      "";
-
-
     lastApiResponse =
       null;
 
@@ -847,12 +835,16 @@ button.addEventListener(
 
 
       /* =====================================
-         GUARDA A RESPOSTA PARA OS BOTÕES
+         GUARDA RESPOSTA
       ===================================== */
 
       lastApiResponse =
         data;
 
+
+      /* =====================================
+         JSON COMPLETO CONTINUA VISÍVEL
+      ===================================== */
 
       debug.textContent =
         JSON.stringify(
@@ -978,7 +970,33 @@ button.addEventListener(
                   100
                 )}%
               </div>
+
+              <button
+                class="chord-copy"
+                type="button"
+              >
+                Copiar debug deste acorde
+              </button>
             `;
+
+
+          const copyButton =
+            element.querySelector(
+              ".chord-copy"
+            );
+
+
+          copyButton.addEventListener(
+            "click",
+            () => {
+
+              copyChordDebug(
+                chord,
+                copyButton
+              );
+
+            }
+          );
 
 
           chordsContainer.appendChild(
