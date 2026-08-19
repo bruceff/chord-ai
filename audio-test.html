@@ -4830,7 +4830,10 @@ function getChordCandidates(
     if(
       !name
       ||
-      name === current
+      sameChord(
+        name,
+        current
+      )
       ||
       rejected.has(name)
       ||
@@ -4858,19 +4861,43 @@ function getChordCandidates(
   }
 
 
+  const diagnostics =
+    chord?.reconstructionDiagnostics
+    ||
+    {};
+
+
+  /*
+    Fonte principal:
+    diagnóstico real do Reconstruction Validator.
+  */
+
   const sources = [
+
+    diagnostics.topCandidates,
+
+    diagnostics.bassRootCandidates,
+
+    /*
+      Compatibilidade com outras versões
+      ou estruturas já usadas anteriormente.
+    */
 
     chord?.topCandidates,
 
-    chord?.reconstruction?.topCandidates,
-
-    chord?.candidateSearch?.topCandidates,
-
     chord?.bassRootCandidates,
+
+    chord?.reconstruction?.topCandidates,
 
     chord?.reconstruction?.bassRootCandidates,
 
-    chord?.candidateSearch?.bassRootCandidates
+    chord?.candidateSearch?.topCandidates,
+
+    chord?.candidateSearch?.bassRootCandidates,
+
+    chord?.debug?.topCandidates,
+
+    chord?.debug?.bassRootCandidates
 
   ];
 
@@ -4899,6 +4926,13 @@ function getChordCandidates(
       );
 
     }
+
+  }
+
+
+  return result;
+
+}
 
   }
 
