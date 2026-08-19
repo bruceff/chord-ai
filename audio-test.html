@@ -5,374 +5,1702 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
 
-<title>Chord AI — Audio Test</title>
+<meta
+  name="theme-color"
+  content="#090b11"
+>
+
+<title>Chord AI</title>
 
 <style>
+
+:root {
+
+  --bg:
+    #080a0f;
+
+  --bg-soft:
+    #0d1018;
+
+  --surface:
+    #11151f;
+
+  --surface-2:
+    #151a26;
+
+  --surface-3:
+    #1a2030;
+
+  --border:
+    #252c3a;
+
+  --border-soft:
+    #1d2330;
+
+  --text:
+    #f7f7fb;
+
+  --text-soft:
+    #a4a9b5;
+
+  --text-muted:
+    #6f7685;
+
+  --purple:
+    #7b3ff2;
+
+  --purple-2:
+    #9b63ff;
+
+  --purple-soft:
+    rgba(123,63,242,.14);
+
+  --green:
+    #67df9a;
+
+  --red:
+    #ff6f82;
+
+  --yellow:
+    #f4c756;
+
+  --radius-lg:
+    24px;
+
+  --radius-md:
+    16px;
+
+  --radius-sm:
+    11px;
+
+  --shadow:
+    0 22px 70px rgba(0,0,0,.35);
+
+}
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   margin: 0;
+
   min-height: 100vh;
 
-  background: #07090d;
-  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(117,62,231,.12),
+      transparent 30%
+    ),
+    var(--bg);
+
+  color: var(--text);
 
   font-family:
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
+    Roboto,
     sans-serif;
 
-  padding: 24px;
+  -webkit-font-smoothing:
+    antialiased;
+
+  overflow-x: hidden;
 }
 
-.container {
-  width: 100%;
-  max-width: 680px;
-  margin: auto;
-}
-
-h1 {
-  margin-bottom: 6px;
-}
-
-h2 {
-  margin-top: 0;
-}
-
-.subtitle {
-  color: #8d96a5;
-  margin-top: 0;
-  margin-bottom: 30px;
-}
-
-.card {
-  background: #10141b;
-
-  border:
-    1px solid #252c37;
-
-  border-radius: 18px;
-
-  padding: 20px;
-
-  margin-bottom: 20px;
-}
-
-input[type="file"] {
-  width: 100%;
-  margin-bottom: 18px;
+button,
+input {
+  font: inherit;
 }
 
 button {
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+/* =====================================================
+   APP
+===================================================== */
+
+.app {
   width: 100%;
 
-  border: 0;
-
-  border-radius: 14px;
-
-  padding: 16px;
-
-  font-size: 16px;
-  font-weight: 700;
-
-  background: #3578ff;
-  color: white;
-
-  cursor: pointer;
-
-  transition:
-    opacity .2s ease,
-    transform .15s ease,
-    background .2s ease;
-}
-
-button:active {
-  transform: scale(.985);
-}
-
-button:disabled {
-  opacity: .45;
-  cursor: default;
-}
-
-.status {
-  margin-top: 18px;
-  color: #aab2c0;
-}
-
-.error {
-  color: #ff6767;
-}
-
-.success {
-  color: #6be89b;
+  min-height: 100vh;
 }
 
 
-/* =========================================
-   PREVIEW
-========================================= */
+/* =====================================================
+   HEADER
+===================================================== */
 
-.preview-controls {
-  display: grid;
+.topbar {
+  position: sticky;
 
-  grid-template-columns:
-    1fr 1fr;
+  top: 0;
 
-  gap: 10px;
+  z-index: 100;
 
-  margin: 18px 0 10px;
-}
-
-.preview-stop {
-  background: #232a35;
-}
-
-.preview-status {
-  min-height: 20px;
-
-  margin-top: 8px;
-  margin-bottom: 12px;
-
-  font-size: 13px;
-
-  color: #8d96a5;
-}
-
-
-/* =========================================
-   HUMAN REVIEW
-========================================= */
-
-.review-bar {
-  display: none;
-
-  margin: 14px 0 10px;
-
-  padding: 13px;
-
-  background: #161c25;
-
-  border:
-    1px solid #2a3442;
-
-  border-radius: 12px;
-}
-
-.review-bar.visible {
-  display: block;
-}
-
-.review-title {
-  font-size: 13px;
-  font-weight: 800;
-
-  margin-bottom: 8px;
-}
-
-.review-info {
-  font-size: 12px;
-
-  color: #9ca6b7;
-
-  margin-bottom: 10px;
-}
-
-.reset-review {
-  background: #232a35;
-
-  padding: 11px;
-
-  font-size: 13px;
-
-  border-radius: 10px;
-}
-
-
-/* =========================================
-   ACORDES
-========================================= */
-
-.chord {
-  position: relative;
-
-  padding: 17px 0;
-
-  border-bottom:
-    1px solid #242a34;
-}
-
-.chord:last-child {
-  border-bottom: 0;
-}
-
-.chord.reviewed {
-  padding-left: 12px;
-
-  border-left:
-    3px solid #6be89b;
-}
-
-.chord-name-row {
   display: flex;
 
   align-items: center;
 
-  gap: 8px;
+  justify-content: space-between;
 
-  flex-wrap: wrap;
+  height: 64px;
+
+  padding:
+    0
+    18px;
+
+  background:
+    rgba(8,10,15,.86);
+
+  backdrop-filter:
+    blur(20px);
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.05);
 }
 
-.chord-name {
-  font-size: 22px;
+.brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
   font-weight: 800;
+
+  letter-spacing:
+    -.02em;
 }
 
-.review-badge {
+.brand-mark {
+  width: 31px;
+
+  height: 31px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7137ed,
+      #9d65ff
+    );
+
+  box-shadow:
+    0 0 25px
+    rgba(123,63,242,.25);
+}
+
+.brand-mark svg {
+  width: 18px;
+
+  height: 18px;
+
+  fill: none;
+
+  stroke: white;
+
+  stroke-width: 1.8;
+}
+
+.plan-chip {
   display: inline-flex;
 
   align-items: center;
 
-  padding: 4px 7px;
+  gap: 5px;
 
-  border-radius: 7px;
+  height: 30px;
 
-  background: #173525;
+  padding:
+    0
+    10px;
+
+  border-radius: 999px;
 
   border:
-    1px solid #285d3f;
+    1px solid
+    rgba(244,199,86,.35);
 
-  color: #78e7a3;
+  color: var(--yellow);
 
-  font-size: 10px;
+  font-size: 11px;
+
+  font-weight: 700;
+
+  background:
+    rgba(244,199,86,.06);
+}
+
+
+/* =====================================================
+   SCREENS
+===================================================== */
+
+.screen {
+  display: none;
+
+  min-height:
+    calc(
+      100vh - 64px
+    );
+}
+
+.screen.active {
+  display: block;
+}
+
+
+/* =====================================================
+   HOME
+===================================================== */
+
+.home {
+  max-width: 850px;
+
+  margin: auto;
+
+  padding:
+    66px
+    20px
+    80px;
+}
+
+.hero {
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 24px;
+
+  padding:
+    7px
+    10px;
+
+  border-radius: 999px;
+
+  background:
+    var(--purple-soft);
+
+  border:
+    1px solid
+    rgba(141,83,255,.2);
+
+  color:
+    #c5a8ff;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.hero h1 {
+  margin:
+    0
+    auto;
+
+  max-width: 700px;
+
+  font-size:
+    clamp(
+      38px,
+      7vw,
+      68px
+    );
+
+  line-height:
+    .99;
+
+  letter-spacing:
+    -.055em;
+}
+
+.hero h1 span {
+  background:
+    linear-gradient(
+      90deg,
+      #9b62ff,
+      #7c45ef
+    );
+
+  -webkit-background-clip:
+    text;
+
+  color: transparent;
+}
+
+.hero p {
+  max-width: 520px;
+
+  margin:
+    22px
+    auto
+    0;
+
+  color:
+    var(--text-soft);
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+
+/* =====================================================
+   URL / DEV INPUT
+===================================================== */
+
+.analyze-box {
+  margin:
+    38px
+    auto
+    0;
+
+  max-width: 700px;
+
+  padding: 7px;
+
+  display: flex;
+
+  gap: 8px;
+
+  background:
+    #10141d;
+
+  border:
+    1px solid
+    #292f3d;
+
+  border-radius:
+    15px;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.28);
+}
+
+.url-field {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 51px;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+
+  padding:
+    0
+    14px;
+
+  font-size: 14px;
+}
+
+.url-field::placeholder {
+  color:
+    #686f7d;
+}
+
+.primary-button {
+  border: 0;
+
+  min-height: 51px;
+
+  padding:
+    0
+    20px;
+
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7638ee,
+      #8d4df6
+    );
+
+  color: white;
+
   font-weight: 800;
 
-  text-transform: uppercase;
-  letter-spacing: .04em;
+  cursor: pointer;
 }
 
-.time {
-  color: #8993a3;
-  margin-top: 4px;
+.primary-button:disabled {
+  opacity: .5;
+
+  cursor: default;
 }
 
-.confidence {
-  color: #657083;
-  font-size: 13px;
-  margin-top: 4px;
+
+/* =====================================================
+   DEV INPUT
+===================================================== */
+
+.dev-upload {
+  margin:
+    16px
+    auto
+    0;
+
+  max-width:
+    700px;
+
+  text-align: center;
 }
 
-.review-detail {
-  margin-top: 7px;
+.dev-toggle {
+  border: 0;
 
-  color: #9ca6b7;
+  background: transparent;
+
+  color:
+    #606979;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.dev-panel {
+  display: none;
+
+  margin-top: 12px;
+
+  padding: 15px;
+
+  border-radius:
+    13px;
+
+  border:
+    1px dashed
+    #303747;
+
+  background:
+    #0d1017;
+}
+
+.dev-panel.open {
+  display: block;
+}
+
+.dev-panel input[type="file"] {
+  width: 100%;
+
+  color:
+    #818a9a;
 
   font-size: 12px;
-  line-height: 1.45;
 }
 
-.rejected-list {
-  color: #cf8995;
-}
 
-.chord-actions {
+/* =====================================================
+   FEATURES
+===================================================== */
+
+.feature-row {
+  margin-top: 58px;
+
   display: grid;
 
   grid-template-columns:
-    1fr 1fr;
+    repeat(3,1fr);
+
+  gap: 13px;
+}
+
+.feature {
+  min-height: 112px;
+
+  padding: 18px;
+
+  text-align: left;
+
+  background:
+    rgba(16,20,29,.55);
+
+  border:
+    1px solid
+    rgba(255,255,255,.05);
+
+  border-radius:
+    15px;
+}
+
+.feature-icon {
+  width: 34px;
+
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin-bottom: 13px;
+
+  border-radius: 10px;
+
+  background:
+    var(--purple-soft);
+
+  color:
+    #aa79ff;
+}
+
+.feature strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 13px;
+}
+
+.feature span {
+  color:
+    var(--text-muted);
+
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   ANALYZING
+===================================================== */
+
+.analysis-screen {
+  min-height:
+    calc(
+      100vh - 64px
+    );
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    30px
+    20px;
+}
+
+.analysis-card {
+  width: 100%;
+
+  max-width: 620px;
+
+  text-align: center;
+}
+
+.analysis-card h2 {
+  margin: 0;
+
+  font-size: 25px;
+
+  letter-spacing:
+    -.03em;
+}
+
+.analysis-card p {
+  margin:
+    9px
+    0
+    30px;
+
+  color:
+    var(--text-muted);
+
+  font-size: 13px;
+}
+
+.progress-ring {
+  position: relative;
+
+  width: 190px;
+
+  height: 190px;
+
+  margin:
+    0
+    auto
+    36px;
+
+  display: grid;
+
+  place-items: center;
+}
+
+.progress-ring svg {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+
+  height: 100%;
+
+  transform:
+    rotate(-90deg);
+}
+
+.ring-track {
+  fill: none;
+
+  stroke:
+    #1c2230;
+
+  stroke-width: 8;
+}
+
+.ring-value {
+  fill: none;
+
+  stroke:
+    url(#ringGradient);
+
+  stroke-width: 8;
+
+  stroke-linecap: round;
+
+  stroke-dasharray:
+    527;
+
+  stroke-dashoffset:
+    527;
+
+  transition:
+    stroke-dashoffset
+    .35s ease;
+}
+
+.progress-value {
+  position: relative;
+
+  font-size: 35px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    -.04em;
+}
+
+.steps {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
 
   gap: 8px;
+
+  max-width: 560px;
+
+  margin: auto;
+}
+
+.step {
+  color:
+    #555e6d;
+
+  font-size: 11px;
+}
+
+.step-dot {
+  width: 30px;
+
+  height: 30px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    0
+    auto
+    8px;
+
+  border-radius: 50%;
+
+  background:
+    #151a23;
+
+  border:
+    1px solid
+    #262d3b;
+}
+
+.step.active {
+  color:
+    #d9caef;
+}
+
+.step.active .step-dot {
+  background:
+    var(--purple);
+
+  border-color:
+    var(--purple);
+}
+
+.step.done {
+  color:
+    #8f7aaa;
+}
+
+.step.done .step-dot {
+  background:
+    #5122a7;
+
+  border-color:
+    #6630cb;
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+.result-layout {
+  max-width:
+    1180px;
+
+  margin: auto;
+
+  padding:
+    22px
+    16px
+    80px;
+}
+
+.song-head {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding:
+    14px
+    0
+    20px;
+}
+
+.cover {
+  width: 64px;
+
+  height: 64px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #45216e,
+      #251338
+    );
+
+  color:
+    #be9cff;
+
+  font-size: 24px;
+}
+
+.song-info {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.song-info h2 {
+  margin:
+    0
+    0
+    5px;
+
+  font-size: 19px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow:
+    ellipsis;
+}
+
+.song-info p {
+  margin: 0;
+
+  color:
+    var(--text-muted);
+
+  font-size: 12px;
+}
+
+.song-stats {
+  display: flex;
+
+  gap: 22px;
+}
+
+.stat {
+  text-align: right;
+}
+
+.stat small {
+  display: block;
+
+  color:
+    var(--text-muted);
+
+  font-size: 9px;
+
+  text-transform: uppercase;
+
+  letter-spacing: .08em;
+}
+
+.stat strong {
+  display: block;
+
+  margin-top: 4px;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   PLAYER
+===================================================== */
+
+.player-card {
+  background:
+    var(--surface);
+
+  border:
+    1px solid
+    var(--border-soft);
+
+  border-radius:
+    17px;
+
+  overflow: hidden;
+}
+
+.player-main {
+  padding:
+    18px;
+}
+
+.player-controls {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+.play-button {
+  width: 54px;
+
+  height: 54px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #793cf0,
+      #985dfd
+    );
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.play-button svg {
+  width: 21px;
+
+  fill: currentColor;
+}
+
+.track-area {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.track-time {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 9px;
+
+  color:
+    var(--text-muted);
+
+  font-size: 10px;
+}
+
+.seek {
+  position: relative;
+
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    #222938;
+
+  cursor: pointer;
+}
+
+.seek-progress {
+  width: 0%;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7140df,
+      #a062ff
+    );
+}
+
+
+/* =====================================================
+   HARMONIC TIMELINE
+===================================================== */
+
+.timeline-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin:
+    25px
+    0
+    10px;
+}
+
+.timeline-header strong {
+  font-size: 12px;
+}
+
+.timeline-header span {
+  color:
+    var(--text-muted);
+
+  font-size: 10px;
+}
+
+.timeline-wrap {
+  position: relative;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+
+  padding-bottom: 4px;
+}
+
+.timeline-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.timeline {
+  display: flex;
+
+  gap: 7px;
+
+  min-width:
+    max-content;
+}
+
+.timeline-chord {
+  min-width: 76px;
+
+  padding:
+    12px
+    14px;
+
+  border:
+    1px solid
+    #252b39;
+
+  border-radius:
+    10px;
+
+  background:
+    #151a24;
+
+  color:
+    #c9ccd3;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  transition:
+    .2s ease;
+}
+
+.timeline-chord strong {
+  display: block;
+
+  font-size: 15px;
+}
+
+.timeline-chord small {
+  display: block;
+
+  margin-top: 5px;
+
+  color:
+    #727988;
+
+  font-size: 9px;
+}
+
+.timeline-chord.active {
+  color: white;
+
+  background:
+    linear-gradient(
+      180deg,
+      #8147ef,
+      #682ed3
+    );
+
+  border-color:
+    #9c6aff;
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 10px 28px
+    rgba(112,51,220,.24);
+}
+
+
+/* =====================================================
+   CURRENT CHORD
+===================================================== */
+
+.current-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    150px;
+
+  margin-top: 18px;
+
+  border-top:
+    1px solid
+    #202633;
+}
+
+.current-block {
+  min-height: 132px;
+
+  padding:
+    19px;
+
+  border-right:
+    1px solid
+    #202633;
+}
+
+.current-block:last-child {
+  border-right: 0;
+}
+
+.current-block small {
+  color:
+    var(--text-muted);
+
+  font-size: 10px;
+}
+
+.big-chord {
+  margin-top: 5px;
+
+  font-size: 37px;
+
+  font-weight: 850;
+
+  letter-spacing:
+    -.05em;
+}
+
+.next-chord {
+  color:
+    #aeb3bf;
+}
+
+.confidence-value {
+  margin-top: 10px;
+
+  font-size: 25px;
+
+  font-weight: 800;
+}
+
+.confidence-label {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  margin-top: 7px;
+
+  padding:
+    4px
+    6px;
+
+  border-radius:
+    6px;
+
+  color:
+    var(--green);
+
+  background:
+    rgba(103,223,154,.08);
+
+  font-size: 9px;
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.result-actions {
+  display: grid;
+
+  grid-template-columns:
+    1.3fr
+    1fr
+    1fr;
+
+  gap: 9px;
 
   margin-top: 12px;
 }
 
-.chord-action {
-  padding: 11px 10px;
-
-  font-size: 13px;
-
-  border-radius: 10px;
-}
-
-.chord-copy {
-  background: #1a2230;
+.action-button {
+  min-height: 47px;
 
   border:
-    1px solid #303a49;
-}
+    1px solid
+    #2c3341;
 
-.chord-copy.copied {
-  background: #173525;
+  border-radius:
+    11px;
 
-  border-color: #285d3f;
+  background:
+    #121720;
 
-  color: #78e7a3;
-}
-
-.chord-retry {
-  background: #332027;
-
-  border:
-    1px solid #693540;
-}
-
-.chord-retry.no-alternative {
-  background: #20242b;
-
-  border-color: #30343b;
-
-  color: #777f8c;
-}
-
-
-/* =========================================
-   DEBUG
-========================================= */
-
-pre {
-  white-space: pre-wrap;
-  word-break: break-word;
+  color: white;
 
   font-size: 12px;
-  line-height: 1.45;
 
-  color: #9ca6b7;
+  font-weight: 700;
 
-  max-height: 520px;
+  cursor: pointer;
+}
+
+.action-button.primary {
+  background:
+    linear-gradient(
+      135deg,
+      #7135e8,
+      #8b4df4
+    );
+
+  border-color:
+    transparent;
+}
+
+
+/* =====================================================
+   ADJUST PANEL
+===================================================== */
+
+.panel-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 500;
+
+  display: none;
+
+  align-items: flex-end;
+
+  justify-content: center;
+
+  padding:
+    20px;
+
+  background:
+    rgba(0,0,0,.66);
+
+  backdrop-filter:
+    blur(8px);
+}
+
+.panel-overlay.open {
+  display: flex;
+}
+
+.sheet {
+  width: 100%;
+
+  max-width: 660px;
+
+  max-height:
+    82vh;
 
   overflow-y: auto;
 
-  margin-bottom: 0;
+  background:
+    #10141d;
+
+  border:
+    1px solid
+    #29303e;
+
+  border-radius:
+    22px;
+
+  box-shadow:
+    var(--shadow);
+}
+
+.sheet-head {
+  position: sticky;
+
+  top: 0;
+
+  z-index: 5;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding:
+    17px
+    19px;
+
+  background:
+    rgba(16,20,29,.95);
+
+  backdrop-filter:
+    blur(15px);
+
+  border-bottom:
+    1px solid
+    #242a36;
+}
+
+.sheet-head strong {
+  font-size: 15px;
+}
+
+.sheet-close {
+  width: 33px;
+
+  height: 33px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+    #191e28;
+
+  color: white;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.sheet-body {
+  padding: 18px;
+}
+
+.adjust-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap: 8px;
+
+  margin-bottom: 17px;
+}
+
+.adjust-stat {
+  padding: 11px;
+
+  border-radius:
+    10px;
+
+  background:
+    #151a24;
+
+  color:
+    var(--text-muted);
+
+  font-size: 10px;
+}
+
+.adjust-stat strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: white;
+
+  font-size: 12px;
+}
+
+.candidate-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.candidate {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  min-height: 58px;
+
+  padding:
+    10px
+    12px;
+
+  border:
+    1px solid
+    #292f3c;
+
+  border-radius:
+    11px;
+
+  background:
+    #141923;
+
+  cursor: pointer;
+}
+
+.candidate.selected {
+  border-color:
+    #8050e7;
+
+  background:
+    rgba(118,61,230,.11);
+}
+
+.candidate-name {
+  flex: 1;
+
+  font-weight: 800;
+}
+
+.candidate-score {
+  color:
+    #ab8dde;
+
+  font-size: 11px;
 }
 
 
-/* =========================================
+/* =====================================================
+   DEV DEBUG
+===================================================== */
+
+.debug-drawer {
+  display: none;
+
+  margin-top: 16px;
+
+  padding: 16px;
+
+  border-radius:
+    14px;
+
+  background:
+    #0a0d12;
+
+  border:
+    1px solid
+    #252b36;
+}
+
+.debug-drawer.open {
+  display: block;
+}
+
+.debug-drawer pre {
+  margin: 0;
+
+  max-height: 440px;
+
+  overflow: auto;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+
+  color:
+    #858e9d;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+
+  bottom:
+    calc(
+      24px +
+      env(
+        safe-area-inset-bottom
+      )
+    );
+
+  z-index: 1000;
+
+  transform:
+    translate(
+      -50%,
+      20px
+    );
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  padding:
+    11px
+    15px;
+
+  border-radius:
+    10px;
+
+  background:
+    #202633;
+
+  border:
+    1px solid
+    #323a49;
+
+  color: white;
+
+  font-size: 12px;
+
+  transition:
+    .25s ease;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translate(
+      -50%,
+      0
+    );
+}
+
+
+/* =====================================================
    MOBILE
-========================================= */
+===================================================== */
 
-@media (max-width: 520px) {
+@media(
+  max-width: 680px
+){
 
-  body {
-    padding: 16px;
+  .topbar {
+    height: 58px;
   }
 
-  .card {
-    padding: 17px;
+  .screen {
+    min-height:
+      calc(
+        100vh - 58px
+      );
   }
 
-  .preview-controls {
-    grid-template-columns: 1fr;
+  .home {
+    padding:
+      44px
+      15px
+      60px;
   }
 
-  .chord-actions {
-    grid-template-columns: 1fr;
+  .hero h1 {
+    font-size:
+      clamp(
+        40px,
+        13vw,
+        57px
+      );
+  }
+
+  .hero p {
+    font-size: 13px;
+  }
+
+  .analyze-box {
+    flex-direction:
+      column;
+
+    padding: 8px;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
+
+  .feature-row {
+    grid-template-columns:
+      1fr;
+  }
+
+  .feature {
+    min-height: 86px;
+  }
+
+  .steps {
+    gap: 4px;
+  }
+
+  .step {
+    font-size: 9px;
+  }
+
+  .song-head {
+    align-items:
+      flex-start;
+  }
+
+  .song-stats {
+    display: none;
+  }
+
+  .player-main {
+    padding: 14px;
+  }
+
+  .current-grid {
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .current-block:nth-child(2) {
+    border-right: 0;
+  }
+
+  .current-block:last-child {
+    grid-column:
+      1 / -1;
+
+    min-height: auto;
+
+    border-top:
+      1px solid
+      #202633;
+
+    text-align: center;
+  }
+
+  .result-actions {
+    grid-template-columns:
+      1fr;
+  }
+
+  .adjust-summary {
+    grid-template-columns:
+      1fr;
   }
 
 }
@@ -382,170 +1710,911 @@ pre {
 
 <body>
 
-<div class="container">
-
-  <h1>Chord AI</h1>
-
-  <p class="subtitle">
-    Teste do Audio Engine
-  </p>
+<div class="app">
 
 
-  <div class="card">
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
-    <input
-      id="file"
-      type="file"
-      accept=".wav,audio/wav,audio/x-wav"
-    >
+<header class="topbar">
 
-    <button id="analyze">
-      Analisar WAV
-    </button>
+  <div class="brand">
 
-    <div
-      id="status"
-      class="status"
-    >
-      Selecione um arquivo WAV.
+    <div class="brand-mark">
+
+      <svg viewBox="0 0 24 24">
+        <rect
+          x="4"
+          y="4"
+          width="16"
+          height="16"
+          rx="4"
+        />
+        <path
+          d="M9 9v6M15 8v8M9 12h6"
+        />
+      </svg>
+
     </div>
+
+    Chord AI
 
   </div>
 
 
-  <div
-    id="result"
-    class="card"
-    style="display:none"
-  >
+  <div class="plan-chip">
+    ★ Plano Gratuito
+  </div>
 
-    <h2>Resultado</h2>
-
-    <div id="audioInfo"></div>
+</header>
 
 
-    <div class="preview-controls">
+<!-- =====================================================
+     HOME
+===================================================== -->
 
-      <button
-        id="playPreview"
-        type="button"
-      >
-        Ouvir reconstrução
-      </button>
+<section
+  id="homeScreen"
+  class="screen active"
+>
 
-      <button
-        id="stopPreview"
-        class="preview-stop"
-        type="button"
-      >
-        Parar
-      </button>
+  <div class="home">
 
-    </div>
+    <div class="hero">
 
-
-    <div
-      id="previewStatus"
-      class="preview-status"
-    ></div>
-
-
-    <div
-      id="reviewBar"
-      class="review-bar"
-    >
-
-      <div class="review-title">
-        Revisão humana ativa
+      <div class="hero-badge">
+        ✦ Inteligência artificial para músicos
       </div>
 
-      <div
-        id="reviewInfo"
-        class="review-info"
-      ></div>
+      <h1>
+        Entenda a
+        <span>
+          harmonia
+        </span>
+        de qualquer música.
+      </h1>
+
+      <p>
+        Cole o link de uma música e a Chord AI
+        identifica as cifras, acompanha as mudanças
+        harmônicas e ajuda você a tocar junto.
+      </p>
+
+
+      <div class="analyze-box">
+
+        <input
+          id="urlInput"
+          class="url-field"
+          placeholder="Cole o link da música aqui..."
+        >
+
+        <button
+          id="analyzeUrlButton"
+          class="primary-button"
+          type="button"
+        >
+          Analisar música
+        </button>
+
+      </div>
+
+
+      <div class="dev-upload">
+
+        <button
+          id="devToggle"
+          class="dev-toggle"
+          type="button"
+        >
+          Entrada de desenvolvimento
+        </button>
+
+
+        <div
+          id="devPanel"
+          class="dev-panel"
+        >
+
+          <input
+            id="wavInput"
+            type="file"
+            accept=".wav,audio/wav,audio/x-wav"
+          >
+
+          <button
+            id="analyzeWavButton"
+            class="primary-button"
+            type="button"
+            style="
+              width:100%;
+              margin-top:12px;
+            "
+          >
+            Analisar WAV de teste
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="feature-row">
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          ⚡
+        </div>
+
+        <strong>
+          Rápido
+        </strong>
+
+        <span>
+          Análise automática da harmonia.
+        </span>
+
+      </div>
+
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          ◎
+        </div>
+
+        <strong>
+          Preciso
+        </strong>
+
+        <span>
+          Reconstrução e validação dos acordes.
+        </span>
+
+      </div>
+
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          ♫
+        </div>
+
+        <strong>
+          Feito para tocar
+        </strong>
+
+        <span>
+          Cifras sincronizadas com a música.
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ANALYZING
+===================================================== -->
+
+<section
+  id="analysisScreen"
+  class="screen"
+>
+
+  <div class="analysis-screen">
+
+    <div class="analysis-card">
+
+      <h2>
+        Analisando sua música...
+      </h2>
+
+      <p id="analysisMessage">
+        Preparando o áudio para análise.
+      </p>
+
+
+      <div class="progress-ring">
+
+        <svg viewBox="0 0 180 180">
+
+          <defs>
+
+            <linearGradient
+              id="ringGradient"
+              x1="0"
+              x2="1"
+            >
+
+              <stop
+                offset="0%"
+                stop-color="#6d30dd"
+              />
+
+              <stop
+                offset="100%"
+                stop-color="#a96fff"
+              />
+
+            </linearGradient>
+
+          </defs>
+
+          <circle
+            class="ring-track"
+            cx="90"
+            cy="90"
+            r="84"
+          />
+
+          <circle
+            id="ringValue"
+            class="ring-value"
+            cx="90"
+            cy="90"
+            r="84"
+          />
+
+        </svg>
+
+
+        <div
+          id="progressValue"
+          class="progress-value"
+        >
+          0%
+        </div>
+
+      </div>
+
+
+      <div class="steps">
+
+        <div
+          id="step1"
+          class="step active"
+        >
+
+          <div class="step-dot">
+            1
+          </div>
+
+          Obtendo áudio
+
+        </div>
+
+
+        <div
+          id="step2"
+          class="step"
+        >
+
+          <div class="step-dot">
+            2
+          </div>
+
+          Processando
+
+        </div>
+
+
+        <div
+          id="step3"
+          class="step"
+        >
+
+          <div class="step-dot">
+            3
+          </div>
+
+          Detectando harmonia
+
+        </div>
+
+
+        <div
+          id="step4"
+          class="step"
+        >
+
+          <div class="step-dot">
+            4
+          </div>
+
+          Finalizando
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     RESULT
+===================================================== -->
+
+<section
+  id="resultScreen"
+  class="screen"
+>
+
+  <div class="result-layout">
+
+
+    <div class="song-head">
+
+      <div class="cover">
+        ♫
+      </div>
+
+
+      <div class="song-info">
+
+        <h2 id="songTitle">
+          Música analisada
+        </h2>
+
+        <p id="songMeta">
+          Chord AI
+        </p>
+
+      </div>
+
+
+      <div class="song-stats">
+
+        <div class="stat">
+
+          <small>
+            Duração
+          </small>
+
+          <strong id="songDuration">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+          <small>
+            Acordes
+          </small>
+
+          <strong id="songChordCount">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="player-card">
+
+      <div class="player-main">
+
+
+        <div class="player-controls">
+
+          <button
+            id="playButton"
+            class="play-button"
+            type="button"
+          >
+
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M8 5v14l11-7z"
+              />
+            </svg>
+
+          </button>
+
+
+          <div class="track-area">
+
+            <div class="track-time">
+
+              <span id="currentTime">
+                00:00
+              </span>
+
+              <span id="totalTime">
+                00:00
+              </span>
+
+            </div>
+
+
+            <div
+              id="seek"
+              class="seek"
+            >
+
+              <div
+                id="seekProgress"
+                class="seek-progress"
+              ></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="timeline-header">
+
+          <strong>
+            Linha do tempo da harmonia
+          </strong>
+
+          <span>
+            Toque em uma cifra para selecionar
+          </span>
+
+        </div>
+
+
+        <div class="timeline-wrap">
+
+          <div
+            id="timeline"
+            class="timeline"
+          ></div>
+
+        </div>
+
+
+        <div class="current-grid">
+
+          <div class="current-block">
+
+            <small>
+              Cifra atual
+            </small>
+
+            <div
+              id="currentChord"
+              class="big-chord"
+            >
+              —
+            </div>
+
+            <small id="currentChordTime">
+              —
+            </small>
+
+          </div>
+
+
+          <div class="current-block">
+
+            <small>
+              Próxima cifra
+            </small>
+
+            <div
+              id="nextChord"
+              class="big-chord next-chord"
+            >
+              —
+            </div>
+
+            <small id="nextChordTime">
+              —
+            </small>
+
+          </div>
+
+
+          <div class="current-block">
+
+            <small>
+              Confiança
+            </small>
+
+            <div
+              id="confidenceValue"
+              class="confidence-value"
+            >
+              —
+            </div>
+
+            <div
+              id="confidenceLabel"
+              class="confidence-label"
+            >
+              ● analisando
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="result-actions">
 
       <button
-        id="resetReview"
-        class="reset-review"
+        id="playHarmonyButton"
+        class="action-button primary"
         type="button"
       >
-        Desfazer todas as correções
+        ▶ Ouvir harmonia
+      </button>
+
+
+      <button
+        id="adjustChordButton"
+        class="action-button"
+        type="button"
+      >
+        ✎ Ajustar cifra
+      </button>
+
+
+      <button
+        id="debugButton"
+        class="action-button"
+        type="button"
+      >
+        ⋯ Diagnóstico
       </button>
 
     </div>
 
 
-    <div id="chords"></div>
+    <div
+      id="debugDrawer"
+      class="debug-drawer"
+    >
+
+      <pre id="debugOutput"></pre>
+
+    </div>
 
   </div>
 
+</section>
 
-  <div
-    id="debugCard"
-    class="card"
-    style="display:none"
-  >
 
-    <h2>Resposta original da API</h2>
+<!-- =====================================================
+     ADJUST CHORD
+===================================================== -->
 
-    <pre id="debug"></pre>
+<div
+  id="adjustOverlay"
+  class="panel-overlay"
+>
+
+  <div class="sheet">
+
+    <div class="sheet-head">
+
+      <strong>
+        Ajustar cifra
+      </strong>
+
+      <button
+        id="closeAdjustButton"
+        class="sheet-close"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="sheet-body">
+
+      <div class="adjust-summary">
+
+        <div class="adjust-stat">
+
+          Tempo
+
+          <strong id="adjustTime">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="adjust-stat">
+
+          Cifra atual
+
+          <strong id="adjustCurrent">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="adjust-stat">
+
+          Duração
+
+          <strong id="adjustDuration">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="candidateList"
+        class="candidate-list"
+      ></div>
+
+    </div>
 
   </div>
 
 </div>
 
 
+<div
+  id="toast"
+  class="toast"
+></div>
+
+</div>
+
+
 <script>
+
+/* =====================================================
+   CONFIG
+===================================================== */
 
 const API =
   "https://chord-ai-api.onrender.com";
 
 
-const fileInput =
-  document.getElementById("file");
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-const analyzeButton =
-  document.getElementById("analyze");
+const homeScreen =
+  document.getElementById(
+    "homeScreen"
+  );
 
-const status =
-  document.getElementById("status");
+const analysisScreen =
+  document.getElementById(
+    "analysisScreen"
+  );
 
-const result =
-  document.getElementById("result");
-
-const audioInfo =
-  document.getElementById("audioInfo");
-
-const chordsContainer =
-  document.getElementById("chords");
-
-const debugCard =
-  document.getElementById("debugCard");
-
-const debug =
-  document.getElementById("debug");
-
-const playPreviewButton =
-  document.getElementById("playPreview");
-
-const stopPreviewButton =
-  document.getElementById("stopPreview");
-
-const previewStatus =
-  document.getElementById("previewStatus");
-
-const reviewBar =
-  document.getElementById("reviewBar");
-
-const reviewInfo =
-  document.getElementById("reviewInfo");
-
-const resetReviewButton =
-  document.getElementById("resetReview");
+const resultScreen =
+  document.getElementById(
+    "resultScreen"
+  );
 
 
-let lastApiResponse =
-  null;
+const urlInput =
+  document.getElementById(
+    "urlInput"
+  );
+
+const analyzeUrlButton =
+  document.getElementById(
+    "analyzeUrlButton"
+  );
+
+
+const devToggle =
+  document.getElementById(
+    "devToggle"
+  );
+
+const devPanel =
+  document.getElementById(
+    "devPanel"
+  );
+
+const wavInput =
+  document.getElementById(
+    "wavInput"
+  );
+
+const analyzeWavButton =
+  document.getElementById(
+    "analyzeWavButton"
+  );
+
+
+const progressValue =
+  document.getElementById(
+    "progressValue"
+  );
+
+const ringValue =
+  document.getElementById(
+    "ringValue"
+  );
+
+const analysisMessage =
+  document.getElementById(
+    "analysisMessage"
+  );
+
+
+const songTitle =
+  document.getElementById(
+    "songTitle"
+  );
+
+const songMeta =
+  document.getElementById(
+    "songMeta"
+  );
+
+const songDuration =
+  document.getElementById(
+    "songDuration"
+  );
+
+const songChordCount =
+  document.getElementById(
+    "songChordCount"
+  );
+
+
+const timeline =
+  document.getElementById(
+    "timeline"
+  );
+
+
+const currentChord =
+  document.getElementById(
+    "currentChord"
+  );
+
+const nextChord =
+  document.getElementById(
+    "nextChord"
+  );
+
+const currentChordTime =
+  document.getElementById(
+    "currentChordTime"
+  );
+
+const nextChordTime =
+  document.getElementById(
+    "nextChordTime"
+  );
+
+const confidenceValue =
+  document.getElementById(
+    "confidenceValue"
+  );
+
+const confidenceLabel =
+  document.getElementById(
+    "confidenceLabel"
+  );
+
+
+const playButton =
+  document.getElementById(
+    "playButton"
+  );
+
+const playHarmonyButton =
+  document.getElementById(
+    "playHarmonyButton"
+  );
+
+const seek =
+  document.getElementById(
+    "seek"
+  );
+
+const seekProgress =
+  document.getElementById(
+    "seekProgress"
+  );
+
+const currentTime =
+  document.getElementById(
+    "currentTime"
+  );
+
+const totalTime =
+  document.getElementById(
+    "totalTime"
+  );
+
+
+const adjustChordButton =
+  document.getElementById(
+    "adjustChordButton"
+  );
+
+const adjustOverlay =
+  document.getElementById(
+    "adjustOverlay"
+  );
+
+const closeAdjustButton =
+  document.getElementById(
+    "closeAdjustButton"
+  );
+
+const adjustTime =
+  document.getElementById(
+    "adjustTime"
+  );
+
+const adjustCurrent =
+  document.getElementById(
+    "adjustCurrent"
+  );
+
+const adjustDuration =
+  document.getElementById(
+    "adjustDuration"
+  );
+
+const candidateList =
+  document.getElementById(
+    "candidateList"
+  );
+
+
+const debugButton =
+  document.getElementById(
+    "debugButton"
+  );
+
+const debugDrawer =
+  document.getElementById(
+    "debugDrawer"
+  );
+
+const debugOutput =
+  document.getElementById(
+    "debugOutput"
+  );
+
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+
+/* =====================================================
+   STATE
+===================================================== */
 
 let originalAnalysis =
   null;
@@ -553,9 +2622,16 @@ let originalAnalysis =
 let workingAnalysis =
   null;
 
-let humanReview =
-  new Map();
+let selectedIndex =
+  0;
 
+let fakeProgressTimer =
+  null;
+
+
+/* =====================================================
+   SYNTH
+===================================================== */
 
 let previewContext =
   null;
@@ -563,58 +2639,460 @@ let previewContext =
 let previewNodes =
   [];
 
-let previewTimer =
+let previewStartTime =
   null;
+
+let previewOffset =
+  0;
+
+let previewAnimation =
+  null;
+
+let previewPlaying =
+  false;
 
 
 const NOTE_TO_SEMITONE = {
 
   C:0,
+
   "C#":1,
+
   D:2,
+
   "D#":3,
+
   E:4,
+
   F:5,
+
   "F#":6,
+
   G:7,
+
   "G#":8,
+
   A:9,
+
   "A#":10,
+
   B:11
 
 };
 
 
-/* =========================================
-   CLONE
-========================================= */
+/* =====================================================
+   SCREEN
+===================================================== */
 
-function deepClone(
-  value
+function showScreen(
+  screen
 ){
 
-  if(
-    value === null
-    ||
-    value === undefined
-  ){
+  [
+    homeScreen,
+    analysisScreen,
+    resultScreen
+  ]
+  .forEach(
+    item =>
+      item.classList.remove(
+        "active"
+      )
+  );
 
-    return value;
 
-  }
+  screen.classList.add(
+    "active"
+  );
 
 
-  if(
-    typeof structuredClone ===
-    "function"
-  ){
+  window.scrollTo(
+    0,
+    0
+  );
 
-    return structuredClone(
-      value
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(
+  message
+){
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    showToast.timer
+  );
+
+
+  showToast.timer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2200
+    );
+
+}
+
+
+/* =====================================================
+   DEV
+===================================================== */
+
+devToggle.addEventListener(
+  "click",
+  () => {
+
+    devPanel.classList.toggle(
+      "open"
     );
 
   }
+);
 
+
+/* =====================================================
+   URL PLACEHOLDER
+
+   Ainda não fazemos extração comercial
+   de áudio a partir de links.
+===================================================== */
+
+analyzeUrlButton.addEventListener(
+  "click",
+  () => {
+
+    const url =
+      urlInput.value.trim();
+
+
+    if(!url){
+
+      showToast(
+        "Cole um link para continuar."
+      );
+
+      return;
+
+    }
+
+
+    showToast(
+      "A entrada por links será conectada à próxima camada da API."
+    );
+
+  }
+);
+
+
+/* =====================================================
+   ANALYSIS PROGRESS
+===================================================== */
+
+function setProgress(
+  value
+){
+
+  const safe =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        value
+      )
+    );
+
+
+  progressValue.textContent =
+    Math.round(
+      safe
+    )
+    +
+    "%";
+
+
+  const circumference =
+    527;
+
+
+  ringValue.style.strokeDashoffset =
+    circumference
+    -
+    (
+      circumference
+      *
+      safe
+      /
+      100
+    );
+
+
+  const steps =
+    [
+      document.getElementById(
+        "step1"
+      ),
+
+      document.getElementById(
+        "step2"
+      ),
+
+      document.getElementById(
+        "step3"
+      ),
+
+      document.getElementById(
+        "step4"
+      )
+    ];
+
+
+  let activeStep =
+    0;
+
+
+  if(
+    safe >= 25
+  ){
+
+    activeStep =
+      1;
+
+  }
+
+
+  if(
+    safe >= 55
+  ){
+
+    activeStep =
+      2;
+
+  }
+
+
+  if(
+    safe >= 84
+  ){
+
+    activeStep =
+      3;
+
+  }
+
+
+  steps.forEach(
+    (
+      step,
+      index
+    ) => {
+
+      step.classList.remove(
+        "active",
+        "done"
+      );
+
+
+      if(
+        index <
+        activeStep
+      ){
+
+        step.classList.add(
+          "done"
+        );
+
+      }
+
+      else if(
+        index ===
+        activeStep
+      ){
+
+        step.classList.add(
+          "active"
+        );
+
+      }
+
+    }
+  );
+
+
+  if(
+    safe <
+    25
+  ){
+
+    analysisMessage.textContent =
+      "Obtendo e preparando o áudio.";
+
+  }
+
+  else if(
+    safe <
+    55
+  ){
+
+    analysisMessage.textContent =
+      "Extraindo informações acústicas.";
+
+  }
+
+  else if(
+    safe <
+    84
+  ){
+
+    analysisMessage.textContent =
+      "Detectando a estrutura harmônica.";
+
+  }
+
+  else{
+
+    analysisMessage.textContent =
+      "Validando e organizando as cifras.";
+
+  }
+
+}
+
+
+function startFakeProgress(){
+
+  clearInterval(
+    fakeProgressTimer
+  );
+
+
+  let value =
+    5;
+
+
+  setProgress(
+    value
+  );
+
+
+  fakeProgressTimer =
+    setInterval(
+      () => {
+
+        if(
+          value >=
+          91
+        ){
+
+          clearInterval(
+            fakeProgressTimer
+          );
+
+          return;
+
+        }
+
+
+        const gain =
+          Math.random()
+          *
+          6
+          +
+          1;
+
+
+        value =
+          Math.min(
+            91,
+            value + gain
+          );
+
+
+        setProgress(
+          value
+        );
+
+      },
+      420
+    );
+
+}
+
+
+/* =====================================================
+   FORMAT
+===================================================== */
+
+function formatTime(
+  seconds
+){
+
+  const value =
+    Math.max(
+      0,
+      Number(
+        seconds
+      )
+      ||
+      0
+    );
+
+
+  const minutes =
+    Math.floor(
+      value / 60
+    );
+
+
+  const secs =
+    Math.floor(
+      value % 60
+    );
+
+
+  return (
+    String(
+      minutes
+    )
+    .padStart(
+      2,
+      "0"
+    )
+    +
+    ":"
+    +
+    String(
+      secs
+    )
+    .padStart(
+      2,
+      "0"
+    )
+  );
+
+}
+
+
+function clone(
+  value
+){
 
   return JSON.parse(
     JSON.stringify(
@@ -625,324 +3103,497 @@ function deepClone(
 }
 
 
-/* =========================================
-   REGION KEY
-========================================= */
+/* =====================================================
+   WAV ANALYZE
+===================================================== */
 
-function regionKey(
-  chord
-){
+analyzeWavButton.addEventListener(
+  "click",
+  async () => {
 
-  return (
+    const file =
+      wavInput.files[0];
+
+
+    if(!file){
+
+      showToast(
+        "Selecione um arquivo WAV de teste."
+      );
+
+      return;
+
+    }
+
+
+    showScreen(
+      analysisScreen
+    );
+
+
+    startFakeProgress();
+
+
+    try{
+
+      const response =
+        await fetch(
+          API
+          +
+          "/analyze-wav",
+          {
+
+            method:
+              "POST",
+
+            headers:{
+
+              "Content-Type":
+                "audio/wav"
+
+            },
+
+            body:
+              file
+
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if(
+        !response.ok
+        ||
+        !data.success
+      ){
+
+        throw new Error(
+          data.message
+          ||
+          data.error
+          ||
+          "Falha na análise"
+        );
+
+      }
+
+
+      clearInterval(
+        fakeProgressTimer
+      );
+
+
+      setProgress(
+        100
+      );
+
+
+      await new Promise(
+        resolve =>
+          setTimeout(
+            resolve,
+            450
+          )
+      );
+
+
+      originalAnalysis =
+        clone(
+          data
+        );
+
+
+      workingAnalysis =
+        clone(
+          data
+        );
+
+
+      selectedIndex =
+        0;
+
+
+      renderResult();
+
+
+      showScreen(
+        resultScreen
+      );
+
+    }
+
+    catch(error){
+
+      clearInterval(
+        fakeProgressTimer
+      );
+
+
+      showToast(
+        error.message
+      );
+
+
+      showScreen(
+        homeScreen
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+function renderResult(){
+
+  if(
+    !workingAnalysis
+  ){
+
+    return;
+
+  }
+
+
+  const chords =
+    workingAnalysis.chords
+    ||
+    [];
+
+
+  const duration =
     Number(
-      chord.start
-    ).toFixed(6)
-    +
-    "::"
-    +
-    Number(
-      chord.end
-    ).toFixed(6)
+      workingAnalysis.audio
+      ?.duration
+      ||
+      0
+    );
+
+
+  songTitle.textContent =
+    "Música analisada";
+
+
+  songMeta.textContent =
+    "Resultado gerado pela Chord AI";
+
+
+  songDuration.textContent =
+    formatTime(
+      duration
+    );
+
+
+  songChordCount.textContent =
+    chords.length;
+
+
+  totalTime.textContent =
+    formatTime(
+      duration
+    );
+
+
+  debugOutput.textContent =
+    JSON.stringify(
+      workingAnalysis,
+      null,
+      2
+    );
+
+
+  renderTimeline();
+
+
+  selectChord(
+    Math.min(
+      selectedIndex,
+      Math.max(
+        0,
+        chords.length - 1
+      )
+    )
   );
 
 }
 
 
-/* =========================================
-   BASE CHORD
-========================================= */
+/* =====================================================
+   TIMELINE
+===================================================== */
 
-function getBaseChord(
-  chord
-){
+function renderTimeline(){
 
-  if(
-    chord.baseChord
-  ){
-
-    return chord.baseChord;
-
-  }
-
-
-  if(
-    typeof chord.chord ===
-    "string"
-  ){
-
-    return chord.chord
-      .split("/")[0];
-
-  }
-
-
-  return null;
-
-}
-
-
-/* =========================================
-   NOVO:
-   MERGE DA TIMELINE REVISADA
-
-   Une apenas segmentos adjacentes
-   realmente equivalentes após revisão.
-
-   Exemplo:
-
-   Fmaj7 9.8 → 10.0
-   Fmaj7 10.0 → 12.4
-
-   vira:
-
-   Fmaj7 9.8 → 12.4
-========================================= */
-
-function mergeReviewedTimeline(){
-
-  if(
-    !workingAnalysis
+  const chords =
+    workingAnalysis
+      ?.chords
     ||
-    !Array.isArray(
-      workingAnalysis.chords
-    )
-  ){
-
-    return;
-
-  }
-
-
-  const source =
-    workingAnalysis.chords;
-
-
-  if(
-    source.length <= 1
-  ){
-
-    workingAnalysis.chordCount =
-      source.length;
-
-    return;
-
-  }
-
-
-  const merged =
     [];
 
 
-  const EPSILON =
-    0.001;
+  timeline.innerHTML =
+    "";
 
 
-  for(
-    const current
-    of source
-  ){
+  chords.forEach(
+    (
+      chord,
+      index
+    ) => {
 
-    if(
-      merged.length === 0
-    ){
-
-      merged.push(
-        deepClone(
-          current
-        )
-      );
-
-      continue;
-
-    }
+      const element =
+        document.createElement(
+          "button"
+        );
 
 
-    const previous =
-      merged[
-        merged.length - 1
-      ];
+      element.type =
+        "button";
 
 
-    const sameChord =
-      previous.chord ===
-      current.chord;
+      element.className =
+        "timeline-chord";
 
 
-    const touching =
-      Math.abs(
-        Number(
-          previous.end
-        )
-        -
-        Number(
-          current.start
-        )
-      )
-      <=
-      EPSILON;
+      if(
+        index ===
+        selectedIndex
+      ){
+
+        element.classList.add(
+          "active"
+        );
+
+      }
 
 
-    if(
-      !sameChord
-      ||
-      !touching
-    ){
+      element.innerHTML =
+        `
+          <strong>
+            ${chord.chord}
+          </strong>
 
-      merged.push(
-        deepClone(
-          current
-        )
-      );
-
-      continue;
-
-    }
+          <small>
+            ${formatTime(
+              chord.start
+            )}
+          </small>
+        `;
 
 
-    /*
-      Unimos o intervalo.
-    */
+      element.addEventListener(
+        "click",
+        () => {
 
-    previous.end =
-      current.end;
+          selectChord(
+            index
+          );
 
-
-    /*
-      Preserva o maior confidence original.
-
-      Não criamos uma confiança falsa.
-    */
-
-    previous.confidence =
-      Math.max(
-        Number(
-          previous.confidence
-          ||
-          0
-        ),
-        Number(
-          current.confidence
-          ||
-          0
-        )
+        }
       );
 
 
-    /*
-      Se qualquer parte foi revisada,
-      o segmento inteiro fica marcado
-      como revisado.
-    */
-
-    previous.humanReviewed =
-      Boolean(
-        previous.humanReviewed
-        ||
-        current.humanReviewed
+      timeline.appendChild(
+        element
       );
 
-
-    /*
-      Histórico de merge.
-    */
-
-    if(
-      !Array.isArray(
-        previous.humanMergeEvents
-      )
-    ){
-
-      previous.humanMergeEvents =
-        [];
-
     }
-
-
-    previous.humanMergeEvents.push({
-
-      mergedChord:
-        current.chord,
-
-      originalStart:
-        current.start,
-
-      originalEnd:
-        current.end,
-
-      reason:
-        "adjacent-equal-after-human-review"
-
-    });
-
-
-    /*
-      Une rejectedCandidates.
-    */
-
-    const previousRejected =
-      previous.humanReview
-      ?.rejectedCandidates
-      ??
-      [];
-
-
-    const currentRejected =
-      current.humanReview
-      ?.rejectedCandidates
-      ??
-      [];
-
-
-    const rejected =
-      [
-        ...new Set([
-          ...previousRejected,
-          ...currentRejected
-        ])
-      ];
-
-
-    if(
-      rejected.length > 0
-    ){
-
-      previous.humanReview =
-        {
-
-          ...(
-            previous.humanReview
-            ||
-            current.humanReview
-            ||
-            {}
-          ),
-
-          rejectedCandidates:
-            rejected,
-
-          merged:
-            true
-
-        };
-
-    }
-
-  }
-
-
-  workingAnalysis.chords =
-    merged;
-
-
-  workingAnalysis.chordCount =
-    merged.length;
+  );
 
 }
 
 
-/* =========================================
-   FREQUENCY
-========================================= */
+/* =====================================================
+   SELECT CHORD
+===================================================== */
+
+function selectChord(
+  index
+){
+
+  const chords =
+    workingAnalysis
+      ?.chords
+    ||
+    [];
+
+
+  if(
+    !chords.length
+  ){
+
+    return;
+
+  }
+
+
+  selectedIndex =
+    Math.max(
+      0,
+      Math.min(
+        chords.length - 1,
+        index
+      )
+    );
+
+
+  const chord =
+    chords[
+      selectedIndex
+    ];
+
+
+  const next =
+    chords[
+      selectedIndex + 1
+    ]
+    ||
+    null;
+
+
+  currentChord.textContent =
+    chord.chord;
+
+
+  currentChordTime.textContent =
+    `${formatTime(
+      chord.start
+    )}
+    →
+    ${formatTime(
+      chord.end
+    )}`;
+
+
+  nextChord.textContent =
+    next
+    ?
+    next.chord
+    :
+    "Fim";
+
+
+  nextChordTime.textContent =
+    next
+    ?
+    `em ${
+      Math.max(
+        0,
+        Number(
+          next.start
+        )
+        -
+        Number(
+          chord.start
+        )
+      )
+      .toFixed(
+        1
+      )
+    }s`
+    :
+    "última cifra";
+
+
+  const confidence =
+    Math.round(
+      Number(
+        chord.confidence
+        ||
+        0
+      )
+      *
+      100
+    );
+
+
+  confidenceValue.textContent =
+    confidence
+    +
+    "%";
+
+
+  if(
+    confidence >=
+    80
+  ){
+
+    confidenceLabel.textContent =
+      "● muito alta";
+
+  }
+
+  else if(
+    confidence >=
+    60
+  ){
+
+    confidenceLabel.textContent =
+      "● boa";
+
+  }
+
+  else{
+
+    confidenceLabel.textContent =
+      "● moderada";
+
+  }
+
+
+  [
+    ...timeline.children
+  ]
+  .forEach(
+    (
+      item,
+      i
+    ) => {
+
+      item.classList.toggle(
+        "active",
+        i === selectedIndex
+      );
+
+    }
+  );
+
+
+  const selectedElement =
+    timeline.children[
+      selectedIndex
+    ];
+
+
+  selectedElement
+    ?.scrollIntoView(
+      {
+
+        behavior:
+          "smooth",
+
+        inline:
+          "center",
+
+        block:
+          "nearest"
+
+      }
+    );
+
+}
+
+
+/* =====================================================
+   SYNTH
+===================================================== */
 
 function noteFrequency(
   note,
@@ -990,22 +3641,19 @@ function noteFrequency(
 }
 
 
-/* =========================================
-   STOP PREVIEW
-========================================= */
+function stopHarmony(){
 
-function stopPreview(){
+  previewPlaying =
+    false;
+
 
   if(
-    previewTimer
+    previewAnimation
   ){
 
-    clearTimeout(
-      previewTimer
+    cancelAnimationFrame(
+      previewAnimation
     );
-
-    previewTimer =
-      null;
 
   }
 
@@ -1049,15 +3697,19 @@ function stopPreview(){
     null;
 
 
-  previewStatus.textContent =
-    "";
+  playHarmonyButton.textContent =
+    "▶ Ouvir harmonia";
+
+
+  playButton.innerHTML =
+    `
+      <svg viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    `;
 
 }
 
-
-/* =========================================
-   SCHEDULE TONE
-========================================= */
 
 function scheduleTone(
   context,
@@ -1099,51 +3751,47 @@ function scheduleTone(
 
   const attack =
     Math.min(
-      0.06,
-      duration * 0.15
+      .05,
+      duration * .15
     );
 
 
   const release =
     Math.min(
-      0.15,
-      duration * 0.25
+      .13,
+      duration * .25
     );
 
 
   gain.gain.setValueAtTime(
-    0.0001,
+    .0001,
     start
   );
 
 
   gain.gain.exponentialRampToValueAtTime(
     Math.max(
-      0.001,
+      .001,
       volume
     ),
     start + attack
   );
 
 
-  const releaseStart =
+  gain.gain.setValueAtTime(
+    Math.max(
+      .001,
+      volume
+    ),
     Math.max(
       start + attack,
       start + duration - release
-    );
-
-
-  gain.gain.setValueAtTime(
-    Math.max(
-      0.001,
-      volume
-    ),
-    releaseStart
+    )
   );
 
 
   gain.gain.exponentialRampToValueAtTime(
-    0.0001,
+    .0001,
     start + duration
   );
 
@@ -1154,7 +3802,11 @@ function scheduleTone(
 
 
   oscillator.stop(
-    start + duration + 0.02
+    start
+    +
+    duration
+    +
+    .02
   );
 
 
@@ -1165,31 +3817,33 @@ function scheduleTone(
 }
 
 
-/* =========================================
-   PLAY PREVIEW
-========================================= */
-
-async function playPreview(){
+async function playHarmony(){
 
   if(
-    !workingAnalysis
-    ||
-    !Array.isArray(
-      workingAnalysis.chords
-    )
-    ||
-    workingAnalysis.chords.length === 0
+    previewPlaying
   ){
 
-    previewStatus.textContent =
-      "Nenhuma análise disponível.";
+    stopHarmony();
 
     return;
 
   }
 
 
-  stopPreview();
+  const chords =
+    workingAnalysis
+      ?.chords
+    ||
+    [];
+
+
+  if(
+    !chords.length
+  ){
+
+    return;
+
+  }
 
 
   const AudioContextClass =
@@ -1198,10 +3852,13 @@ async function playPreview(){
     window.webkitAudioContext;
 
 
-  if(!AudioContextClass){
+  if(
+    !AudioContextClass
+  ){
 
-    previewStatus.textContent =
-      "Web Audio API não suportada.";
+    showToast(
+      "Seu navegador não suporta reprodução de áudio."
+    );
 
     return;
 
@@ -1219,25 +3876,29 @@ async function playPreview(){
     previewContext;
 
 
-  const now =
-    context.currentTime
-    +
-    0.08;
-
-
   const timelineStart =
     Number(
-      workingAnalysis.chords[0].start
+      chords[0].start
     );
 
 
-  let finalEnd =
+  const start =
+    context.currentTime
+    +
+    .08;
+
+
+  previewStartTime =
+    start;
+
+
+  previewOffset =
     timelineStart;
 
 
   for(
     const chord
-    of workingAnalysis.chords
+    of chords
   ){
 
     const chordStart =
@@ -1254,25 +3915,18 @@ async function playPreview(){
 
     const duration =
       Math.max(
-        0.05,
+        .05,
         chordEnd - chordStart
       );
 
 
-    const start =
-      now
+    const when =
+      start
       +
       (
         chordStart
         -
         timelineStart
-      );
-
-
-    finalEnd =
-      Math.max(
-        finalEnd,
-        chordEnd
       );
 
 
@@ -1292,23 +3946,19 @@ async function playPreview(){
         index
       ) => {
 
-        const octave =
-          index >= 3
-          ?
-          5
-          :
-          4;
-
-
         scheduleTone(
           context,
           noteFrequency(
             note,
-            octave
+            index >= 3
+            ?
+            5
+            :
+            4
           ),
-          start,
+          when,
           duration,
-          0.055
+          .05
         );
 
       }
@@ -1317,11 +3967,6 @@ async function playPreview(){
 
     if(
       chord.bassNote
-      &&
-      NOTE_TO_SEMITONE[
-        chord.bassNote
-      ]
-      !== undefined
     ){
 
       scheduleTone(
@@ -1330,9 +3975,9 @@ async function playPreview(){
           chord.bassNote,
           2
         ),
-        start,
+        when,
         duration,
-        0.075
+        .07
       );
 
     }
@@ -1340,305 +3985,342 @@ async function playPreview(){
   }
 
 
-  previewStatus.textContent =
-    humanReview.size > 0
-    ?
-    "Tocando reconstrução revisada..."
-    :
-    "Tocando reconstrução original...";
+  previewPlaying =
+    true;
 
 
-  const totalDuration =
-    finalEnd
-    -
-    timelineStart;
+  playHarmonyButton.textContent =
+    "■ Parar harmonia";
 
 
-  previewTimer =
-    setTimeout(
-      () => {
+  playButton.innerHTML =
+    `
+      <svg viewBox="0 0 24 24">
+        <path d="M7 5h4v14H7zM13 5h4v14h-4z"/>
+      </svg>
+    `;
 
-        if(
-          previewContext ===
-          context
-        ){
 
-          stopPreview();
-
-        }
-
-      },
-      (
-        totalDuration
-        +
-        0.35
-      )
-      *
-      1000
-    );
+  updatePlayback();
 
 }
 
 
-playPreviewButton.addEventListener(
-  "click",
-  playPreview
-);
+/* =====================================================
+   PLAYBACK UI
+===================================================== */
 
-
-stopPreviewButton.addEventListener(
-  "click",
-  stopPreview
-);
-
-
-/* =========================================
-   COPY
-========================================= */
-
-async function copyText(
-  text
-){
+function updatePlayback(){
 
   if(
-    navigator.clipboard
-    &&
-    window.isSecureContext
+    !previewPlaying
+    ||
+    !previewContext
   ){
-
-    await navigator.clipboard.writeText(
-      text
-    );
 
     return;
 
   }
 
 
-  const textarea =
-    document.createElement(
-      "textarea"
+  const elapsed =
+    Math.max(
+      0,
+      previewContext.currentTime
+      -
+      previewStartTime
+      +
+      previewOffset
     );
 
 
-  textarea.value =
-    text;
-
-
-  textarea.style.position =
-    "fixed";
-
-  textarea.style.left =
-    "-9999px";
-
-
-  document.body.appendChild(
-    textarea
-  );
-
-
-  textarea.focus();
-
-  textarea.select();
-
-
-  const success =
-    document.execCommand(
-      "copy"
+  const duration =
+    Number(
+      workingAnalysis.audio
+      ?.duration
+      ||
+      0
     );
 
 
-  document.body.removeChild(
-    textarea
-  );
+  currentTime.textContent =
+    formatTime(
+      elapsed
+    );
 
 
-  if(!success){
+  const percent =
+    duration > 0
+    ?
+    Math.min(
+      100,
+      elapsed
+      /
+      duration
+      *
+      100
+    )
+    :
+    0;
 
-    throw new Error(
-      "Não foi possível copiar."
+
+  seekProgress.style.width =
+    percent
+    +
+    "%";
+
+
+  const chords =
+    workingAnalysis.chords
+    ||
+    [];
+
+
+  let foundIndex =
+    selectedIndex;
+
+
+  for(
+    let i = 0;
+    i < chords.length;
+    i++
+  ){
+
+    if(
+      elapsed >=
+      Number(
+        chords[i].start
+      )
+      &&
+      elapsed <
+      Number(
+        chords[i].end
+      )
+    ){
+
+      foundIndex =
+        i;
+
+      break;
+
+    }
+
+  }
+
+
+  if(
+    foundIndex !==
+    selectedIndex
+  ){
+
+    selectChord(
+      foundIndex
     );
 
   }
 
-}
+
+  if(
+    elapsed >=
+    duration
+  ){
+
+    stopHarmony();
+
+    currentTime.textContent =
+      formatTime(
+        duration
+      );
 
 
-/* =========================================
-   COMPACT CANDIDATE
-========================================= */
-
-function compactCandidate(
-  candidate
-){
-
-  if(!candidate)
-    return null;
+    seekProgress.style.width =
+      "100%";
 
 
-  return {
+    return;
 
-    chord:
-      candidate.chord
-      ??
-      null,
+  }
 
-    detectorRank:
-      candidate.detectorRank
-      ??
-      null,
 
-    detectorScore:
-      candidate.detectorScore
-      ??
-      null,
-
-    detectorGap:
-      candidate.detectorGap
-      ??
-      null,
-
-    detectorNorm:
-      candidate.detectorNorm
-      ??
-      null,
-
-    reconstructionScore:
-      candidate.reconstructionScore
-      ??
-      null,
-
-    coverage:
-      candidate.coverage
-      ??
-      null,
-
-    persistence:
-      candidate.persistence
-      ??
-      null,
-
-    bassCompatibility:
-      candidate.bassCompatibility
-      ??
-      null,
-
-    marginalGain:
-      candidate.marginalGain
-      ??
-      null,
-
-    complexityPenalty:
-      candidate.complexityPenalty
-      ??
-      null,
-
-    finalScore:
-      candidate.finalScore
-      ??
-      null
-
-  };
+  previewAnimation =
+    requestAnimationFrame(
+      updatePlayback
+    );
 
 }
 
 
-/* =========================================
-   DEBUG
-========================================= */
+playHarmonyButton.addEventListener(
+  "click",
+  playHarmony
+);
 
-function buildChordDiagnostic(
-  chord
-){
 
-  return JSON.stringify(
-    {
+playButton.addEventListener(
+  "click",
+  playHarmony
+);
 
-      segment:{
 
-        start:
-          chord.start,
+/* =====================================================
+   SEEK VISUAL
 
-        end:
-          chord.end,
+   Nesta V1 apenas seleciona a cifra.
+===================================================== */
 
-        chord:
-          chord.chord,
+seek.addEventListener(
+  "click",
+  event => {
 
-        baseChord:
-          chord.baseChord,
+    if(
+      !workingAnalysis
+    ){
 
-        bassNote:
-          chord.bassNote,
+      return;
 
-        confidence:
-          chord.confidence
+    }
 
-      },
 
-      humanReviewed:
-        chord.humanReviewed
-        ??
-        false,
+    const rect =
+      seek.getBoundingClientRect();
 
-      humanReview:
-        chord.humanReview
-        ??
-        null,
 
-      humanMergeEvents:
-        chord.humanMergeEvents
-        ??
-        null,
-
-      reconstruction:
-        chord.reconstruction
-        ??
-        null,
-
-      topCandidates:
-        chord
-          .reconstructionDiagnostics
-          ?.topCandidates
-          ?.slice(
-            0,
-            5
+    const ratio =
+      Math.max(
+        0,
+        Math.min(
+          1,
+          (
+            event.clientX
+            -
+            rect.left
           )
-          ?.map(
-            compactCandidate
-          )
-        ??
-        [],
+          /
+          rect.width
+        )
+      );
 
-      bassRootCandidates:
-        chord
-          .reconstructionDiagnostics
-          ?.bassRootCandidates
-          ?.slice(
-            0,
-            5
-          )
-          ?.map(
-            compactCandidate
-          )
-        ??
-        []
 
-    },
-    null,
-    2
+    const target =
+      ratio
+      *
+      Number(
+        workingAnalysis.audio
+          ?.duration
+          ||
+          0
+      );
+
+
+    const index =
+      workingAnalysis.chords
+        .findIndex(
+          chord =>
+            target >=
+            chord.start
+            &&
+            target <
+            chord.end
+        );
+
+
+    if(
+      index >= 0
+    ){
+
+      selectChord(
+        index
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   ADJUST
+===================================================== */
+
+adjustChordButton.addEventListener(
+  "click",
+  openAdjust
+);
+
+
+closeAdjustButton.addEventListener(
+  "click",
+  closeAdjust
+);
+
+
+adjustOverlay.addEventListener(
+  "click",
+  event => {
+
+    if(
+      event.target ===
+      adjustOverlay
+    ){
+
+      closeAdjust();
+
+    }
+
+  }
+);
+
+
+function closeAdjust(){
+
+  adjustOverlay.classList.remove(
+    "open"
   );
 
 }
 
 
-/* =========================================
-   CANDIDATES
-========================================= */
+function openAdjust(){
 
-function getAlternativeCandidates(
-  chord
-){
+  const chord =
+    workingAnalysis
+      ?.chords
+      ?.[selectedIndex];
+
+
+  if(!chord){
+
+    return;
+
+  }
+
+
+  adjustTime.textContent =
+    formatTime(
+      chord.start
+    );
+
+
+  adjustCurrent.textContent =
+    chord.chord;
+
+
+  adjustDuration.textContent =
+    (
+      Number(
+        chord.end
+      )
+      -
+      Number(
+        chord.start
+      )
+    )
+    .toFixed(
+      2
+    )
+    +
+    "s";
+
 
   const diagnostics =
     chord.reconstructionDiagnostics
@@ -1646,47 +4328,31 @@ function getAlternativeCandidates(
     {};
 
 
-  const top =
-    diagnostics.topCandidates
-    ||
-    [];
-
-
-  const bass =
-    diagnostics.bassRootCandidates
-    ||
-    [];
-
-
-  const preferBass =
-    chord.reconstructionReason ===
-    "contradiction-rescue"
-    ||
-    chord.humanReviewSourceReason ===
-    "contradiction-rescue";
-
-
-  const all =
-    preferBass
-    ?
-    [
-      ...bass,
-      ...top
-    ]
-    :
-    [
-      ...top,
-      ...bass
-    ];
-
-
   const map =
     new Map();
 
 
+  const candidates =
+    [
+      ...(
+        diagnostics
+          .topCandidates
+        ||
+        []
+      ),
+
+      ...(
+        diagnostics
+          .bassRootCandidates
+        ||
+        []
+      )
+    ];
+
+
   for(
     const candidate
-    of all
+    of candidates
   ){
 
     if(
@@ -1709,226 +4375,222 @@ function getAlternativeCandidates(
   }
 
 
-  return [
-    ...map.values()
-  ];
-
-}
-
-
-/* =========================================
-   TRY ANOTHER
-========================================= */
-
-function tryAnotherChord(
-  chord
-){
-
-  const key =
-    regionKey(
-      chord
+  const unique =
+    [
+      ...map.values()
+    ]
+    .slice(
+      0,
+      8
     );
 
 
-  let review =
-    humanReview.get(
-      key
-    );
+  candidateList.innerHTML =
+    "";
 
 
-  if(!review){
+  if(
+    unique.length === 0
+  ){
 
-    review = {
-
-      rejected:
-        new Set(),
-
-      history:
-        []
-
-    };
-
-
-    humanReview.set(
-      key,
-      review
-    );
+    candidateList.innerHTML =
+      `
+        <div
+          style="
+            color:#777f8d;
+            font-size:12px;
+            padding:20px 0;
+          "
+        >
+          Nenhuma alternativa disponível
+          para esta região.
+        </div>
+      `;
 
   }
 
 
-  const currentBase =
-    getBaseChord(
-      chord
-    );
+  unique.forEach(
+    candidate => {
+
+      const item =
+        document.createElement(
+          "div"
+        );
 
 
-  review.rejected.add(
-    currentBase
+      item.className =
+        "candidate";
+
+
+      if(
+        candidate.chord ===
+        chord.baseChord
+        ||
+        candidate.chord ===
+        chord.chord
+      ){
+
+        item.classList.add(
+          "selected"
+        );
+
+      }
+
+
+      const score =
+        candidate.finalScore
+        !=
+        null
+        ?
+        Math.round(
+          candidate.finalScore
+          *
+          100
+        )
+        :
+        null;
+
+
+      item.innerHTML =
+        `
+          <div class="candidate-name">
+            ${candidate.chord}
+          </div>
+
+          <div class="candidate-score">
+            ${
+              score !=
+              null
+              ?
+              score + "%"
+              :
+              "alternativa"
+            }
+          </div>
+        `;
+
+
+      item.addEventListener(
+        "click",
+        () => {
+
+          applyCandidate(
+            candidate
+          );
+
+        }
+      );
+
+
+      candidateList.appendChild(
+        item
+      );
+
+    }
   );
 
 
-  const candidates =
-    getAlternativeCandidates(
-      chord
-    );
-
-
-  const selected =
-    candidates.find(
-      candidate =>
-        candidate.chord !==
-        currentBase
-        &&
-        !review.rejected.has(
-          candidate.chord
-        )
-    );
-
-
-  if(!selected){
-
-    return false;
-
-  }
-
-
-  const previous =
-    chord.chord;
-
-
-  chord.baseChord =
-    selected.chord;
-
-
-  chord.chord =
-    selected.chord;
-
-
-  chord.notes =
-    selected.notes
-    ||
-    chord.notes;
-
-
-  chord.humanReviewed =
-    true;
-
-
-  chord.humanReviewSourceReason =
-    chord.humanReviewSourceReason
-    ||
-    chord.reconstructionReason;
-
-
-  chord.humanReview = {
-
-    rejectedCandidates:
-      [
-        ...review.rejected
-      ],
-
-    selectedCandidate:
-      selected.chord,
-
-    reconstructionScore:
-      selected.reconstructionScore
-      ??
-      null,
-
-    finalScore:
-      selected.finalScore
-      ??
-      null
-
-  };
-
-
-  review.history.push({
-
-    from:
-      previous,
-
-    to:
-      selected.chord
-
-  });
-
-
-  return true;
+  adjustOverlay.classList.add(
+    "open"
+  );
 
 }
 
 
-/* =========================================
-   REVIEW BAR
-========================================= */
+/* =====================================================
+   APPLY CANDIDATE
+===================================================== */
 
-function updateReviewBar(){
+function applyCandidate(
+  candidate
+){
+
+  const chord =
+    workingAnalysis
+      ?.chords
+      ?.[selectedIndex];
+
 
   if(
-    humanReview.size === 0
+    !chord
+    ||
+    !candidate
   ){
-
-    reviewBar.classList.remove(
-      "visible"
-    );
 
     return;
 
   }
 
 
-  reviewBar.classList.add(
-    "visible"
+  chord.baseChord =
+    candidate.chord;
+
+
+  chord.chord =
+    candidate.chord;
+
+
+  if(
+    Array.isArray(
+      candidate.notes
+    )
+  ){
+
+    chord.notes =
+      candidate.notes;
+
+  }
+
+
+  chord.humanReviewed =
+    true;
+
+
+  closeAdjust();
+
+
+  mergeEqualNeighbors();
+
+
+  renderResult();
+
+
+  showToast(
+    "Cifra atualizada."
   );
-
-
-  reviewInfo.textContent =
-    `${humanReview.size} região(ões) revisada(s).`;
 
 }
 
 
-/* =========================================
-   RENDER
-========================================= */
+/* =====================================================
+   MERGE
+===================================================== */
 
-function renderChords(){
+function mergeEqualNeighbors(){
 
   const chords =
     workingAnalysis
-      ?.chords
-    ||
+      ?.chords;
+
+
+  if(
+    !Array.isArray(
+      chords
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const merged =
     [];
 
 
-  chordsContainer.innerHTML =
-    "";
-
-
-  audioInfo.innerHTML =
-    `
-      <p>
-        <strong>Duração:</strong>
-        ${workingAnalysis.audio.duration}s
-      </p>
-
-      <p>
-        <strong>Sample rate:</strong>
-        ${workingAnalysis.audio.sampleRate} Hz
-      </p>
-
-      <p>
-        <strong>Frames:</strong>
-        ${workingAnalysis.audio.frameCount}
-      </p>
-
-      <p>
-        <strong>Acordes detectados:</strong>
-        ${chords.length}
-      </p>
-    `;
+  const EPSILON =
+    .001;
 
 
   for(
@@ -1936,387 +4598,87 @@ function renderChords(){
     of chords
   ){
 
-    const element =
-      document.createElement(
-        "div"
-      );
-
-
-    element.className =
-      "chord";
+    const previous =
+      merged[
+        merged.length - 1
+      ];
 
 
     if(
-      chord.humanReviewed
+      previous
+      &&
+      previous.chord ===
+      chord.chord
+      &&
+      Math.abs(
+        Number(
+          previous.end
+        )
+        -
+        Number(
+          chord.start
+        )
+      )
+      <=
+      EPSILON
     ){
 
-      element.classList.add(
-        "reviewed"
-      );
+      previous.end =
+        chord.end;
+
+
+      previous.humanReviewed =
+        Boolean(
+          previous.humanReviewed
+          ||
+          chord.humanReviewed
+        );
+
+
+      continue;
 
     }
 
 
-    element.innerHTML =
-      `
-        <div class="chord-name-row">
-
-          <div class="chord-name">
-            ${chord.chord}
-          </div>
-
-          ${
-            chord.humanReviewed
-            ?
-            `
-              <span class="review-badge">
-                revisado
-              </span>
-            `
-            :
-            ""
-          }
-
-        </div>
-
-        <div class="time">
-
-          ${Number(
-            chord.start
-          ).toFixed(2)}s
-
-          →
-
-          ${Number(
-            chord.end
-          ).toFixed(2)}s
-
-        </div>
-
-        <div class="confidence">
-
-          Confiança original:
-
-          ${Math.round(
-            Number(
-              chord.confidence
-              ||
-              0
-            )
-            *
-            100
-          )}%
-
-        </div>
-
-        <div class="chord-actions">
-
-          <button
-            class="chord-action chord-copy"
-            type="button"
-          >
-            Copiar debug
-          </button>
-
-          <button
-            class="chord-action chord-retry"
-            type="button"
-          >
-            Tentar outra cifra
-          </button>
-
-        </div>
-      `;
-
-
-    const copyButton =
-      element.querySelector(
-        ".chord-copy"
-      );
-
-
-    const retryButton =
-      element.querySelector(
-        ".chord-retry"
-      );
-
-
-    copyButton.addEventListener(
-      "click",
-      async () => {
-
-        await copyText(
-          buildChordDiagnostic(
-            chord
-          )
-        );
-
-
-        copyButton.textContent =
-          "Copiado ✓";
-
-
-        setTimeout(
-          () => {
-
-            copyButton.textContent =
-              "Copiar debug";
-
-          },
-          1300
-        );
-
-      }
-    );
-
-
-    retryButton.addEventListener(
-      "click",
-      () => {
-
-        stopPreview();
-
-
-        const success =
-          tryAnotherChord(
-            chord
-          );
-
-
-        if(!success){
-
-          previewStatus.textContent =
-            "Não há outra candidata disponível.";
-
-          return;
-
-        }
-
-
-        /*
-          NOVO PASSO:
-
-          logo depois da revisão,
-          normalizamos a timeline.
-        */
-
-        mergeReviewedTimeline();
-
-
-        renderChords();
-
-
-        updateReviewBar();
-
-
-        previewStatus.textContent =
-          "Cifra substituída e timeline mesclada. Ouça novamente.";
-
-      }
-    );
-
-
-    chordsContainer.appendChild(
-      element
+    merged.push(
+      clone(
+        chord
+      )
     );
 
   }
+
+
+  workingAnalysis.chords =
+    merged;
+
+
+  workingAnalysis.chordCount =
+    merged.length;
+
+
+  selectedIndex =
+    Math.min(
+      selectedIndex,
+      merged.length - 1
+    );
 
 }
 
 
-/* =========================================
-   RESET
-========================================= */
+/* =====================================================
+   DEBUG
+===================================================== */
 
-resetReviewButton.addEventListener(
+debugButton.addEventListener(
   "click",
   () => {
 
-    stopPreview();
-
-
-    humanReview =
-      new Map();
-
-
-    workingAnalysis =
-      deepClone(
-        originalAnalysis
-      );
-
-
-    renderChords();
-
-
-    updateReviewBar();
-
-
-    previewStatus.textContent =
-      "Resultado original restaurado.";
+    debugDrawer.classList.toggle(
+      "open"
+    );
 
   }
-);
-
-
-/* =========================================
-   ANALYZE
-========================================= */
-
-analyzeButton.addEventListener(
-  "click",
-  async () => {
-
-    const file =
-      fileInput.files[0];
-
-
-    if(!file){
-
-      status.className =
-        "status error";
-
-
-      status.textContent =
-        "Escolha um arquivo WAV.";
-
-      return;
-
-    }
-
-
-    stopPreview();
-
-
-    analyzeButton.disabled =
-      true;
-
-
-    status.textContent =
-      "Analisando...";
-
-
-    try{
-
-      const response =
-        await fetch(
-          API + "/analyze-wav",
-          {
-
-            method:
-              "POST",
-
-            headers:{
-
-              "Content-Type":
-                "audio/wav"
-
-            },
-
-            body:
-              file
-
-          }
-        );
-
-
-      const data =
-        await response.json();
-
-
-      if(
-        !response.ok
-        ||
-        !data.success
-      ){
-
-        throw new Error(
-          data.message
-          ||
-          data.error
-          ||
-          "Falha na análise"
-        );
-
-      }
-
-
-      lastApiResponse =
-        data;
-
-
-      originalAnalysis =
-        deepClone(
-          data
-        );
-
-
-      workingAnalysis =
-        deepClone(
-          data
-        );
-
-
-      humanReview =
-        new Map();
-
-
-      debug.textContent =
-        JSON.stringify(
-          data,
-          null,
-          2
-        );
-
-
-      debugCard.style.display =
-        "block";
-
-
-      result.style.display =
-        "block";
-
-
-      status.className =
-        "status success";
-
-
-      status.textContent =
-        "Análise concluída.";
-
-
-      renderChords();
-
-
-      updateReviewBar();
-
-    }
-
-    catch(error){
-
-      status.className =
-        "status error";
-
-
-      status.textContent =
-        error.message;
-
-    }
-
-    finally{
-
-      analyzeButton.disabled =
-        false;
-
-    }
-
-  }
-);
-
-
-fileInput.addEventListener(
-  "change",
-  stopPreview
 );
 
 </script>
