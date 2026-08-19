@@ -323,10 +323,6 @@ button:disabled {
     1px solid #693540;
 }
 
-.chord-retry:hover {
-  background: #472632;
-}
-
 .chord-retry.no-alternative {
   background: #20242b;
 
@@ -395,10 +391,6 @@ pre {
   </p>
 
 
-  <!-- =====================================
-       UPLOAD
-  ====================================== -->
-
   <div class="card">
 
     <input
@@ -421,10 +413,6 @@ pre {
   </div>
 
 
-  <!-- =====================================
-       RESULTADO
-  ====================================== -->
-
   <div
     id="result"
     class="card"
@@ -435,10 +423,6 @@ pre {
 
     <div id="audioInfo"></div>
 
-
-    <!-- =================================
-         SYNTH PREVIEW
-    ================================== -->
 
     <div class="preview-controls">
 
@@ -465,10 +449,6 @@ pre {
       class="preview-status"
     ></div>
 
-
-    <!-- =================================
-         REVISÃO HUMANA
-    ================================== -->
 
     <div
       id="reviewBar"
@@ -500,10 +480,6 @@ pre {
   </div>
 
 
-  <!-- =====================================
-       JSON COMPLETO
-  ====================================== -->
-
   <div
     id="debugCard"
     class="card"
@@ -521,135 +497,65 @@ pre {
 
 <script>
 
-/* =========================================
-   API
-========================================= */
-
 const API =
   "https://chord-ai-api.onrender.com";
 
 
-/* =========================================
-   ELEMENTOS
-========================================= */
-
 const fileInput =
-  document.getElementById(
-    "file"
-  );
+  document.getElementById("file");
 
 const analyzeButton =
-  document.getElementById(
-    "analyze"
-  );
+  document.getElementById("analyze");
 
 const status =
-  document.getElementById(
-    "status"
-  );
+  document.getElementById("status");
 
 const result =
-  document.getElementById(
-    "result"
-  );
+  document.getElementById("result");
 
 const audioInfo =
-  document.getElementById(
-    "audioInfo"
-  );
+  document.getElementById("audioInfo");
 
 const chordsContainer =
-  document.getElementById(
-    "chords"
-  );
+  document.getElementById("chords");
 
 const debugCard =
-  document.getElementById(
-    "debugCard"
-  );
+  document.getElementById("debugCard");
 
 const debug =
-  document.getElementById(
-    "debug"
-  );
+  document.getElementById("debug");
 
 const playPreviewButton =
-  document.getElementById(
-    "playPreview"
-  );
+  document.getElementById("playPreview");
 
 const stopPreviewButton =
-  document.getElementById(
-    "stopPreview"
-  );
+  document.getElementById("stopPreview");
 
 const previewStatus =
-  document.getElementById(
-    "previewStatus"
-  );
+  document.getElementById("previewStatus");
 
 const reviewBar =
-  document.getElementById(
-    "reviewBar"
-  );
+  document.getElementById("reviewBar");
 
 const reviewInfo =
-  document.getElementById(
-    "reviewInfo"
-  );
+  document.getElementById("reviewInfo");
 
 const resetReviewButton =
-  document.getElementById(
-    "resetReview"
-  );
+  document.getElementById("resetReview");
 
-
-/* =========================================
-   ESTADO
-========================================= */
 
 let lastApiResponse =
   null;
 
-
-/*
-  Guarda a timeline original exatamente
-  como a API entregou.
-*/
 let originalAnalysis =
   null;
 
-
-/*
-  Timeline atualmente usada na tela e
-  no Synth Preview.
-
-  Esta pode sofrer revisão humana.
-*/
 let workingAnalysis =
   null;
 
-
-/*
-  Estrutura:
-
-  Map(
-    regionKey,
-    {
-      start,
-      end,
-      rejected: Set([...]),
-      history: [...]
-    }
-  )
-*/
 let humanReview =
   new Map();
 
-
-/* =========================================
-   SYNTH
-========================================= */
 
 let previewContext =
   null;
@@ -661,34 +567,19 @@ let previewTimer =
   null;
 
 
-/* =========================================
-   NOTAS
-========================================= */
-
 const NOTE_TO_SEMITONE = {
 
   C:0,
-
   "C#":1,
-
   D:2,
-
   "D#":3,
-
   E:4,
-
   F:5,
-
   "F#":6,
-
   G:7,
-
   "G#":8,
-
   A:9,
-
   "A#":10,
-
   B:11
 
 };
@@ -735,7 +626,7 @@ function deepClone(
 
 
 /* =========================================
-   CHAVE DA REGIÃO
+   REGION KEY
 ========================================= */
 
 function regionKey(
@@ -791,7 +682,266 @@ function getBaseChord(
 
 
 /* =========================================
-   FREQUÊNCIA
+   NOVO:
+   MERGE DA TIMELINE REVISADA
+
+   Une apenas segmentos adjacentes
+   realmente equivalentes após revisão.
+
+   Exemplo:
+
+   Fmaj7 9.8 → 10.0
+   Fmaj7 10.0 → 12.4
+
+   vira:
+
+   Fmaj7 9.8 → 12.4
+========================================= */
+
+function mergeReviewedTimeline(){
+
+  if(
+    !workingAnalysis
+    ||
+    !Array.isArray(
+      workingAnalysis.chords
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const source =
+    workingAnalysis.chords;
+
+
+  if(
+    source.length <= 1
+  ){
+
+    workingAnalysis.chordCount =
+      source.length;
+
+    return;
+
+  }
+
+
+  const merged =
+    [];
+
+
+  const EPSILON =
+    0.001;
+
+
+  for(
+    const current
+    of source
+  ){
+
+    if(
+      merged.length === 0
+    ){
+
+      merged.push(
+        deepClone(
+          current
+        )
+      );
+
+      continue;
+
+    }
+
+
+    const previous =
+      merged[
+        merged.length - 1
+      ];
+
+
+    const sameChord =
+      previous.chord ===
+      current.chord;
+
+
+    const touching =
+      Math.abs(
+        Number(
+          previous.end
+        )
+        -
+        Number(
+          current.start
+        )
+      )
+      <=
+      EPSILON;
+
+
+    if(
+      !sameChord
+      ||
+      !touching
+    ){
+
+      merged.push(
+        deepClone(
+          current
+        )
+      );
+
+      continue;
+
+    }
+
+
+    /*
+      Unimos o intervalo.
+    */
+
+    previous.end =
+      current.end;
+
+
+    /*
+      Preserva o maior confidence original.
+
+      Não criamos uma confiança falsa.
+    */
+
+    previous.confidence =
+      Math.max(
+        Number(
+          previous.confidence
+          ||
+          0
+        ),
+        Number(
+          current.confidence
+          ||
+          0
+        )
+      );
+
+
+    /*
+      Se qualquer parte foi revisada,
+      o segmento inteiro fica marcado
+      como revisado.
+    */
+
+    previous.humanReviewed =
+      Boolean(
+        previous.humanReviewed
+        ||
+        current.humanReviewed
+      );
+
+
+    /*
+      Histórico de merge.
+    */
+
+    if(
+      !Array.isArray(
+        previous.humanMergeEvents
+      )
+    ){
+
+      previous.humanMergeEvents =
+        [];
+
+    }
+
+
+    previous.humanMergeEvents.push({
+
+      mergedChord:
+        current.chord,
+
+      originalStart:
+        current.start,
+
+      originalEnd:
+        current.end,
+
+      reason:
+        "adjacent-equal-after-human-review"
+
+    });
+
+
+    /*
+      Une rejectedCandidates.
+    */
+
+    const previousRejected =
+      previous.humanReview
+      ?.rejectedCandidates
+      ??
+      [];
+
+
+    const currentRejected =
+      current.humanReview
+      ?.rejectedCandidates
+      ??
+      [];
+
+
+    const rejected =
+      [
+        ...new Set([
+          ...previousRejected,
+          ...currentRejected
+        ])
+      ];
+
+
+    if(
+      rejected.length > 0
+    ){
+
+      previous.humanReview =
+        {
+
+          ...(
+            previous.humanReview
+            ||
+            current.humanReview
+            ||
+            {}
+          ),
+
+          rejectedCandidates:
+            rejected,
+
+          merged:
+            true
+
+        };
+
+    }
+
+  }
+
+
+  workingAnalysis.chords =
+    merged;
+
+
+  workingAnalysis.chordCount =
+    merged.length;
+
+}
+
+
+/* =========================================
+   FREQUENCY
 ========================================= */
 
 function noteFrequency(
@@ -841,7 +991,7 @@ function noteFrequency(
 
 
 /* =========================================
-   PARAR PREVIEW
+   STOP PREVIEW
 ========================================= */
 
 function stopPreview(){
@@ -853,7 +1003,6 @@ function stopPreview(){
     clearTimeout(
       previewTimer
     );
-
 
     previewTimer =
       null;
@@ -907,7 +1056,7 @@ function stopPreview(){
 
 
 /* =========================================
-   AGENDAR TOM
+   SCHEDULE TONE
 ========================================= */
 
 function scheduleTone(
@@ -1017,7 +1166,7 @@ function scheduleTone(
 
 
 /* =========================================
-   OUVIR RECONSTRUÇÃO
+   PLAY PREVIEW
 ========================================= */
 
 async function playPreview(){
@@ -1049,9 +1198,7 @@ async function playPreview(){
     window.webkitAudioContext;
 
 
-  if(
-    !AudioContextClass
-  ){
+  if(!AudioContextClass){
 
     previewStatus.textContent =
       "Web Audio API não suportada.";
@@ -1105,21 +1252,6 @@ async function playPreview(){
       );
 
 
-    if(
-      !Number.isFinite(
-        chordStart
-      )
-      ||
-      !Number.isFinite(
-        chordEnd
-      )
-    ){
-
-      continue;
-
-    }
-
-
     const duration =
       Math.max(
         0.05,
@@ -1160,18 +1292,12 @@ async function playPreview(){
         index
       ) => {
 
-        let octave =
-          4;
-
-
-        if(
+        const octave =
           index >= 3
-        ){
-
-          octave =
-            5;
-
-        }
+          ?
+          5
+          :
+          4;
 
 
         scheduleTone(
@@ -1223,12 +1349,9 @@ async function playPreview(){
 
 
   const totalDuration =
-    Math.max(
-      0,
-      finalEnd
-      -
-      timelineStart
-    );
+    finalEnd
+    -
+    timelineStart;
 
 
   previewTimer =
@@ -1256,10 +1379,6 @@ async function playPreview(){
 
 }
 
-
-/* =========================================
-   PREVIEW BUTTONS
-========================================= */
 
 playPreviewButton.addEventListener(
   "click",
@@ -1312,9 +1431,6 @@ async function copyText(
   textarea.style.left =
     "-9999px";
 
-  textarea.style.top =
-    "0";
-
 
   document.body.appendChild(
     textarea
@@ -1337,9 +1453,7 @@ async function copyText(
   );
 
 
-  if(
-    !success
-  ){
+  if(!success){
 
     throw new Error(
       "Não foi possível copiar."
@@ -1419,23 +1533,8 @@ function compactCandidate(
       ??
       null,
 
-    incompatibleBassPenalty:
-      candidate.incompatibleBassPenalty
-      ??
-      null,
-
     finalScore:
       candidate.finalScore
-      ??
-      null,
-
-    inDecisionShortlist:
-      candidate.inDecisionShortlist
-      ??
-      null,
-
-    shortlistStatus:
-      candidate.shortlistStatus
       ??
       null
 
@@ -1445,195 +1544,87 @@ function compactCandidate(
 
 
 /* =========================================
-   DEBUG COMPACTO
+   DEBUG
 ========================================= */
 
 function buildChordDiagnostic(
   chord
 ){
 
-  const diagnostics =
-    chord.reconstructionDiagnostics
-    ||
-    {};
-
-
-  const search =
-    diagnostics.candidateSearch
-    ||
-    {};
-
-
-  const key =
-    regionKey(
-      chord
-    );
-
-
-  const review =
-    humanReview.get(
-      key
-    );
-
-
-  const topCandidates =
-    Array.isArray(
-      diagnostics.topCandidates
-    )
-    ?
-    diagnostics.topCandidates
-      .slice(
-        0,
-        5
-      )
-      .map(
-        compactCandidate
-      )
-    :
-    [];
-
-
-  const bassRootCandidates =
-    Array.isArray(
-      diagnostics.bassRootCandidates
-    )
-    ?
-    diagnostics.bassRootCandidates
-      .slice(
-        0,
-        5
-      )
-      .map(
-        compactCandidate
-      )
-    :
-    [];
-
-
-  const compact = {
-
-    segment:{
-
-      start:
-        chord.start,
-
-      end:
-        chord.end,
-
-      chord:
-        chord.chord,
-
-      baseChord:
-        chord.baseChord
-        ??
-        null,
-
-      bassNote:
-        chord.bassNote
-        ??
-        null,
-
-      confidence:
-        chord.confidence
-        ??
-        null
-
-    },
-
-
-    humanReview:
-      review
-      ?
-      {
-
-        rejected:
-          [
-            ...review.rejected
-          ],
-
-        history:
-          review.history
-
-      }
-      :
-      null,
-
-
-    decision:{
-
-      reconstructionValidated:
-        chord.reconstructionValidated
-        ??
-        false,
-
-      reconstructionChanged:
-        chord.reconstructionChanged
-        ??
-        false,
-
-      reconstructionReason:
-        chord.reconstructionReason
-        ??
-        null,
-
-      reconstructionBoundary:
-        chord.reconstructionBoundary
-        ??
-        null
-
-    },
-
-
-    reconstruction:
-      chord.reconstruction
-      ??
-      null,
-
-
-    candidateSearch:{
-
-      totalObserved:
-        search.totalObserved
-        ??
-        null,
-
-      originalBase:
-        search.originalBase
-        ??
-        null,
-
-      originalDetectorRank:
-        search.originalDetectorRank
-        ??
-        null,
-
-      bassRoot:
-        search.bassRoot
-        ??
-        null,
-
-      bassRatio:
-        search.bassRatio
-        ??
-        null,
-
-      decisionShortlistCount:
-        search.decisionShortlistCount
-        ??
-        null
-
-    },
-
-
-    topCandidates,
-
-    bassRootCandidates
-
-  };
-
-
   return JSON.stringify(
-    compact,
+    {
+
+      segment:{
+
+        start:
+          chord.start,
+
+        end:
+          chord.end,
+
+        chord:
+          chord.chord,
+
+        baseChord:
+          chord.baseChord,
+
+        bassNote:
+          chord.bassNote,
+
+        confidence:
+          chord.confidence
+
+      },
+
+      humanReviewed:
+        chord.humanReviewed
+        ??
+        false,
+
+      humanReview:
+        chord.humanReview
+        ??
+        null,
+
+      humanMergeEvents:
+        chord.humanMergeEvents
+        ??
+        null,
+
+      reconstruction:
+        chord.reconstruction
+        ??
+        null,
+
+      topCandidates:
+        chord
+          .reconstructionDiagnostics
+          ?.topCandidates
+          ?.slice(
+            0,
+            5
+          )
+          ?.map(
+            compactCandidate
+          )
+        ??
+        [],
+
+      bassRootCandidates:
+        chord
+          .reconstructionDiagnostics
+          ?.bassRootCandidates
+          ?.slice(
+            0,
+            5
+          )
+          ?.map(
+            compactCandidate
+          )
+        ??
+        []
+
+    },
     null,
     2
   );
@@ -1642,192 +1633,7 @@ function buildChordDiagnostic(
 
 
 /* =========================================
-   COPY DEBUG
-========================================= */
-
-async function copyChordDebug(
-  chord,
-  copyButton
-){
-
-  try{
-
-    const text =
-      buildChordDiagnostic(
-        chord
-      );
-
-
-    await copyText(
-      text
-    );
-
-
-    const oldText =
-      copyButton.textContent;
-
-
-    copyButton.textContent =
-      "Copiado ✓";
-
-
-    copyButton.classList.add(
-      "copied"
-    );
-
-
-    setTimeout(
-      () => {
-
-        copyButton.textContent =
-          oldText;
-
-
-        copyButton.classList.remove(
-          "copied"
-        );
-
-      },
-      1500
-    );
-
-  }
-
-  catch{
-
-    const oldText =
-      copyButton.textContent;
-
-
-    copyButton.textContent =
-      "Erro ao copiar";
-
-
-    setTimeout(
-      () => {
-
-        copyButton.textContent =
-          oldText;
-
-      },
-      1600
-    );
-
-  }
-
-}
-
-
-/* =========================================
-   NORMALIZAR NOTAS
-========================================= */
-
-function candidateNotes(
-  candidate
-){
-
-  if(
-    Array.isArray(
-      candidate.notes
-    )
-  ){
-
-    return candidate.notes;
-  }
-
-
-  return [];
-
-}
-
-
-/* =========================================
-   FORMATAR SLASH LOCALMENTE
-
-   Apenas para apresentação da alternativa.
-
-   Não altera a lógica global da engine.
-========================================= */
-
-function formatCandidateChord(
-  candidate,
-  bassNote
-){
-
-  if(
-    !candidate
-    ||
-    !candidate.chord
-  ){
-
-    return null;
-
-  }
-
-
-  const base =
-    candidate.chord;
-
-
-  const root =
-    candidate.root
-    ??
-    null;
-
-
-  const notes =
-    candidateNotes(
-      candidate
-    );
-
-
-  if(
-    !bassNote
-    ||
-    bassNote === root
-  ){
-
-    return base;
-
-  }
-
-
-  if(
-    notes.includes(
-      bassNote
-    )
-  ){
-
-    return (
-      base
-      +
-      "/"
-      +
-      bassNote
-    );
-
-  }
-
-
-  return base;
-
-}
-
-
-/* =========================================
-   CANDIDATOS DISPONÍVEIS
-
-   Importante:
-
-   - se a decisão atual veio de
-     contradiction-rescue, priorizamos
-     candidatos cuja root coincide com
-     o baixo;
-
-   - caso contrário usamos o ranking geral.
-
-   Isso preserva o tipo de raciocínio que
-   levou à decisão atual.
+   CANDIDATES
 ========================================= */
 
 function getAlternativeCandidates(
@@ -1841,64 +1647,37 @@ function getAlternativeCandidates(
 
 
   const top =
-    Array.isArray(
-      diagnostics.topCandidates
-    )
-    ?
     diagnostics.topCandidates
-    :
-    [];
-
-
-  const bassCandidates =
-    Array.isArray(
-      diagnostics.bassRootCandidates
-    )
-    ?
-    diagnostics.bassRootCandidates
-    :
-    [];
-
-
-  const contradictionMode =
-    chord.reconstructionReason ===
-    "contradiction-rescue";
-
-
-  /*
-    Também usamos contradiction mode quando
-    existe bass forte e o acorde foi alterado
-    manualmente a partir de uma decisão
-    contradiction-rescue anterior.
-  */
-
-  const humanSourceReason =
-    chord.humanReviewSourceReason
-    ??
-    null;
-
-
-  const preferBassRoot =
-    contradictionMode
     ||
-    humanSourceReason ===
+    [];
+
+
+  const bass =
+    diagnostics.bassRootCandidates
+    ||
+    [];
+
+
+  const preferBass =
+    chord.reconstructionReason ===
+    "contradiction-rescue"
+    ||
+    chord.humanReviewSourceReason ===
     "contradiction-rescue";
 
 
-  const primary =
-    preferBassRoot
+  const all =
+    preferBass
     ?
-    bassCandidates
+    [
+      ...bass,
+      ...top
+    ]
     :
-    top;
-
-
-  const secondary =
-    preferBassRoot
-    ?
-    top
-    :
-    bassCandidates;
+    [
+      ...top,
+      ...bass
+    ];
 
 
   const map =
@@ -1907,24 +1686,14 @@ function getAlternativeCandidates(
 
   for(
     const candidate
-    of [
-      ...primary,
-      ...secondary
-    ]
+    of all
   ){
 
     if(
-      !candidate
-      ||
-      !candidate.chord
-    ){
-
-      continue;
-
-    }
-
-
-    if(
+      candidate
+      &&
+      candidate.chord
+      &&
       !map.has(
         candidate.chord
       )
@@ -1940,148 +1709,15 @@ function getAlternativeCandidates(
   }
 
 
-  const all =
-    [
-      ...map.values()
-    ];
-
-
-  /*
-    Em contradiction mode, os candidatos
-    compatíveis com o baixo realmente
-    recebem prioridade.
-
-    Dentro de cada grupo mantemos o
-    finalScore do Validator.
-  */
-
-  all.sort(
-    (
-      a,
-      b
-    ) => {
-
-      if(
-        preferBassRoot
-      ){
-
-        const aIsBassRoot =
-          a.root ===
-          chord.bassNote;
-
-
-        const bIsBassRoot =
-          b.root ===
-          chord.bassNote;
-
-
-        if(
-          aIsBassRoot
-          !==
-          bIsBassRoot
-        ){
-
-          return aIsBassRoot
-            ?
-            -1
-            :
-            1;
-
-        }
-
-      }
-
-
-      return (
-        Number(
-          b.finalScore
-          ??
-          -Infinity
-        )
-        -
-        Number(
-          a.finalScore
-          ??
-          -Infinity
-        )
-      );
-
-    }
-  );
-
-
-  return all;
+  return [
+    ...map.values()
+  ];
 
 }
 
 
 /* =========================================
-   TEM ALTERNATIVA?
-========================================= */
-
-function hasAlternative(
-  chord
-){
-
-  const key =
-    regionKey(
-      chord
-    );
-
-
-  const review =
-    humanReview.get(
-      key
-    );
-
-
-  const rejected =
-    review
-    ?
-    review.rejected
-    :
-    new Set();
-
-
-  const currentBase =
-    getBaseChord(
-      chord
-    );
-
-
-  const candidates =
-    getAlternativeCandidates(
-      chord
-    );
-
-
-  return candidates.some(
-    candidate => {
-
-      return (
-        candidate.chord
-        !==
-        currentBase
-        &&
-        !rejected.has(
-          candidate.chord
-        )
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   TENTAR OUTRA CIFRA
-
-   Este é o núcleo da revisão humana.
-
-   A cifra atual é eliminada apenas nessa
-   região. Em seguida escolhemos o próximo
-   candidato disponível.
+   TRY ANOTHER
 ========================================= */
 
 function tryAnotherChord(
@@ -2103,12 +1739,6 @@ function tryAnotherChord(
   if(!review){
 
     review = {
-
-      start:
-        chord.start,
-
-      end:
-        chord.end,
 
       rejected:
         new Set(),
@@ -2133,15 +1763,9 @@ function tryAnotherChord(
     );
 
 
-  if(
+  review.rejected.add(
     currentBase
-  ){
-
-    review.rejected.add(
-      currentBase
-    );
-
-  }
+  );
 
 
   const candidates =
@@ -2150,81 +1774,41 @@ function tryAnotherChord(
     );
 
 
-  const available =
-    candidates.filter(
-      candidate => {
-
-        return (
+  const selected =
+    candidates.find(
+      candidate =>
+        candidate.chord !==
+        currentBase
+        &&
+        !review.rejected.has(
           candidate.chord
-          !==
-          currentBase
-          &&
-          !review.rejected.has(
-            candidate.chord
-          )
-        );
-
-      }
+        )
     );
 
 
-  if(
-    available.length === 0
-  ){
+  if(!selected){
 
-    return {
-
-      success:false,
-
-      reason:
-        "no-alternative"
-
-    };
+    return false;
 
   }
 
 
-  /*
-    O array já foi ordenado pelo modo
-    apropriado da decisão.
-  */
-
-  const selected =
-    available[0];
-
-
-  const previousChord =
+  const previous =
     chord.chord;
 
-
-  const previousBase =
-    currentBase;
-
-
-  const selectedChord =
-    formatCandidateChord(
-      selected,
-      chord.bassNote
-    );
-
-
-  /*
-    Atualiza somente o objeto da timeline
-    de trabalho.
-  */
 
   chord.baseChord =
     selected.chord;
 
 
   chord.chord =
-    selectedChord;
+    selected.chord;
 
 
   chord.notes =
-    candidateNotes(
-      selected
-    );
+    selected.notes
+    ||
+    chord.notes;
 
 
   chord.humanReviewed =
@@ -2233,10 +1817,8 @@ function tryAnotherChord(
 
   chord.humanReviewSourceReason =
     chord.humanReviewSourceReason
-    ??
-    chord.reconstructionReason
-    ??
-    null;
+    ||
+    chord.reconstructionReason;
 
 
   chord.humanReview = {
@@ -2249,16 +1831,6 @@ function tryAnotherChord(
     selectedCandidate:
       selected.chord,
 
-    detectorRank:
-      selected.detectorRank
-      ??
-      null,
-
-    detectorScore:
-      selected.detectorScore
-      ??
-      null,
-
     reconstructionScore:
       selected.reconstructionScore
       ??
@@ -2270,57 +1842,26 @@ function tryAnotherChord(
       null
 
   };
-
-
-  /*
-    Não fingimos que finalScore é confiança.
-
-    A confiança original continua visível,
-    porém a interface marca explicitamente
-    que houve intervenção humana.
-  */
 
 
   review.history.push({
 
     from:
-      previousChord,
-
-    fromBase:
-      previousBase,
+      previous,
 
     to:
-      selectedChord,
-
-    toBase:
-      selected.chord,
-
-    finalScore:
-      selected.finalScore
-      ??
-      null,
-
-    reconstructionScore:
-      selected.reconstructionScore
-      ??
-      null
+      selected.chord
 
   });
 
 
-  return {
-
-    success:true,
-
-    selected
-
-  };
+  return true;
 
 }
 
 
 /* =========================================
-   REVISÃO INFO
+   REVIEW BAR
 ========================================= */
 
 function updateReviewBar(){
@@ -2333,27 +1874,7 @@ function updateReviewBar(){
       "visible"
     );
 
-
-    reviewInfo.textContent =
-      "";
-
-
     return;
-
-  }
-
-
-  let rejectedCount =
-    0;
-
-
-  for(
-    const review
-    of humanReview.values()
-  ){
-
-    rejectedCount +=
-      review.rejected.size;
 
   }
 
@@ -2364,87 +1885,50 @@ function updateReviewBar(){
 
 
   reviewInfo.textContent =
-    `${humanReview.size} região(ões) revisada(s) · `
-    +
-    `${rejectedCount} candidato(s) rejeitado(s).`;
+    `${humanReview.size} região(ões) revisada(s).`;
 
 }
 
 
 /* =========================================
-   RESET
+   RENDER
 ========================================= */
 
-function resetHumanReview(){
+function renderChords(){
 
-  stopPreview();
+  const chords =
+    workingAnalysis
+      ?.chords
+    ||
+    [];
 
-
-  humanReview =
-    new Map();
-
-
-  workingAnalysis =
-    deepClone(
-      originalAnalysis
-    );
-
-
-  renderChords(
-    workingAnalysis.chords
-  );
-
-
-  updateReviewBar();
-
-
-  previewStatus.textContent =
-    "Correções desfeitas. Resultado original restaurado.";
-
-}
-
-
-/* =========================================
-   RESET BUTTON
-========================================= */
-
-resetReviewButton.addEventListener(
-  "click",
-  resetHumanReview
-);
-
-
-/* =========================================
-   RENDER CHORDS
-========================================= */
-
-function renderChords(
-  chords
-){
 
   chordsContainer.innerHTML =
     "";
 
 
-  if(
-    !Array.isArray(
-      chords
-    )
-    ||
-    chords.length === 0
-  ){
+  audioInfo.innerHTML =
+    `
+      <p>
+        <strong>Duração:</strong>
+        ${workingAnalysis.audio.duration}s
+      </p>
 
-    chordsContainer.innerHTML =
-      `
-        <p>
-          Nenhum acorde detectado.
-        </p>
-      `;
+      <p>
+        <strong>Sample rate:</strong>
+        ${workingAnalysis.audio.sampleRate} Hz
+      </p>
 
+      <p>
+        <strong>Frames:</strong>
+        ${workingAnalysis.audio.frameCount}
+      </p>
 
-    return;
-
-  }
+      <p>
+        <strong>Acordes detectados:</strong>
+        ${chords.length}
+      </p>
+    `;
 
 
   for(
@@ -2473,36 +1957,6 @@ function renderChords(
     }
 
 
-    const key =
-      regionKey(
-        chord
-      );
-
-
-    const review =
-      humanReview.get(
-        key
-      );
-
-
-    const rejectedText =
-      review
-      &&
-      review.rejected.size > 0
-      ?
-      [
-        ...review.rejected
-      ].join(", ")
-      :
-      null;
-
-
-    const alternativeAvailable =
-      hasAlternative(
-        chord
-      );
-
-
     element.innerHTML =
       `
         <div class="chord-name-row">
@@ -2526,17 +1980,23 @@ function renderChords(
         </div>
 
         <div class="time">
+
           ${Number(
             chord.start
           ).toFixed(2)}s
+
           →
+
           ${Number(
             chord.end
           ).toFixed(2)}s
+
         </div>
 
         <div class="confidence">
+
           Confiança original:
+
           ${Math.round(
             Number(
               chord.confidence
@@ -2546,102 +2006,23 @@ function renderChords(
             *
             100
           )}%
+
         </div>
-
-        ${
-          chord.humanReviewed
-          ?
-          `
-            <div class="review-detail">
-
-              Escolhida após revisão:
-              <strong>
-                ${chord.baseChord}
-              </strong>
-
-              ${
-                chord.humanReview
-                ?.reconstructionScore
-                !=
-                null
-                ?
-                `
-                  · Reconstruction:
-                  ${Math.round(
-                    Number(
-                      chord.humanReview
-                        .reconstructionScore
-                    )
-                    *
-                    100
-                  )}%
-                `
-                :
-                ""
-              }
-
-              ${
-                rejectedText
-                ?
-                `
-                  <br>
-
-                  <span class="rejected-list">
-                    Rejeitadas:
-                    ${rejectedText}
-                  </span>
-                `
-                :
-                ""
-              }
-
-            </div>
-          `
-          :
-          ""
-        }
 
         <div class="chord-actions">
 
           <button
-            class="
-              chord-action
-              chord-copy
-            "
+            class="chord-action chord-copy"
             type="button"
           >
             Copiar debug
           </button>
 
           <button
-            class="
-              chord-action
-              chord-retry
-              ${
-                alternativeAvailable
-                ?
-                ""
-                :
-                "no-alternative"
-              }
-            "
+            class="chord-action chord-retry"
             type="button"
-
-            ${
-              alternativeAvailable
-              ?
-              ""
-              :
-              "disabled"
-            }
           >
-            ${
-              alternativeAvailable
-              ?
-              "Tentar outra cifra"
-              :
-              "Sem alternativas"
-            }
+            Tentar outra cifra
           </button>
 
         </div>
@@ -2662,11 +2043,27 @@ function renderChords(
 
     copyButton.addEventListener(
       "click",
-      () => {
+      async () => {
 
-        copyChordDebug(
-          chord,
-          copyButton
+        await copyText(
+          buildChordDiagnostic(
+            chord
+          )
+        );
+
+
+        copyButton.textContent =
+          "Copiado ✓";
+
+
+        setTimeout(
+          () => {
+
+            copyButton.textContent =
+              "Copiar debug";
+
+          },
+          1300
         );
 
       }
@@ -2680,37 +2077,40 @@ function renderChords(
         stopPreview();
 
 
-        const result =
+        const success =
           tryAnotherChord(
             chord
           );
 
 
-        if(
-          !result.success
-        ){
+        if(!success){
 
           previewStatus.textContent =
-            "Não há outra candidata disponível nesta região.";
-
+            "Não há outra candidata disponível.";
 
           return;
 
         }
 
 
-        previewStatus.textContent =
-          `Nova candidata: ${chord.chord}. `
-          +
-          `Use “Ouvir reconstrução” para comparar.`;
+        /*
+          NOVO PASSO:
+
+          logo depois da revisão,
+          normalizamos a timeline.
+        */
+
+        mergeReviewedTimeline();
 
 
-        renderChords(
-          workingAnalysis.chords
-        );
+        renderChords();
 
 
         updateReviewBar();
+
+
+        previewStatus.textContent =
+          "Cifra substituída e timeline mesclada. Ouça novamente.";
 
       }
     );
@@ -2726,7 +2126,41 @@ function renderChords(
 
 
 /* =========================================
-   ANALISAR WAV
+   RESET
+========================================= */
+
+resetReviewButton.addEventListener(
+  "click",
+  () => {
+
+    stopPreview();
+
+
+    humanReview =
+      new Map();
+
+
+    workingAnalysis =
+      deepClone(
+        originalAnalysis
+      );
+
+
+    renderChords();
+
+
+    updateReviewBar();
+
+
+    previewStatus.textContent =
+      "Resultado original restaurado.";
+
+  }
+);
+
+
+/* =========================================
+   ANALYZE
 ========================================= */
 
 analyzeButton.addEventListener(
@@ -2746,7 +2180,6 @@ analyzeButton.addEventListener(
       status.textContent =
         "Escolha um arquivo WAV.";
 
-
       return;
 
     }
@@ -2759,39 +2192,8 @@ analyzeButton.addEventListener(
       true;
 
 
-    status.className =
-      "status";
-
-
     status.textContent =
-      "Enviando e analisando áudio...";
-
-
-    result.style.display =
-      "none";
-
-
-    debugCard.style.display =
-      "none";
-
-
-    lastApiResponse =
-      null;
-
-
-    originalAnalysis =
-      null;
-
-
-    workingAnalysis =
-      null;
-
-
-    humanReview =
-      new Map();
-
-
-    updateReviewBar();
+      "Analisando...";
 
 
     try{
@@ -2822,38 +2224,6 @@ analyzeButton.addEventListener(
         await response.json();
 
 
-      lastApiResponse =
-        data;
-
-
-      /*
-        Guarda duas versões independentes.
-      */
-
-      originalAnalysis =
-        deepClone(
-          data
-        );
-
-
-      workingAnalysis =
-        deepClone(
-          data
-        );
-
-
-      debug.textContent =
-        JSON.stringify(
-          data,
-          null,
-          2
-        );
-
-
-      debugCard.style.display =
-        "block";
-
-
       if(
         !response.ok
         ||
@@ -2871,6 +2241,42 @@ analyzeButton.addEventListener(
       }
 
 
+      lastApiResponse =
+        data;
+
+
+      originalAnalysis =
+        deepClone(
+          data
+        );
+
+
+      workingAnalysis =
+        deepClone(
+          data
+        );
+
+
+      humanReview =
+        new Map();
+
+
+      debug.textContent =
+        JSON.stringify(
+          data,
+          null,
+          2
+        );
+
+
+      debugCard.style.display =
+        "block";
+
+
+      result.style.display =
+        "block";
+
+
       status.className =
         "status success";
 
@@ -2879,37 +2285,10 @@ analyzeButton.addEventListener(
         "Análise concluída.";
 
 
-      audioInfo.innerHTML =
-        `
-          <p>
-            <strong>Duração:</strong>
-            ${data.audio.duration}s
-          </p>
-
-          <p>
-            <strong>Sample rate:</strong>
-            ${data.audio.sampleRate} Hz
-          </p>
-
-          <p>
-            <strong>Frames:</strong>
-            ${data.audio.frameCount}
-          </p>
-
-          <p>
-            <strong>Acordes detectados:</strong>
-            ${data.chordCount}
-          </p>
-        `;
+      renderChords();
 
 
-      renderChords(
-        workingAnalysis.chords
-      );
-
-
-      result.style.display =
-        "block";
+      updateReviewBar();
 
     }
 
@@ -2935,17 +2314,9 @@ analyzeButton.addEventListener(
 );
 
 
-/* =========================================
-   TROCAR WAV
-========================================= */
-
 fileInput.addEventListener(
   "change",
-  () => {
-
-    stopPreview();
-
-  }
+  stopPreview
 );
 
 </script>
